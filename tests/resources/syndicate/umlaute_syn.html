@@ -1,0 +1,993 @@
+ 
+<html>
+    <head>
+        <title>Syndicates</title>
+        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+		<meta name="viewport" content="width=800" />
+        <link rel="stylesheet" type="text/css" href="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/style.css" />
+        <link rel="SHORTCUT ICON" href="http://www.syndicates-online.de/data/images/syn_favicon.ico" />
+        		
+		<style type="text/css">
+			@import "https://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css";
+			.dijitButtonText {
+				font-size:12px;
+			}
+			#ticker_more {
+				height:28px;
+			}
+			.tipp {
+				position:fixed;
+				right:-1000px;
+				width:300px;
+				border:1px solid #000;
+				-webkit-border-radius:5px;
+				   -moz-border-radius:5px;
+				    -ms-border-radius:5px;
+				     -o-border-radius:5px;
+				        border-radius:5px;
+				-webkit-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				   -moz-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				    -ms-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				     -o-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				        box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				overflow:hidden;
+			}
+			.tippHead {
+				text-align:left;
+				padding:3px 10px;
+				border-bottom:1px solid #000;
+			}
+			.tippBody {
+				padding:10px;
+				font-size:13px;
+			}
+			.tippControl {
+				text-align:left;
+			}
+			.tipp a {
+				color:inherit;
+				text-decoration:none;
+				cursor:pointer;
+			}
+			.tipp a:hover {
+				-webkit-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				   -moz-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				    -ms-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				     -o-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				        text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+			}
+			
+			
+		</style>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script>
+		<script type="text/javascript">
+			dojo.require("dojo.fx");
+			dojo.require("dijit.form.DropDownButton");
+			dojo.require("dijit.TooltipDialog");
+			dojo.require("dijit.form.TextBox");
+			dojo.require("dijit.form.Button");
+			dojo.require("dojox.widget.AutoRotator");
+			dojo.require("dojox.widget.rotator.Fade");
+			dojo.require("dojox.widget.rotator.Slide");
+		</script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script type="text/javascript">
+	<!--
+		//JavaScript Code der auf allen Seiten geladen wird 
+		
+var now = new Date();
+var h   = new String();
+var min = new String();
+var sec = new String();
+
+now.setTime(1441635365318.5);
+
+function mout(x,c) {
+	document.getElementById(x).className = c;
+}
+
+function mover(x,c) {
+	document.getElementById(x).className = c;
+}
+
+function showover(event,xAdj,yAdj) {
+	if (event.pageX) myX = event.pageX;
+	if (event.clientX) myX = event.clientX;
+				
+	if (event.pageY) myY = event.pageY;
+	if (event.clientY) myY = event.clientY;				
+	if (!xAdj) xAdj = 30;
+	if (!yAdj) yAdj = 30;
+					
+	myX += parseInt(xAdj) - parseInt(document.body.scrollLeft);
+	myY -= parseInt(yAdj) - parseInt(document.body.scrollTop);
+				
+	elem = document.getElementById('over');
+	elem.style.top = myY;
+	elem.style.left = myX;
+	elem.style.display = 'inline';
+}
+		    
+function hideover() {
+	elem = document.getElementById('over');
+	elem.style.display = 'none';
+}
+		    
+function contentover(content) {
+	document.getElementById('over_inner').innerHTML= content;
+}
+
+function info(type, name)	{
+	neuesFenster =  open('description.php?type='+type+'&name='+name, 'Info','width=400, height=300, scrollbars=yes');
+	neuesFenster.focus()
+};
+
+function werbung_nachladen() {
+	if (typeof werbung != "undefined") {
+		document.getElementById('werbung').src = werbung;
+	}
+}
+
+function showTime() {        
+	if (document.getElementById)
+	{
+		h   = '' + now.getHours();
+		min = '' + now.getMinutes();
+		sec = '' + now.getSeconds();
+		if (h.length   == 1) h   = '0' + now.getHours();
+		if (min.length == 1) min = '0' + now.getMinutes();
+		if (sec.length == 1) sec = '0' + now.getSeconds();
+		document.getElementById('zeit').innerHTML ='&nbsp;'+ h + ':' + min + ':' + sec;
+		now.setSeconds(now.getSeconds() + 1);
+		window.setTimeout('showTime();', 1000);
+	}
+}
+var duration, tipp, bHide, clicked;
+
+$(document).ready(function(){
+	tipp = $('.tipp');
+	bHide = '-'+(tipp.height()+10);
+	clicked = false;
+	duration = 1000;
+	tipp.css('right', '5px').css('bottom', bHide+'px');
+	tipp.delay(4000).animate({'bottom' : '5px'}, duration, 'easeOutBack');
+	$('.hideTipp').click(function(){
+		tipp.animate({'bottom' : bHide+'px'}, duration, 'easeInBack', function(){ tipp.remove(); });
+	});
+	$('.nextTipp').click(function(){
+		if(!clicked){
+			clicked = true;
+			hideTipp(function(){
+				$.ajax({ 'url' : '?action=getNextTipp&num='+$('#tipp_num').html()+'&id='+tipp.attr('data-id'), 'dataType' : 'json' })
+				.success(function(data){
+					if(data){
+						changeTipp(data, tipp);
+					}
+				});
+			});
+		}
+	});
+	$('.prevTipp').click(function(){
+		if(!clicked){
+			clicked = true;
+			hideTipp(function(){
+				$.ajax({ 'url' : '?action=getPrevTipp&num='+$('#tipp_num').html()+'&id='+tipp.attr('data-id'), 'dataType' : 'json' })
+				.success(function(data){
+					if(data){
+						changeTipp(data, tipp);
+					}
+				});
+			});
+		}
+	});
+	$('.readTipp').change(function(){
+		$.ajax({url:'?action=readTipp&id='+tipp.attr('data-id')});
+	});
+});
+
+function changeTipp(data, tipp){
+	$('#tipp_num').html(data.num);
+	$('#tipp_sum').html(data.sum);
+	$('#tipp_Text').html(data.text);
+	tipp.attr('data-id', data.id);
+	$('.readTipp').attr('checked', false);
+	showTipp(function(){ clicked = false; });
+}
+function hideTipp(fn){
+	tipp.animate({'bottom' : bHide+'px'}, duration, 'easeInBack', fn);
+}
+function showTipp(fn){
+	tipp.delay(200).animate({'bottom' : '5px'}, duration, 'easeOutBack', fn);
+}
+	-->
+</script>        
+        
+        
+		    </head>
+    <body onLoad="showTime();" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/bg.gif" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" style="text-align: center;" class="tundra">
+		<!--BEGIN MouseOver Hilfe-->
+			<div style="z-index:10; position:absolute;display:none;border: 0px solid black" id="over">
+				<table id="over_table" class="bodys" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="over_inner">
+						</td>
+					</tr>
+				</table>
+			</div>
+		<!--END MouseOver Hilfe-->
+				<div class="tipp" data-id="7">
+			<div class="tableHead tippHead">
+				Tipp <span id="tipp_num">7</span> / <span id="tipp_sum">51</span>
+				<span style="float:right; vertical-align:top;">
+					<input style="vertical-align:middle;" class="readTipp" title="als gelesen markieren" type="checkbox" name="readTipp" value="1" />
+					<a style="vertical-align:middle;margin-left:3px;" class="hideTipp" title="verstecken">X</a>
+				</span>
+			</div>
+			<div class="tableInner1 tippBody">
+				<span id="tipp_Text">Baue höchstens 2 verschiedene Arten von Produktionsgebäuden, lieber nur eine, denn dies ist am effektivsten.</span>
+				<div class="tippControl">
+					<span>
+						<a class="prevTipp" title="vorheriger Tipp">&lt;&lt;&lt;</a>
+					</span>
+					<span style="float:right;">
+						<a class="nextTipp" title="nächster Tipp">&gt;&gt;&gt;</a>
+					</span>
+				</div>
+			</div>
+		</div>
+				<div style="text-align:center;">
+			<br>
+			<div style="margin-left:auto;margin-right:auto;text-align:left;width:782px;">
+				<!-- ï¿½uï¿½ere Tabelle fï¿½r Skyscraper noch -->
+				<table style="width:100%" >
+					<tr>
+						<td >
+							<!-- fï¿½r den globalen schwarzen rahmen -->
+							<table width="782" bgcolor="#000000" align="center" cellspacing="0" cellpadding="1" border="0">
+								<tr>
+									<td valign="top" align="center">
+
+										<table width="780" class="siteGround" align="center" cellspacing="0" cellpadding="0" border="0">
+											<tr>
+												<td colspan="4">
+													
+													<table width="100%" cellspacing="0" cellpadding="0" border="0">
+														<tr>
+															<td>
+																<a href="statusseite.php">
+																	<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/header.jpg" alt="Syndicates" border="0">
+																</a>
+															</td>
+														</tr>
+													</table>
+												
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4" height="1" bgcolor="#000000">
+												</td>
+											</tr>
+																						<tr>
+												<td height="16" colspan="5" valign="bottom">
+													<!-- ##### TOP LEISTE ####### -->
+													<table width="100%" height="100%" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar-reversed.png" cellspacing="0" cellpadding="0" border="0">
+														<tr>
+															<td width=30 align=right><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/networth.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 123.740 NW</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/land.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 855 ha</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/credits.gif" border=0></td>
+															<td class="resourceLeiste" id="credits_number">&nbsp; 160.590 Cr</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/energie.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 241.634 MWh</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/erz.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 419.538 t</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/fp.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 286.385 P</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/time.gif" id="timeicon" border=0></td>
+															<td nowrap=nowrap class="resourceLeiste" width=1><span id="zeit" name="zeit">&nbsp;16:16:05</span>&nbsp;Uhr&nbsp;&nbsp;</td>
+														</tr>
+													</table>
+													<!-- ##### TOP LEISTE ## ENDE  ## -->
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4" height="1" bgcolor="#000000"></td>
+											</tr>
+											<tr>
+												<td colspan="4" height="20"></td>
+											</tr>
+																						<tr>
+												<td width="130" valign="top" align="right">
+	        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                    <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Konzern</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner" id="menu_statusseite">
+                                                                                	<a href="statusseite.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_statusseite_text">Status </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_berater">
+                                                                                	<a href="berater.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_berater_text">Bauaufträge </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_gebaeude">
+                                                                                	<a href="gebaeude.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_gebaeude_text">Gebäude & Land </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_militaerseite">
+                                                                                	<a href="militaerseite.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_militaerseite_text">Militär </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_forschung">
+                                                                                	<a href="forschung.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_forschung_text">Forschung </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_angriff">
+                                                                                	<a href="angriff.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_angriff_text">Angriff </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_agr">
+                                                                                	<a href="agr.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_agr_text">Angriffsrechner </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_spies">
+                                                                                	<a href="spies.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_spies_text">Spionage </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_history">
+                                                                                	<a href="history.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_history_text">Spionage-DB  (22)</span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_settings">
+                                                                                	<a href="settings.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_settings_text">myKonzern </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                     <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Kommunikation</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing=0 cellpadding=3 border=0>
+                                <tr>
+                                    <td class="menueInner" id="menu_buddy">
+                                        <a href="buddy.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Buddy (0/0)
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" class="menu_msg">
+                                        <a href="mitteilungen.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            <span id="menu_msg_text">
+                                            Mitteilungen
+                                            </span>                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_notifications">
+                                        <a href="nachrichten.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            <span
+                                                                                        id="menu_notifications_text">
+                                            Nachrichten
+                                            </span>
+                                                                                    </a>
+                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_vote">
+                                        <a href="polls.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                                                                        Umfragen
+                                                                                    </a>
+                                    </td>
+                                </tr>
+                                                                                                                                <tr>
+                                    <td class="menueInner" id="menu_syndboard">
+                                        <a href="syndboard.php"  class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Synd. Board                                        </a>
+                                    </td>
+                                </tr>
+                                                                 <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="http://forum.syndicates-online.de/index.php/Board/3/" class="linkMenue" target="_blank">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Frage & Antwort
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="http://forum.syndicates-online.de?title=" class="linkMenue" target="_blank">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Forum
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="merchandise.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Merchandise
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                     <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Syndikate&Welt</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner" id="menu_syndicate">
+                                        <a href="syndicate.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-rot.gif" hspace="5" border="0" />
+                                            <span id="menu_syndicate_text">
+                                            	Syndikate                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_market">
+                                        <a href="market.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_market_text">
+                                            	Global Market                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_pod">
+                                        <a href="pod.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_pod_text">
+                                            	Lager & Transfer                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_anleihenmarkt">
+                                        <a href="anleihenmarkt.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_anleihenmarkt_text">
+                                            	Anleihenmarkt                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_jobs">
+                                        <a href="jobs.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_jobs_text">
+                                            	Aufträge  (4)                                            </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_politik">
+                                        <a href="politik.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_politik_text">
+                                            	Politik                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_monumente">
+                                        <a href="monumente.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_monumente_text">
+                                            	Monumente                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_aktuelles">
+                                        <a href="aktuelles.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_aktuelles_text">
+                                            	Aktuelles                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_rankings">
+                                        <a href="rankings.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_rankings_text">
+                                            	Rankings                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+            <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="gamevalues.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Spielwerte
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="options.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Optionen
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="report.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Support
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="gruppen.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Gruppen
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="logout.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Logout
+                                        </a>                                    </td>
+                                </tr>
+                                  								                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+    	<br>
+</td>
+<td class="ver12w" width="30">
+	<img src="images/5E78A4.gif" width="1" height="6" border="0" />
+</td>
+
+												<td class="ver12w" width="600" align="center" valign="top">
+													<!-- ########## AUSGABE ########## -->
+													<!-- Ausgabetabelle ï¿½ffnen -->
+													<table class="siteGround" cellspacing=0 align=left width="100%" cellpadding=0>
+														<tr>
+															<td align="left">
+		<br>
+		<table width=100% border=0 cellspacing=0 cellpadding=0 align=center>
+			
+			<tr>
+				<td width=400><b class=titleH1>Syndikate</b></td>
+				<td width=200 align=right>
+					<a href="http://www.syndicates-wiki.de/index.php?title=Syndikats%C3%BCbers._%28Men%C3%BCpunkt%29" target="_blank" class="linkAuftableInner">
+						<img onMouseOver="showover(event,'','');contentover('<table border=0 cellspacing=0 cellpadding=1 class=tableOutline><tr><td><table cellspacing=0 cellpadding=2><tr><td class=tableInner1>In der Syndikatsübersicht kann man sich sowohl die Spieler des eigenen, als auch die jedes anderen Syndikats anzeigen lassen. Dabei können diese Spieler nach verschiedenen Kriterien (Name, Größe, Stärke) sortiert werden. Eine schöne Funktion ist auch das gleichzeitige Anzeigen der Allianzpartner der Syndikate, sowie die der Syndikatsbeschreibung.<br /><br />Aus der Syndikatsübersicht heraus kann man sich die Konzernbeschreibungen von Spielern ansehen, sie ausspionieren, angreifen, oder aber ihnen eine Mitteilung schreiben.<br /><br />Genauere Beschreibungen gibt es in der Anleitung. (click)</td></tr></table></td></tr></table>')"  onmouseout="hideover()" src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_help_bigger.gif" border=0 valign="absmiddle" />
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 width="100%" height=1 class=titleLine></td>
+			</tr>
+						
+						
+									<tr>
+				<td colspan=2>
+					<table cellpadding=5 width=100% align=center>
+						<tr>
+							<td class=i style="border: 1px solid">
+								In der Syndikatsübersicht kann man sich sowohl die Spieler des eigenen, als auch die jedes anderen Syndikats anzeigen lassen. Dabei können diese Spieler nach verschiedenen Kriterien (Name, Größe, Stärke) sortiert werden. Eine schöne Funktion ist auch das gleichzeitige Anzeigen der Allianzpartner der Syndikate, sowie die der Syndikatsbeschreibung.<br /><br />Aus der Syndikatsübersicht heraus kann man sich die Konzernbeschreibungen von Spielern ansehen, sie ausspionieren, angreifen, oder aber ihnen eine Mitteilung schreiben.<br /><br />Genauere Beschreibungen gibt es in der Anleitung. (Fragezeichen oben rechts)
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr><td colspan=2 height=1 class=titleLine></td></tr>
+					</table>													<center>
+<form action="syndicate.php" method="get">
+	<table cellpadding="0" cellspacing="0" align="center" width="550">
+		<tr>
+			<td width="200">
+				<a href="syndicate.php?change=32&rid=11" class="linkAufsiteBg"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0"> Buddys hervorheben</a><br />
+				<a href="syndicate.php?change=11&rid=11" class="linkAufsiteBg"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"> Syndikatsbeschreibung</a>
+			</td>
+			<td width="150">
+					<table cellpadding="5" cellspacing="0" align="center">
+						<tr>
+							<td><a href="syndicate.php?rid=10" class="linkAufsiteBg">&lt;&lt;</a></td>
+							<td>&nbsp;</td>
+							<td><input name="rid" value="11" size="2" maxlength="3" style="text-align:center; width:40px"></td>
+							<td>&nbsp;</td>
+							<td><a href="syndicate.php?rid=12" class=linkAufsiteBg>&gt;&gt;</a></td>
+						</tr>
+						<tr>
+							<td colspan="5" align="center"><input type="submit" value="wechseln"></td>
+						</tr>
+					</table>
+			</td>
+			<td width="200" align="right">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<br />
+</form>
+
+<table cellpadding="0" cellspacing="0" border="0" class="tableOutline" align="center">
+			<tr>
+		<td>
+		<!-- Synübersicht -->
+			<table  border="0" cellspacing="1" cellpadding="2" width="580px">
+			<!-- Synsite, Name und Monu -->
+							<tr class="tableHead">
+										<td colspan="7" align="center" valign="middle" height="30px" width="100%">
+						Mexikanische Beef-Lasagne (#11)
+						</td>
+				</tr>
+											<tr class="tableHead2">
+										<td align="center" width="35px"><a href="syndicate.php?rid=11&orderby=race&ordertype=desc" class="linkAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" border="0" hspace="5"></a></td>
+					<td width="175px">&nbsp;&nbsp;<a href="syndicate.php?rid=11&orderby=syndicate&ordertype=desc" class="linkAuftableInner"><b>Konzern</b></a></td>
+					<td align="center" width="50px">&nbsp;</td>
+										<td align="center" width="70px"><a href="syndicate.php?rid=11&orderby=land&ordertype=desc" class="linkAuftableInner"><b>Land</b></a></td>
+					<td align="center" width="80px"><a href="syndicate.php?rid=11&orderby=nw&ordertype=asc" class="linkAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/asc_order.gif" border="0"> <b>Networth</b></a></td>
+					<td align="center" width="50px"><a href="syndicate.php?rid=11&orderby=fox&ordertype=desc" class="linkAuftableInner"><b>Fox</b></a></td>
+					<td align="center" width="80px"><b>Aktionen</b></td>
+				</tr>
+				<!-- Anzeige der Konzerne: START -->
+												<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','nof') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/nof-logo-klein.gif" alt="Nova Fed." height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=165&rid=11" class="linkAuftableInner" >Fett für die Form</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">10.445&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">5.198.016&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">497,7</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=165"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{Fett für die Form} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','neb') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/neb-logo-klein.gif" alt="New Eco. Block" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=307&rid=11" class="linkAuftableInner" >600g Rinderhack</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_online.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">8.689&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">3.100.016&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">356,8</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=307"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{600g Rinderhack} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=223&rid=11" class="linkAuftableInner" >Expendables</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">7.405&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">2.966.838&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">400,7</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=223"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{Expendables} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','uic') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/uic-logo-klein.gif" alt="Un. Ind. Corp." height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=259&rid=11" class="linkAuftableInner" >Salsa Sauce</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">7.100&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">2.794.078&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">393,5</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=259"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{Salsa Sauce} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','neb') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/neb-logo-klein.gif" alt="New Eco. Block" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=38&rid=11" class="linkAuftableInner" >1 gehackte Zwiebel</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+								<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_help.gif" border="0" align="absmiddle"> 																																								<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">8.285&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">2.603.029&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">314,2</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=38"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{1 gehackte Zwiebel} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=76&rid=11" class="linkAuftableInner" >200g geriebener Käse</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_online.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">5.644&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">2.041.869&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">361,8</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=76"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{200g geriebener Käse} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=292&rid=11" class="linkAuftableInner" >1 TL Olivenöl</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">5.037&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">2.013.789&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">399,8</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=292"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{1 TL Olivenöl} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=139&rid=11" class="linkAuftableInner" >400g Kidneybohnen</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">5.500&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">1.982.999&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">360,5</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=139"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{400g Kidneybohnen} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=252&rid=11" class="linkAuftableInner" >gehackte Jalapenos</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_praesi.gif" border="0" align="absmiddle"> 																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_offline.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">5.138&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">1.864.558&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">362,9</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=252"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{gehackte Jalapenos} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=69&rid=11" class="konzernHeavyAttacked" >mex. Gewürzmischung</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_online.gif" border="0" align="absmiddle">
+																</td>
+					<td align="right">4.800&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">1.514.214&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">315,5</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																																																<a href="mitteilungen.php?action=psm&rec=69"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{mex. Gewürzmischung} eine Nachricht senden"></a>
+																</td>
+				</tr>
+								<tr class="tableInner1">
+					<td align="center"> <a href=javascript:info('fraktionen','sl') class="highlightAuftableInner"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" alt="Shadow Labs" height="22" width="22" border="0"></a></td>
+					<td height="27" nowrap="nowrap">&nbsp;&nbsp;<a href="syndicate.php?action=details&detailsid=452&rid=11" class="linkAuftableInner" >Strunzheimer AG</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right" nowrap="nowrap">
+																																																<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_lokal_inaktiv.gif" border="0" align="absmiddle">								</td>
+					<td align="right">400&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right">24.580&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><a  style="text-decoration:none; cursor:text;" href="javascript: return false;" class="linkAuftableInner">61,5</a>&nbsp;&nbsp;&nbsp;</td>
+					<td align=right nowrap>
+																<a href="jobs.php?action=new&target_id=452&arid=11&changetarget=1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_auftrag.gif" border="0" alt="{Strunzheimer AG}"></a> 								<a href="angriff.php?rid=11&target=452"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_attack.gif" border="0" alt="{Strunzheimer AG} angreifen"></a> 								<a href="spies.php?inneraction=prepare&rid=11&target=452"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_spie.gif" border="0" alt="Spionage gegen {Strunzheimer AG}"></a> 																<a href="mitteilungen.php?action=psm&rec=452"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_syn_message_letter.gif" border="0" alt="{Strunzheimer AG} eine Nachricht senden"></a>
+																</td>
+				</tr>
+												<!-- Anzeige der Konzerne: ENDE -->
+
+				<!-- Zusammenfassung des Syns -->
+				<tr class="tableInner2">
+					<td colspan="3" class="tableHead2">&nbsp;&nbsp;11 <b>Gesamt:</b></td>
+					<td align="right"><img  onmouseover="showover(event,'','');contentover('<table border=0 cellspacing=0 cellpadding=1 class=tableOutline><tr><td><table cellspacing=0 cellpadding=2><tr><td class=tableInner1>Land-Verlauf</td></tr></table></td></tr></table>')"  onmouseout="hideover()"   src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_aktien_halter.gif" onClick="window.open('chart.php?type=land&rid=11', 'NW_Verlauf_Syndikat_11', 'width=650, height=400, scrollbars=no')" style="cursor:pointer;" border=0 valign="absmiddle">&nbsp;&nbsp;<strong>68.443</strong>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><img  onmouseover="showover(event,'','');contentover('<table border=0 cellspacing=0 cellpadding=1 class=tableOutline><tr><td><table cellspacing=0 cellpadding=2><tr><td class=tableInner1>NW-Verlauf</td></tr></table></td></tr></table>')"  onmouseout="hideover()"   src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_aktien_halter.gif" onClick="window.open('chart.php?type=nw&rid=11', 'NW_Verlauf_Syndikat_11', 'width=650, height=400, scrollbars=no')" style="cursor:pointer;" border=0 valign="absmiddle">&nbsp;&nbsp;<strong>26.103.986</strong>&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"><strong>381,4</strong>&nbsp;&nbsp;&nbsp;</td>
+					<td align="right"></td>
+				</tr>
+
+				<!-- Synbeschreibung -->
+																<tr class="tableInner1">
+					<td colspan="7">
+						<br />
+						<center>Es wurde keine Syndikatsbeschreibung festgelegt.</center>						<br />
+					</td>
+				</tr>
+											</table>
+		</td>
+	</tr>
+</table>
+<br />
+<br />
+<table cellspacing="1" cellpadding="2" border="0" width="390px" class="tableOutline" align="center">
+	<tr>
+		<td class="tableHead" colspan="4" align="center" height="28px"><b>Legende</b></td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1" width="28px"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/bf-logo-klein.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2" width="167px">Brute Force</td>
+		<td align="center" height="28px" width="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_online.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2" width="167px">Geschäftsführer online</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/uic-logo-klein.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">United Industries Corporation</td>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_lokal_inaktiv.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Konzern ist inaktiv</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/sl-logo-klein.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Shadow Labs</td>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_gl_inaktiv.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Konzern ist global inaktiv</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/neb-logo-klein.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">New Economic Block</td>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_praesi.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Präsident des Syndikats</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/nof-logo-klein.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Nova Federation</td>
+		<td align="center" height="28px" class="tableInner1"><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_help.gif" border="0" align="absmiddle"></td>
+		<td class="tableInner2">Mentor</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><a href="#" class="konzernProtected">##</a></td>
+		<td class="tableInner2" colspan="3">Unter Schutz</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><a href="#" class="konzernHoliday">##</a></td>
+		<td class="tableInner2" colspan="3">Im Urlaub</td>
+	</tr>
+		<td align="center" height="28px" class="tableInner1"><a href="#" class="konzernAttacked">##</a></td>
+		<td class="tableInner2" colspan="3">Innerhalb von 24 Std. <strong>einmal</strong> erfolgreich angegriffen</td>
+	</tr>
+	<tr>
+		<td align="center" height="28px" class="tableInner1"><a href="#" class="konzernHeavyAttacked">##</a></td>
+		<td class="tableInner2" colspan="3">Innerhalb von 24 Std. <strong>mehrmals</strong> erfolgreich angegriffen</td>
+	</tr>
+</table>
+</center><!-- Ausgabetabelle schließeten (wird in header geöffnet)-->
+</td></tr></table>
+
+</td>
+<td class="siteGround"  valign="top"></td>
+</tr>
+</table>
+
+
+<table width="100%" class="siteGround" cellpadding=0 cellspacing=0 border=0>
+    <tr><td colspan=3 height=20></td></tr>
+    <tr><td colspan=3 height=1 class="tableOutline"></td></tr>
+    <tr><td colspan=3 height=10></td></tr>
+<tr>
+  <TD vAlign=top width=170 class="siteGround"></TD>
+  <TD vAlign=top class="siteGround"><a href="fragen_und_antworten_board.php" class="linkAufsiteBg"><b>Fragen zum Spiel</b></a> - <a href="../index.php?action=nutzungsbedingungen" class="linkAufsiteBg"  target="_blank"><b>Nutzungsbedingungen</b></a> - <a href="../index.php?action=impressum" class="linkAufsiteBg"  target="_blank"><b>Impressum</b></a><br>
+  <a href="../index.php?action=impressum" class="linkAufsiteBg" target="_blank">&copy;&nbsp;&nbsp;Syndicates e.V.</a><BR><BR></TD>
+<td valign=top>
+	<table cellpadding=0 cellspacing=0>
+	<tr>
+		<td><a href=options.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Optionen</a></td>
+        <td><a href=notes.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Notizen</a></td>
+	</tr>
+	<tr>
+		<td><a href=stats.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Statistiken</a></td>
+		<td><a href=report.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Support</a></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+</td>
+</tr></table>
+</td>
+ <!-- Jetzt Skyscraper zelle-->
+<td valign=\"top\" style=\"width:320px;padding-left:10px\"></td></tr></table><br>
+</div>
+</div>
+
+</body></html>

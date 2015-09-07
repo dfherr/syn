@@ -1,0 +1,8 @@
+matplotlib == 1.4.2
+numpy == 1.9.1
+requests == 2.3.0
+scipy == 0.14.0
+Pillow == 2.9.0
+scikit_learn == 0.16.1
+sqlalchemy == 1.0.8
+unipath == 1.1
