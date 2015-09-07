@@ -19,6 +19,7 @@ match_syn_stats = re.compile(
     r'"absmiddle">[&nbsp;]+<strong>([0-9\.]+)</strong>[&nbsp;]+</td>'
 )
 
+
 def link_syndicate(syn_number):
     return main_link('php/syndicate.php?rid={0}'.format(syn_number))
 
