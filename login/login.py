@@ -25,16 +25,31 @@ class LoggedInSession(object):
         self.s.headers.update({'User-Agent': user_agent})
         self.s.post(main_link('index.php'), data=login_payload)
 
-        # get captcha and solve it
-        # TODO: if it doesn't work, try again
+        self.refresh_session_captcha()
+
+        if not self.successful_login():
+            raise Exception('Login/Captcha Error')
+
+    def successful_login(self):
+        r = self.s.get(main_link('php/statusseite.php'))
+        if 'Angriffsrechner' in r.content:
+            return True
+        else:
+            return False
+
+    def refresh_session_captcha(self, save_to_db=False):
+        """
+        refreshes the session captcha
+        raises an Exception if the captcha isn't solvable
+        """
         captcha = self.s.get(main_link('captcha.php?t={0}'.format(time)))
-        self.img = Image.open(StringIO(captcha.content))
-        number = solve_captcha(self.img)
+        img = Image.open(StringIO(captcha.content))
+        code = solve_captcha(img)
 
         captcha_payload = {
             'action': 'login',
-            'codeinput': number,
+            'codeinput': code,
         }
-        r = self.s.post(main_link('php/login.php'), data=captcha_payload)
-        if 'Angriffsrechner' not in r.content:
-            raise Exception('LOGIN ERROR')
+        self.s.post(main_link('php/login.php'), data=captcha_payload)
+        # print(r.headers)
+        # print(r.status_code)
