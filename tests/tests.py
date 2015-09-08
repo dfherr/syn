@@ -31,13 +31,13 @@ class TestCaptchaMethods(unittest.TestCase):
         code = solve_captcha(img)
         self.assertEqual(code, '572')
 
-        # img = Image.open(Path(RES_DIR, 'captcha/captcha4.png'))
-        # code = solve_captcha(img)
-        # self.assertEqual(code, '501')
+        img = Image.open(Path(RES_DIR, 'captcha/captcha4.png'))
+        code = solve_captcha(img)
+        self.assertEqual(code, '501')
 
-        # img = Image.open(Path(RES_DIR, 'captcha/captcha5.png'))
-        # code = solve_captcha(img)
-        # self.assertEqual(code, '911')
+        img = Image.open(Path(RES_DIR, 'captcha/captcha5.png'))
+        code = solve_captcha(img)
+        self.assertEqual(code, '911')
 
         img = Image.open(Path(RES_DIR, 'captcha/captcha6.png'))
         code = solve_captcha(img)
@@ -53,16 +53,13 @@ class TestRankingMethods(unittest.TestCase):
         """
         Executes the scraping algorithm
         compares the summed up individual values
-        with the in html sum
-
-
+        with the scraped sum in html
         """
         with open(Path(RES_DIR, 'syndicate/umlaute_syn.html'), 'r') as f:
             html = f.read()
+            # Scrape Syndicates tests itself and throws an
+            # InconsistencyException on error
             scrape_syndicate(1, html)
-            self.assertEqual(1, 1)
-
-
 
 if __name__ == '__main__':
     unittest.main()
