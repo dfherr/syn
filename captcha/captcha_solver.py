@@ -3,24 +3,33 @@ import numpy as np
 from scipy import ndimage as nd
 from scipy import signal as sig
 
-from masks import *
+from .masks import classifier
 
 digit_width = 8
 digit_height = 10
 
-# TODO: fix captchas containing a '1'
-# TODO: save captchas to the database
 
-
-def solve_captcha(img, output=False, save_to_db=False):
+def solve_captcha(img, output=False):
     # Transform to a numpy array
     img = np.asarray(img)
     img.setflags(write=True)
 
-    # output the processed captcha
+    # make picture bigger and center size:
+    # the digit recognition and the masks do not
+    # go out of the image
+    height, width = img.shape
+    center_img = np.zeros(
+        (height+2*digit_height, width+2*digit_width)
+    )
+    center_img[
+        digit_height:digit_height+height,
+        digit_width:digit_width+width
+    ] = img
     if output:
-        plt.imshow(img, cmap='gray', interpolation='none')
+        plt.imshow(center_img, cmap='gray', interpolation='none')
+        plt.colorbar()
         plt.show()
+    img = center_img
 
     # find the positions of the numbers
     # the minimal values in the convolution gives the
@@ -36,13 +45,17 @@ def solve_captcha(img, output=False, save_to_db=False):
     # find the 3 maximal values to get the 3 digit centers
     local_max = sig.argrelmax(conv)
     maxima = []
-    # TODO: multiple minima...
+    # saving of last max necessary cause of multiple
+    # maxima occurring for the digit '1'
+    # here we just take the first one
+    last_max = (-2, -2)
     for i, j in zip(*local_max):
         if conv[i, j] == conv[i-1:i+2, j-1:j+2].max():
-            maxima.append((i, j))
+            if last_max[0] != i or j-last_max[1] > 2:
+                maxima.append((i, j))
+                last_max = (i, j)
 
     maxima = sorted(maxima, key=lambda p: p[1])
-    # output all maxima
     if output:
         print(maxima)
 
