@@ -26,3 +26,10 @@ def generate_session():
     )
 
 
+def string_to_int(x):
+    return int(x.replace('.', ''))
+
+
+class InconsistencyException(Exception):
+    def __init__(self, message):
+        super(InconsistencyException, self).__init__(message)
