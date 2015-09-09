@@ -18,7 +18,7 @@ def update_syndicates(session):
 
 
 def update_home(session):
-    c = session.s.get(link_syndicate()).content
+    c = session.s.get(link_home()).content
     with open(Path(RES_DIR, 'home/home_basic.html'), 'w') as f:
         f.write(c)
 
