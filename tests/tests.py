@@ -4,7 +4,7 @@ from PIL import Image
 from unipath import Path
 
 from captcha.captcha_solver import solve_captcha
-from rankings.rankings import scrape_syndicate
+from stats.rankings import scrape_syndicate
 from syn_utils import RES_DIR
 
 
@@ -54,12 +54,20 @@ class TestRankingMethods(unittest.TestCase):
         Executes the scraping algorithm
         compares the summed up individual values
         with the scraped sum in html
+
+        scrape_syndicates tests itself for self
+        consistency
+        if its not self consistent it returns []
         """
         with open(Path(RES_DIR, 'syndicate/umlaute_syn.html'), 'r') as f:
             html = f.read()
-            # Scrape Syndicates tests itself and throws an
-            # InconsistencyException on error
-            scrape_syndicate(1, html)
+        ranks = scrape_syndicate(1, html)
+        self.assertGreater(len(ranks), 0)
+
+        with open(Path(RES_DIR, 'syndicate/owner_syn.html'), 'r') as f:
+            html = f.read()
+        ranks = scrape_syndicate(1, html)
+        self.assertGreater(len(ranks), 0)
 
 if __name__ == '__main__':
     unittest.main()

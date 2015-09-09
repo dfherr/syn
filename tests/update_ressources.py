@@ -1,7 +1,7 @@
 from unipath import Path
 
 from syn_utils import RES_DIR, generate_session
-from rankings.rankings import link_syndicate
+from stats.rankings import link_syndicate
 
 
 def update_captcha(session):

@@ -1,7 +1,7 @@
 import re
 
 from login.login import main_link
-from syn_utils import string_to_int, InconsistencyException
+from syn_utils import string_to_int
 
 match_personal_stats = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'
@@ -32,6 +32,10 @@ def generate_rankings(session):
     for i in range(1, 31):
         c = session.s.get(link_syndicate(i)).content
         rankings += scrape_syndicate(i, c)
+    return generate_user_rankings(rankings)
+
+
+def generate_user_rankings(rankings):
     return sorted(rankings, key=lambda x: x[3], reverse=True)
 
 
@@ -84,5 +88,6 @@ def scrape_syndicate(syn_number, html):
         #             "doesn't match syndicate stats!"
         # )
         # TODO: handle incorrect rankings
+        print('FAIL')
         return []
     return personal_stats
