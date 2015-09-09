@@ -51,5 +51,4 @@ class LoggedInSession(object):
             'codeinput': code,
         }
         self.s.post(main_link('php/login.php'), data=captcha_payload)
-        # print(r.headers)
-        # print(r.status_code)
+        # TODO: handle incorrect captcha
