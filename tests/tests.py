@@ -1,10 +1,12 @@
+import copy
+import random
 import unittest
 
 from PIL import Image
 from unipath import Path
 
 from captcha.captcha_solver import solve_captcha
-from stats.rankings import scrape_syndicate
+from stats.rankings import scrape_syndicate, generate_user_rankings
 from syn_utils import RES_DIR
 
 
@@ -68,6 +70,24 @@ class TestRankingMethods(unittest.TestCase):
             html = f.read()
         ranks = scrape_syndicate(1, html)
         self.assertGreater(len(ranks), 0)
+
+    def test_generate_user_rankings(self):
+        """
+        Insert a sorted list. Shuffle it with random.shuffle.
+        generate_user_rankings should sort the list via the
+        user's networth.
+        """
+        ranks = [
+            ['sl', 'unknown', 1742, 883169, 13],
+            ['bf', 'Hippie Knight Rider', 2289, 869024, 6],
+            ['sl', 'Bacillus Feriatio', 405, 848358, 18],
+            ['sl', 'von', 2289, 846062, 25],
+        ]
+        new_ranks = copy.copy(ranks)
+        random.shuffle(new_ranks)
+        new_ranks = generate_user_rankings(new_ranks)
+        self.assertEqual(new_ranks, ranks)
+
 
 if __name__ == '__main__':
     unittest.main()
