@@ -1,0 +1,1358 @@
+ 
+<html>
+    <head>
+        <title>Syndicates</title>
+        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+		<meta name="viewport" content="width=800" />
+        <link rel="stylesheet" type="text/css" href="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/style.css" />
+        <link rel="SHORTCUT ICON" href="http://www.syndicates-online.de/data/images/syn_favicon.ico" />
+        		
+		<style type="text/css">
+			@import "https://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css";
+			.dijitButtonText {
+				font-size:12px;
+			}
+			#ticker_more {
+				height:28px;
+			}
+			.tipp {
+				position:fixed;
+				right:-1000px;
+				width:300px;
+				border:1px solid #000;
+				-webkit-border-radius:5px;
+				   -moz-border-radius:5px;
+				    -ms-border-radius:5px;
+				     -o-border-radius:5px;
+				        border-radius:5px;
+				-webkit-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				   -moz-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				    -ms-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				     -o-box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				        box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+				overflow:hidden;
+			}
+			.tippHead {
+				text-align:left;
+				padding:3px 10px;
+				border-bottom:1px solid #000;
+			}
+			.tippBody {
+				padding:10px;
+				font-size:13px;
+			}
+			.tippControl {
+				text-align:left;
+			}
+			.tipp a {
+				color:inherit;
+				text-decoration:none;
+				cursor:pointer;
+			}
+			.tipp a:hover {
+				-webkit-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				   -moz-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				    -ms-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				     -o-text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+				        text-shadow:1px 1px 1px rgba(0,0,0,0.5);
+			}
+			
+			
+		</style>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script>
+		<script type="text/javascript">
+			dojo.require("dojo.fx");
+			dojo.require("dijit.form.DropDownButton");
+			dojo.require("dijit.TooltipDialog");
+			dojo.require("dijit.form.TextBox");
+			dojo.require("dijit.form.Button");
+			dojo.require("dojox.widget.AutoRotator");
+			dojo.require("dojox.widget.rotator.Fade");
+			dojo.require("dojox.widget.rotator.Slide");
+		</script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script type="text/javascript">
+	<!--
+		//JavaScript Code der auf allen Seiten geladen wird 
+		
+var now = new Date();
+var h   = new String();
+var min = new String();
+var sec = new String();
+
+now.setTime(1441804817197.3);
+
+function mout(x,c) {
+	document.getElementById(x).className = c;
+}
+
+function mover(x,c) {
+	document.getElementById(x).className = c;
+}
+
+function showover(event,xAdj,yAdj) {
+	if (event.pageX) myX = event.pageX;
+	if (event.clientX) myX = event.clientX;
+				
+	if (event.pageY) myY = event.pageY;
+	if (event.clientY) myY = event.clientY;				
+	if (!xAdj) xAdj = 30;
+	if (!yAdj) yAdj = 30;
+					
+	myX += parseInt(xAdj) - parseInt(document.body.scrollLeft);
+	myY -= parseInt(yAdj) - parseInt(document.body.scrollTop);
+				
+	elem = document.getElementById('over');
+	elem.style.top = myY;
+	elem.style.left = myX;
+	elem.style.display = 'inline';
+}
+		    
+function hideover() {
+	elem = document.getElementById('over');
+	elem.style.display = 'none';
+}
+		    
+function contentover(content) {
+	document.getElementById('over_inner').innerHTML= content;
+}
+
+function info(type, name)	{
+	neuesFenster =  open('description.php?type='+type+'&name='+name, 'Info','width=400, height=300, scrollbars=yes');
+	neuesFenster.focus()
+};
+
+function werbung_nachladen() {
+	if (typeof werbung != "undefined") {
+		document.getElementById('werbung').src = werbung;
+	}
+}
+
+function showTime() {        
+	if (document.getElementById)
+	{
+		h   = '' + now.getHours();
+		min = '' + now.getMinutes();
+		sec = '' + now.getSeconds();
+		if (h.length   == 1) h   = '0' + now.getHours();
+		if (min.length == 1) min = '0' + now.getMinutes();
+		if (sec.length == 1) sec = '0' + now.getSeconds();
+		document.getElementById('zeit').innerHTML ='&nbsp;'+ h + ':' + min + ':' + sec;
+		now.setSeconds(now.getSeconds() + 1);
+		window.setTimeout('showTime();', 1000);
+	}
+}
+var duration, tipp, bHide, clicked;
+
+$(document).ready(function(){
+	tipp = $('.tipp');
+	bHide = '-'+(tipp.height()+10);
+	clicked = false;
+	duration = 1000;
+	tipp.css('right', '5px').css('bottom', bHide+'px');
+	tipp.delay(4000).animate({'bottom' : '5px'}, duration, 'easeOutBack');
+	$('.hideTipp').click(function(){
+		tipp.animate({'bottom' : bHide+'px'}, duration, 'easeInBack', function(){ tipp.remove(); });
+	});
+	$('.nextTipp').click(function(){
+		if(!clicked){
+			clicked = true;
+			hideTipp(function(){
+				$.ajax({ 'url' : '?action=getNextTipp&num='+$('#tipp_num').html()+'&id='+tipp.attr('data-id'), 'dataType' : 'json' })
+				.success(function(data){
+					if(data){
+						changeTipp(data, tipp);
+					}
+				});
+			});
+		}
+	});
+	$('.prevTipp').click(function(){
+		if(!clicked){
+			clicked = true;
+			hideTipp(function(){
+				$.ajax({ 'url' : '?action=getPrevTipp&num='+$('#tipp_num').html()+'&id='+tipp.attr('data-id'), 'dataType' : 'json' })
+				.success(function(data){
+					if(data){
+						changeTipp(data, tipp);
+					}
+				});
+			});
+		}
+	});
+	$('.readTipp').change(function(){
+		$.ajax({url:'?action=readTipp&id='+tipp.attr('data-id')});
+	});
+});
+
+function changeTipp(data, tipp){
+	$('#tipp_num').html(data.num);
+	$('#tipp_sum').html(data.sum);
+	$('#tipp_Text').html(data.text);
+	tipp.attr('data-id', data.id);
+	$('.readTipp').attr('checked', false);
+	showTipp(function(){ clicked = false; });
+}
+function hideTipp(fn){
+	tipp.animate({'bottom' : bHide+'px'}, duration, 'easeInBack', fn);
+}
+function showTipp(fn){
+	tipp.delay(200).animate({'bottom' : '5px'}, duration, 'easeOutBack', fn);
+}
+	-->
+</script>        
+        
+        
+		    </head>
+    <body onLoad="showTime();" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/bg.gif" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" style="text-align: center;" class="tundra">
+		<!--BEGIN MouseOver Hilfe-->
+			<div style="z-index:10; position:absolute;display:none;border: 0px solid black" id="over">
+				<table id="over_table" class="bodys" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="over_inner">
+						</td>
+					</tr>
+				</table>
+			</div>
+		<!--END MouseOver Hilfe-->
+				<div class="tipp" data-id="15">
+			<div class="tableHead tippHead">
+				Tipp <span id="tipp_num">15</span> / <span id="tipp_sum">51</span>
+				<span style="float:right; vertical-align:top;">
+					<input style="vertical-align:middle;" class="readTipp" title="als gelesen markieren" type="checkbox" name="readTipp" value="1" />
+					<a style="vertical-align:middle;margin-left:3px;" class="hideTipp" title="verstecken">X</a>
+				</span>
+			</div>
+			<div class="tableInner1 tippBody">
+				<span id="tipp_Text">Unter "Statistik" findest du einige Angaben über deinen Konzern. Darunter auch, wie oft du schon gespyt wurdest und was du gestohlen hast.</span>
+				<div class="tippControl">
+					<span>
+						<a class="prevTipp" title="vorheriger Tipp">&lt;&lt;&lt;</a>
+					</span>
+					<span style="float:right;">
+						<a class="nextTipp" title="nächster Tipp">&gt;&gt;&gt;</a>
+					</span>
+				</div>
+			</div>
+		</div>
+				<div style="text-align:center;">
+			<br>
+			<div style="margin-left:auto;margin-right:auto;text-align:left;width:782px;">
+				<!-- ï¿½uï¿½ere Tabelle fï¿½r Skyscraper noch -->
+				<table style="width:100%" >
+					<tr>
+						<td >
+							<!-- fï¿½r den globalen schwarzen rahmen -->
+							<table width="782" bgcolor="#000000" align="center" cellspacing="0" cellpadding="1" border="0">
+								<tr>
+									<td valign="top" align="center">
+
+										<table width="780" class="siteGround" align="center" cellspacing="0" cellpadding="0" border="0">
+											<tr>
+												<td colspan="4">
+													
+													<table width="100%" cellspacing="0" cellpadding="0" border="0">
+														<tr>
+															<td>
+																<a href="statusseite.php">
+																	<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/header.jpg" alt="Syndicates" border="0">
+																</a>
+															</td>
+														</tr>
+													</table>
+												
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4" height="1" bgcolor="#000000">
+												</td>
+											</tr>
+																						<tr>
+												<td height="16" colspan="5" valign="bottom">
+													<!-- ##### TOP LEISTE ####### -->
+													<table width="100%" height="100%" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar-reversed.png" cellspacing="0" cellpadding="0" border="0">
+														<tr>
+															<td width=30 align=right><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/networth.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 137.410 NW</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/land.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 855 ha</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/credits.gif" border=0></td>
+															<td class="resourceLeiste" id="credits_number">&nbsp; 5.648.059 Cr</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/energie.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 401.293 MWh</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/erz.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 709.528 t</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/fp.gif" border=0></td>
+															<td class="resourceLeiste">&nbsp; 276.385 P</td>
+															<td width=1><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/time.gif" id="timeicon" border=0></td>
+															<td nowrap=nowrap class="resourceLeiste" width=1><span id="zeit" name="zeit">&nbsp;15:20:17</span>&nbsp;Uhr&nbsp;&nbsp;</td>
+														</tr>
+													</table>
+													<!-- ##### TOP LEISTE ## ENDE  ## -->
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4" height="1" bgcolor="#000000"></td>
+											</tr>
+											<tr>
+												<td colspan="4" height="20"></td>
+											</tr>
+																						<tr>
+												<td width="130" valign="top" align="right">
+	        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                    <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Konzern</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner" id="menu_statusseite">
+                                                                                	<a href="statusseite.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-rot.gif" hspace="5" border="0"/>
+												<span id="menu_statusseite_text">Status </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_berater">
+                                                                                	<a href="berater.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_berater_text">Bauaufträge </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_gebaeude">
+                                                                                	<a href="gebaeude.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_gebaeude_text">Gebäude & Land </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_militaerseite">
+                                                                                	<a href="militaerseite.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_militaerseite_text">Militär </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_forschung">
+                                                                                	<a href="forschung.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_forschung_text">Forschung </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_angriff">
+                                                                                	<a href="angriff.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_angriff_text">Angriff </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_agr">
+                                                                                	<a href="agr.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_agr_text">Angriffsrechner </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_spies">
+                                                                                	<a href="spies.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_spies_text">Spionage </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_history">
+                                                                                	<a href="history.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_history_text">Spionage-DB </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_settings">
+                                                                                	<a href="settings.php" class="linkMenue">
+                                        		<img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gruen.gif" hspace="5" border="0"/>
+												<span id="menu_settings_text">myKonzern </span>
+											</a>
+                                                                            </td>
+                                </tr>
+                                                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                     <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Kommunikation</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing=0 cellpadding=3 border=0>
+                                <tr>
+                                    <td class="menueInner" id="menu_buddy">
+                                        <a href="buddy.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Buddy (0/0)
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" class="menu_msg">
+                                        <a href="mitteilungen.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            <span id="menu_msg_text">
+                                            Mitteilungen
+                                            </span>                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_notifications">
+                                        <a href="nachrichten.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            <span
+                                                                                        id="menu_notifications_text">
+                                            Nachrichten
+                                            </span>
+                                                                                    </a>
+                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_vote">
+                                        <a href="polls.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                                                                        Umfragen
+                                                                                    </a>
+                                    </td>
+                                </tr>
+                                                                                                                                <tr>
+                                    <td class="menueInner" id="menu_syndboard">
+                                        <a href="syndboard.php"  class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Synd. Board                                        </a>
+                                    </td>
+                                </tr>
+                                                                 <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="http://forum.syndicates-online.de/index.php/Board/3/" class="linkMenue" target="_blank">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Frage & Antwort
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="http://forum.syndicates-online.de?title=" class="linkMenue" target="_blank">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Forum
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="menueInner" id="menu_allgboard">
+                                        <a href="merchandise.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot.gif" hspace="5" border="0" />
+                                            Merchandise
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+        <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                     <tr>
+                        <td>
+                            <table width="120" height="16" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td class="menueHead" background="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/menubar.png" class="ver11w" align="left" width="120">
+                                        <b>&nbsp;&nbsp;Syndikate&Welt</b>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner" id="menu_syndicate">
+                                        <a href="syndicate.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_syndicate_text">
+                                            	Syndikate                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_market">
+                                        <a href="market.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_market_text">
+                                            	Global Market                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_pod">
+                                        <a href="pod.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_pod_text">
+                                            	Lager & Transfer                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_anleihenmarkt">
+                                        <a href="anleihenmarkt.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_anleihenmarkt_text">
+                                            	Anleihenmarkt                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_jobs">
+                                        <a href="jobs.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_jobs_text">
+                                            	Aufträge  (1)                                            </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_politik">
+                                        <a href="politik.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_politik_text">
+                                            	Politik                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_monumente">
+                                        <a href="monumente.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_monumente_text">
+                                            	Monumente                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_aktuelles">
+                                        <a href="aktuelles.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_aktuelles_text">
+                                            	Aktuelles                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner" id="menu_rankings">
+                                        <a href="rankings.php" class="linkMenue">
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace="5" border="0" />
+                                            <span id="menu_rankings_text">
+                                            	Rankings                                             </span>
+                                        </a>                                    </td>
+                                </tr>
+                                                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+            <table width="120" cellspacing="0" cellpadding="0" border="0" class="tableOutline">
+        <tr>
+            <td width="120">
+                <table width="120" cellspacing="1" cellpadding="0" border="0">
+                    <tr>
+                        <td>
+                            <table width="120" cellspacing="0" cellpadding="3" border="0">
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="gamevalues.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Spielwerte
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="options.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Optionen
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="report.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Support
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="gruppen.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Gruppen
+                                        </a>                                    </td>
+                                </tr>
+                                                                <tr>
+                                    <td class="menueInner">
+                                        <a href="logout.php" class="linkMenue" >
+                                            <img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-blau.gif" hspace="5" border="0" />
+                                            Logout
+                                        </a>                                    </td>
+                                </tr>
+                                  								                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table><img src="images/5E78A4.gif" width="1" height="6" border="0" />
+    	<br>
+</td>
+<td class="ver12w" width="30">
+	<img src="images/5E78A4.gif" width="1" height="6" border="0" />
+</td>
+
+												<td class="ver12w" width="600" align="center" valign="top">
+													<!-- ########## AUSGABE ########## -->
+													<!-- Ausgabetabelle ï¿½ffnen -->
+													<table class="siteGround" cellspacing=0 align=left width="100%" cellpadding=0>
+														<tr>
+															<td align="left">
+		<br>
+		<table width=100% border=0 cellspacing=0 cellpadding=0 align=center>
+			
+			<tr>
+				<td width=400><b class=titleH1>Status</b></td>
+				<td width=200 align=right>
+					<a href="http://www.syndicates-wiki.de/index.php?title=Status_%28Men%C3%BCpunkt%29" target="_blank" class="linkAuftableInner">
+						<img onMouseOver="showover(event,'','');contentover('<table border=0 cellspacing=0 cellpadding=1 class=tableOutline><tr><td><table cellspacing=0 cellpadding=2><tr><td class=tableInner1>Auf der Statusseite werden Mitteilungen der Präsidenten angezeigt, die jeder lesen sollte (daher auch die Startseite). Außerdem kann man hier seine Ressourcenproduktion einsehen und man erhält eine Übersicht darüber, wie viel Militäreinheiten und Gebäude man besitzt oder in Bau hat.<br /><br />Im späteren Spielverlauf (bei Erreichen von 2000/3000/4000/5000/6000/7000 Hektar Land) können im Statusbildschirm noch verschiedene Extraboni (Partnerschaften genannt) für den eigenen Konzern gewählt werden.<br /><br />Genauere Beschreibungen gibt es in der Anleitung. (click)</td></tr></table></td></tr></table>')"  onmouseout="hideover()" src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/_help_bigger.gif" border=0 valign="absmiddle" />
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 width="100%" height=1 class=titleLine></td>
+			</tr>
+						
+						
+									<tr>
+				<td colspan=2>
+					<table cellpadding=5 width=100% align=center>
+						<tr>
+							<td class=i style="border: 1px solid">
+								Auf der Statusseite werden Mitteilungen der Präsidenten angezeigt, die jeder lesen sollte (daher auch die Startseite). Außerdem kann man hier seine Ressourcenproduktion einsehen und man erhält eine Übersicht darüber, wie viel Militäreinheiten und Gebäude man besitzt oder in Bau hat.<br /><br />Im späteren Spielverlauf (bei Erreichen von 2000/3000/4000/5000/6000/7000 Hektar Land) können im Statusbildschirm noch verschiedene Extraboni (Partnerschaften genannt) für den eigenen Konzern gewählt werden.<br /><br />Genauere Beschreibungen gibt es in der Anleitung. (Fragezeichen oben rechts)
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr><td colspan=2 height=1 class=titleLine></td></tr>
+					</table>													
+			<script type="text/javascript">
+			    <!--
+			    
+			    function count(timeleft,id) {
+			    	hours = parseInt(timeleft / 3600) % 60;
+			    	minutes = parseInt(timeleft /60) % 60;
+			    	seconds = timeleft % 60;
+			    	
+			    	hours < 0 ? hours = 0 : 1;
+			    	minutes < 0 ? minutes = 0:1;
+			    	seconds < 0 ? seconds = 0:1;
+			    	
+			    	if (String(hours).length < 2) hours = '0'+hours;
+			    	if (String(minutes).length < 2) minutes = '0'+minutes;
+			    	if (String(seconds).length < 2) seconds = '0'+seconds;
+			    	
+			    	var hourstring = 'a'+id+'h';
+			    	var minutesstring = 'a'+id+'m';
+			    	var secondsstring = 'a'+id+'s';
+			    
+			    	document.getElementById(hourstring).innerHTML = hours+':';
+			    	document.getElementById(minutesstring).innerHTML = minutes+':';
+			    	document.getElementById(secondsstring).innerHTML =seconds;
+			    }
+		    	//-->
+			</script> 
+		<table cellspacing=5 cellpadding=0 width=600 border=0 align="center">
+		<tr>
+		<td valign=top colspan=3 width=600><!-- roundinfo -->
+			<div>
+				<table cellspacing=5 cellpadding=0 width=600 border=0 class="siteGround">
+					<tr>
+						<td>
+							<center>
+								<font class=siteGround>
+																			Achtung! Die aktuelle Runde endet in
+																		<strong class="highlightAufSiteBg">
+										0
+									</strong>
+									Tagen, 
+									<strong class="highlightAufSiteBg">
+										4
+									</strong>
+									Stunden und 
+									<strong class="highlightAufSiteBg">
+										39
+									</strong>
+									Minuten.
+																			<br>Das letzte stündliche Update 
+																		findet statt am 
+									09. Sep
+									 um 
+									20:00
+									Uhr.<br>&nbsp;
+								</font>
+							</center>
+						</td>
+					</tr>
+				</table>	
+			</div>
+		</td>
+	</tr>
+		
+		<tr>
+		<td valign=top colspan=3 width=600><!-- gruppen -->
+			<div>
+				<table cellpadding="5" cellspacing="1" border="0" width="600">
+					<tr>
+						<td class=siteGround>
+														<a href="gruppen.php" class="linkAuftableInner">
+								<table width="550" style="border:1px solid;" class="f" cellpadding="2" align="center">
+									<tr>
+										<td>
+											Sie befinden sich in keiner Gruppe, 
+									<a href="gruppen.php" class="linkAuftableInner">suchen sie sich noch eine Gruppe</a> 
+									für die nächste Runde oder 
+									<a href="gruppen.php?gaction=create" class="linkAuftableInner">erstellen</a>
+									sie sich eine eigene Gruppe. (Wenn Sie in keiner Gruppe sind, werden Sie zufällig einem Syndikat zugeteilt!)
+										</td>
+									</tr>
+								</table>
+							</a>
+														<br><br>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</td>
+	</tr>
+	
+					
+			<tr>
+		<td valign=top colspan=3 width=600><!-- präsiankündigung -->
+			<div>
+				<table cellpadding="5" cellspacing="1" border="0" width="600" class="tableOutline">
+					<tr>
+						<td align=center class="tableHead" width=100% onClick="doAnimation();" style="cursor:pointer">
+							<b><u>Ankündigung des Präsidenten (556 Zeichen) </u></b>
+						</td>
+						<td nowrap class=tableHead>von 01.08.2015, 00:21 Uhr</td>
+					</tr>
+					<tr id="announcement" style="display:none;">
+						<td class="tableInner1" align=left colspan=2>
+							<div id="president_announcement" style="display:none;">
+								<font style='text-decoration:underline'>Syndikatarmee:</font><br />F&uuml;r die laufende Runde sollte jeder in die Syndikatarmee Einheiten &uuml;bertragen. Da wir recht viele Neulinge haben, liegt der Fokus in der Defensive.<br /><br />im Laufe der n&auml;chsten Woche (bis 9.8.): 4.000 Ranger &uuml;bertragen.<br />In 2 Wochen: 5.000 Ranger<br />In 3 Wochen: 8.000 Ranger oder 4.000 Ranger/4.000 Marines<br />4 Wochen: 10.000 Ranger oder 5.000 Ranger/5.000 Marines<br />5 Wochen: 12.000 - 15.000 Ranger<br />6 Wochen: 15.000 Ranger.<br /><br />Wer mehr &uuml;bertragen kann, &uuml;bertr&auml;gt bitte auch mehr. Es kommt allen zu Gute.
+							</div>
+						</td>
+					</tr>
+				</table>
+				
+				<script type="text/javascript">
+					var currentAnimation;
+					var active = false;
+					var dabei = false;
+					
+					function doAnimation() {
+						if(active == false && !dabei){
+							
+							dabei = true;
+							active = true;
+							//document.getElementById('president_announcement').style.display = '';
+							document.getElementById('announcement').style.display = '';
+							currentAnimation = dojo.fx.wipeIn({node: "president_announcement",duration: 1000});
+							currentAnimation.play();
+							//dabei = false;
+							window.setTimeout("dabei = false;", 1000);
+						}
+						else if(active == true && !dabei){
+							dabei = true;
+							active = false;
+							currentAnimation = dojo.fx.wipeOut({node: "president_announcement",duration: 1000});
+							currentAnimation.play();
+							//document.getElementById('president_announcement').style.display = 'none';
+							//document.getElementById('announcement').style.display = 'none';
+							window.setTimeout("document.getElementById('announcement').style.display = 'none';", 1000);
+							window.setTimeout("dabei = false;", 1000);
+							//dabei = false;
+						}
+					}
+				</script>
+				
+			</div>
+		</td>
+	</tr>
+			<tr>
+		<td valign=top width=200 rowspan="3">
+			<div><!-- prod -->		
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">Produktion pro Stunde</td>
+					</tr>
+					<tr>
+						<td class="tableInner1">
+							<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+								<tr>
+									<td>
+										Credits 
+																			</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											159.075
+										</b>
+									</td>
+									<td width="30">&nbsp;Cr</td>
+								</tr>  
+								<tr>
+									<td>
+										Erz 
+																			</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											6.170
+										</b>
+									</td>
+									<td>&nbsp;t</td>
+								</tr>
+								<tr>
+									<td>
+										Forschungspunkte 
+																			</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											0
+										</b>
+									</td>
+									<td>&nbsp;P</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div><!-- nrg -->
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">
+							Energie 
+													</td>
+					</tr>
+					<tr>
+						<td class="tableInner1">
+							<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+								<tr>
+									<td>Produktion</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											7.947
+										</b>
+									</td>
+									<td width="30">&nbsp;MWh</td>
+								</tr>
+								<tr>
+									<td>Verbrauch</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											-4.550
+										</b>
+									</td>
+									<td>&nbsp;MWh</td>
+								</tr>
+								<tr>
+									<td colspan=3 align="center">
+										<hr size="1px" style="color:#000" />
+									</td>
+								</tr>
+								<tr>
+									<td>Bilanz<br>&nbsp;</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											3.397
+										</b>
+										<br>&nbsp;
+									</td>
+									<td>&nbsp;MWh
+																				<br>&nbsp;
+									</td>
+								</tr>
+									
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+						<div><!-- boni -->
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+											<tr>
+							<td class="tableHead">
+								Boni Credits
+							</td>
+						</tr>
+						<tr>
+							<td class="tableInner1">
+								<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+																			<tr>
+											<td>
+												Schutzzeitbonus
+											</td>
+											<td align=right>
+												<b class="highlightAuftableInner">
+													21.3
+												</b>
+											</td>
+											<td width="30">&nbsp;%</td>
+										</tr>
+																			<tr>
+											<td>
+												Synergiebonus
+											</td>
+											<td align=right>
+												<b class="highlightAuftableInner">
+													50
+												</b>
+											</td>
+											<td width="30">&nbsp;%</td>
+										</tr>
+																		<tr>
+										<td colspan=3 align="center">
+											<hr size="1px" style="color:#000" />
+										</td>
+									</tr>
+									<tr>
+										<td>Gesamt</td>
+										<td align=right>
+											<b class="highlightAuftableInner">
+											71.3
+											</b>
+										</td>
+										<td>&nbsp;%</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+											<tr>
+							<td class="tableHead">
+								Boni Energie
+							</td>
+						</tr>
+						<tr>
+							<td class="tableInner1">
+								<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+																			<tr>
+											<td>
+												Schutzzeitbonus
+											</td>
+											<td align=right>
+												<b class="highlightAuftableInner">
+													21.3
+												</b>
+											</td>
+											<td width="30">&nbsp;%</td>
+										</tr>
+																			<tr>
+											<td>
+												Synergiebonus
+											</td>
+											<td align=right>
+												<b class="highlightAuftableInner">
+													5.85
+												</b>
+											</td>
+											<td width="30">&nbsp;%</td>
+										</tr>
+																		<tr>
+										<td colspan=3 align="center">
+											<hr size="1px" style="color:#000" />
+										</td>
+									</tr>
+									<tr>
+										<td>Gesamt</td>
+										<td align=right>
+											<b class="highlightAuftableInner">
+											27.15
+											</b>
+										</td>
+										<td>&nbsp;%</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+											<tr>
+							<td class="tableHead">
+								Boni Erz
+							</td>
+						</tr>
+						<tr>
+							<td class="tableInner1">
+								<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+																			<tr>
+											<td>
+												Synergiebonus
+											</td>
+											<td align=right>
+												<b class="highlightAuftableInner">
+													23.39
+												</b>
+											</td>
+											<td width="30">&nbsp;%</td>
+										</tr>
+																		<tr>
+										<td colspan=3 align="center">
+											<hr size="1px" style="color:#000" />
+										</td>
+									</tr>
+									<tr>
+										<td>Gesamt</td>
+										<td align=right>
+											<b class="highlightAuftableInner">
+											23.39
+											</b>
+										</td>
+										<td>&nbsp;%</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+									</table>
+			</div>
+									<br>
+			<div><!-- dynavote -->
+									<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+						<tr>
+							<td class="tableHead" align=center>
+								Du hast heute schon gevotet.<br>
+								Heute wurde insgesamt schon <b>98</b> mal gevotet.
+								<a href="http://de.mmofacts.com/syndicates-44#track" target="_blank" class="mmofacts-widget" data-style="horizontal-counter" data-id="44">
+									mmofacts
+								</a>
+								<script type="text/javascript" src="http://www.mmofacts.com/static/js/widget.js"></script>
+							</td>
+						</tr>
+					</table>
+							</div>
+			<br>
+			<div><!-- landboni -->
+							<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead" align=center>Land-Bonus</td>
+					</tr>
+					<tr>
+						<td class="tableInner1" align=center>
+							Aktueller Bonus: <b>5</b> ha
+						</td>
+					</tr>
+					<tr>
+						<td class="tableInner1" align=center>
+							<a href="bonus.php?type=2" class=linkAuftableInner>
+								KLICK
+							</a>
+						</td>
+					</tr>
+				</table>
+						</div>
+					</td>
+		<td valign="top" width="200" height="200px">
+			<div><!-- mill -->
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">Militär</td>
+					</tr>
+					<tr>
+						<td class="tableInner1">
+							<table cellspacing=0 cellpadding=0 border=0 width="100%" class="tableInner1">
+								<tr>
+									<td>Streitkräfte</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											8.749
+										</b>
+									</td>
+								</tr>
+								<tr>
+									<td>auf Heimkehr</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td>zum Verkauf</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td>in Produktion</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td colspan=3 align="center">
+										<hr size="1px" style="color:#000" />
+									</td>
+								</tr>
+								<tr>
+									<td>Gesamt</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											8.749
+										</b>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<br />
+			<div><!-- spies -->
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">Geheimdienst</td>
+					</tr>
+					<tr>
+						<td class="tableInner1">
+							<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+								<tr>
+									<td>Spione</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											12.420
+										</b>
+									</td>
+								</tr>
+								<tr>
+									<td>zum Verkauf</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td>in Ausbildung</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td colspan=3 align="center">
+										<hr size="1px" style="color:#000" />
+									</td>
+								</tr>
+								<tr>
+									<td>Gesamt</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											12.420
+										</b>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div><!-- trade -->
+						<br />
+			<div>
+				<table cellspacing=1 cellpadding=5 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead" align=center>Inner Syndicate Trade Program</td>
+					</tr>
+					<tr>
+						<td class="tableInner1" align=center>
+							<form action="statusseite.php" method="post" style="margin:0px">
+								<select name="istp_res" style="width:150px">
+														
+										<option value="energy" >Energie
+														
+										<option value="metal" >Erz
+														
+										<option value="sciencepoints" >Forschungspunkte
+														
+										<option value="money" selected>Credits
+															
+								</select>
+								<input type="hidden" name="inneraction" value="setistp">
+								<input type="submit" value="ändern">
+							</form>
+						</td>
+					</tr>
+										</table>
+			</div>
+					</td>
+		<td valign=top width="200">
+			<div><!-- nextprod -->
+				<table cellspacing=1 cellpadding=4 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">Nächste Produktion</td>
+					</tr>
+					<tr>
+						<td class="tableInner1" align="center">
+							<b class="highlightAuftableInner">
+							<span style="font-size:15px">
+								 Combat Management in <br>
+		<span id="a1h">:</span><span  id="a1m">39:</span><span id="a1s">43</span>
+			    
+			<script type="text/javascript">
+			    <!--
+			    
+			    var a1d=38383;
+			    
+			    function ticker_1() {
+			    	count(a1d,1);
+			    	a1d--;
+			    	window.setTimeout('ticker_1()',1000);
+			    }
+			    
+		    	ticker_1();
+		    	//-->
+			</script> 
+		</span></b></td>
+							</span>
+							</b>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<br />
+			<div><!-- landgebs -->
+				<table cellspacing=1 cellpadding=4 border=0 class="tableOutline" width="100%">
+					<tr>
+						<td class="tableHead">Gebäude & Land</td>
+					</tr>
+					<tr>
+						<td class="tableInner1">
+							<table cellspacing=0 cellpadding=0 border=0 width=100% class="tableInner1">
+								<tr>
+									<td>Gebäude</td>
+									<td align=right>
+										<b class="highlightAuftableInner">
+											425
+										</b>
+									</td>
+								</tr>
+									<td>in Bau</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+								<tr>
+									<td>Gesamt</td>
+									<td align=right>
+										425
+									</td>
+								</tr>
+								<tr>
+									<td><br>Land</td>
+									<td align=right>
+										<br>
+										<b class="highlightAuftableInner">
+											855
+										</b>
+									</td>
+								</tr>
+								<tr>
+									<td>unbebaut</td>
+									<td align=right class="achtungAuftableInner">
+										430
+									</td>
+								</tr>
+								<tr>
+									<td>in Vorbereitung</td>
+									<td align=right>
+										0
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div><!-- unprot -->
+					</td>
+	</tr>
+		</table><!-- Ausgabetabelle schließeten (wird in header geöffnet)-->
+</td></tr></table>
+
+</td>
+<td class="siteGround"  valign="top"></td>
+</tr>
+</table>
+
+
+<table width="100%" class="siteGround" cellpadding=0 cellspacing=0 border=0>
+    <tr><td colspan=3 height=20></td></tr>
+    <tr><td colspan=3 height=1 class="tableOutline"></td></tr>
+    <tr><td colspan=3 height=10></td></tr>
+<tr>
+  <TD vAlign=top width=170 class="siteGround"></TD>
+  <TD vAlign=top class="siteGround"><a href="fragen_und_antworten_board.php" class="linkAufsiteBg"><b>Fragen zum Spiel</b></a> - <a href="../index.php?action=nutzungsbedingungen" class="linkAufsiteBg"  target="_blank"><b>Nutzungsbedingungen</b></a> - <a href="../index.php?action=impressum" class="linkAufsiteBg"  target="_blank"><b>Impressum</b></a><br>
+  <a href="../index.php?action=impressum" class="linkAufsiteBg" target="_blank">&copy;&nbsp;&nbsp;Syndicates e.V.</a><BR><BR></TD>
+<td valign=top>
+	<table cellpadding=0 cellspacing=0>
+	<tr>
+		<td><a href=options.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Optionen</a></td>
+        <td><a href=notes.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Notizen</a></td>
+	</tr>
+	<tr>
+		<td><a href=stats.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Statistiken</a></td>
+		<td><a href=report.php class=linkAufsiteBg><img src="http://www.syndicates-online.de/data/gpacks/4iZo5LS5PqiKZ9NGijoKn21L7n8RGk9Ggs2xWr70/dot-gelb.gif" hspace=\"5\" border=\"0\"> Support</a></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+</td>
+</tr></table>
+</td>
+ <!-- Jetzt Skyscraper zelle-->
+<td valign=\"top\" style=\"width:320px;padding-left:10px\"></td></tr></table><br>
+</div>
+</div>
+
+</body></html>
