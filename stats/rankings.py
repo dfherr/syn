@@ -3,7 +3,7 @@ import re
 from login.login import main_link
 from syn_utils import string_to_int
 
-match_personal_stats = re.compile(
+personal_stats_regex = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'
      '(sl|nof|uic|neb|bf)[\') \w="]+>'  # class
      '<[=:"\w\'/\.\- ]+></a></td>\s+'
@@ -16,7 +16,7 @@ match_personal_stats = re.compile(
     re.UNICODE
 )
 
-match_syn_stats = re.compile(
+syn_stats_regex = re.compile(
     r'"absmiddle">[&nbsp;]+<strong>([0-9\.]+)</strong>[&nbsp;]+</td>'
 )
 
@@ -65,18 +65,18 @@ def scrape_syndicate(syn_number, html):
     to the scraped syndicate stats
     if not self consistent -> save in error table
     """
-    # Find the relevant sections of the html
+    # Find relevant sections of the html
     start_index = html.find('Anzeige der Konzerne: START')
     end_index = html.find('Anzeige der Konzerne: ENDE')
 
     # scraping of personal stats
-    personal_stats = match_personal_stats.findall(html[start_index:end_index])
+    personal_stats = personal_stats_regex.findall(html[start_index:end_index])
     personal_stats = reformat_personal_stats(personal_stats, syn_number)
 
     # scraping and parsing stats of whole syndicate
     syn_land, syn_net = map(
         string_to_int,
-        match_syn_stats.findall(html[end_index:])
+        syn_stats_regex.findall(html[end_index:])
     )
 
     # self consistency check
