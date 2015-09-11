@@ -11,6 +11,9 @@ secrets.json
 # Syndicates dump/db schema
 syndicates.sql
 
+# Last Session Object
+last_session.pkl
+
 # PyCharm
 .idea/*
 

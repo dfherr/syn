@@ -20,6 +20,16 @@ def get_secret(setting, secrets=secrets):
 
 
 def generate_session():
+    """
+    Load the last session. Test if its still valid.
+    If the old session is valid, return it otherwise
+    generate a new one.
+    """
+    last_session = LoggedInSession.load_session()
+    if last_session is not None:
+        if last_session.successful_login():
+            return last_session
+
     return LoggedInSession(
         user=get_secret('user'),
         password=get_secret('password')

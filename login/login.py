@@ -1,3 +1,4 @@
+import cPickle as pickle
 import requests
 from StringIO import StringIO
 from time import time
@@ -52,3 +53,34 @@ class LoggedInSession(object):
         }
         self.s.post(main_link('php/login.php'), data=captcha_payload)
         # TODO: handle incorrect captcha
+        # TODO: find out if session id ended or captcha ended...
+
+    def save_session(self):
+        """
+        saves the last session object to reduce the
+        amount of logins.
+        """
+        with open('last_session.pkl', 'wb') as f:
+            pickle.dump(self, f, -1)
+
+    @staticmethod
+    def load_session():
+        """
+        loads the saved session object and returns it
+        if the file is not available return a none object
+        """
+        try:
+            with open('last_session.pkl', 'rb') as f:
+                return pickle.load(f)
+        except IOError:
+            return None
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        implement a context manager to ensure the
+        saving of the session object
+        """
+        self.save_session()
