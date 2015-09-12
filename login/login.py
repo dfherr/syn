@@ -6,10 +6,7 @@ from time import time
 from PIL import Image
 
 from captcha.captcha_solver import solve_captcha
-
-
-def main_link(page):
-    return 'http://www.syndicates-online.de/{0}'.format(page)
+from syn_utils import get_secret, main_link, overview_link, login_link
 
 
 class LoggedInSession(object):
@@ -26,17 +23,38 @@ class LoggedInSession(object):
         self.s.headers.update({'User-Agent': user_agent})
         self.s.post(main_link('index.php'), data=login_payload)
 
-        self.refresh_session_captcha()
-
         if not self.successful_login():
-            raise Exception('Login/Captcha Error')
+            raise Exception('Login Error')
 
-    def successful_login(self):
-        r = self.s.get(main_link('php/statusseite.php'))
-        if 'Angriffsrechner' in r.content:
-            return True
-        else:
+    def successful_login(self, captcha_attempt_cap=5):
+        """
+        checks first if the login was successful
+        if it was successful solve captchas until one
+        captcha is successfully solved
+        (max attempts = captcha_attempt_cap)
+
+        return True if everything was successful
+        else return False
+        """
+        r = self.s.get(overview_link)
+        # if "Passwort vergessen" in content your session id
+        # is not available or not valid anymore
+        if 'Passwort vergessen?' in r.content:
+            print('Logged Out!')
             return False
+
+        # if "action=account_cfg" (-> "Account verwalten") in content
+        # you still have to solve the captcha
+        attempts = 0
+        while 'action=account_cfg' in r.content:
+            if attempts == captcha_attempt_cap:
+                return False
+            print('refreshing captcha')
+            self.refresh_session_captcha()
+            r = self.s.get(overview_link)
+            attempts += 1
+
+        return True
 
     def refresh_session_captcha(self, save_to_db=False):
         """
@@ -51,9 +69,7 @@ class LoggedInSession(object):
             'action': 'login',
             'codeinput': code,
         }
-        self.s.post(main_link('php/login.php'), data=captcha_payload)
-        # TODO: handle incorrect captcha
-        # TODO: find out if session id ended or captcha ended...
+        self.s.post(login_link, data=captcha_payload)
 
     def save_session(self):
         """
@@ -75,8 +91,21 @@ class LoggedInSession(object):
         except IOError:
             return None
 
-    def __enter__(self):
-        pass
+    @classmethod
+    def get_session(cls):
+        """
+        loads and checks the last session
+        if it's not valid anymore, generate a new session
+        """
+        last_session = cls.load_session()
+        if last_session is not None:
+            if last_session.successful_login():
+                return last_session
+
+        return LoggedInSession(
+            user=get_secret('user'),
+            password=get_secret('password')
+        )
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -84,3 +113,6 @@ class LoggedInSession(object):
         saving of the session object
         """
         self.save_session()
+
+    def __enter__(self):
+        pass
