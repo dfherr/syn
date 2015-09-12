@@ -40,7 +40,6 @@ class LoggedInSession(object):
         # if "Passwort vergessen" in content your session id
         # is not available or not valid anymore
         if 'Passwort vergessen?' in r.content:
-            print('Logged Out!')
             return False
 
         # if "action=account_cfg" (-> "Account verwalten") in content
@@ -49,7 +48,6 @@ class LoggedInSession(object):
         while 'action=account_cfg' in r.content:
             if attempts == captcha_attempt_cap:
                 return False
-            print('refreshing captcha')
             self.refresh_session_captcha()
             r = self.s.get(overview_link)
             attempts += 1
