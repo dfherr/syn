@@ -1,7 +1,6 @@
 import re
 
-from login.login import main_link
-from syn_utils import string_to_int
+from syn_utils import string_to_int, syndicate_link
 
 personal_stats_regex = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'
@@ -21,16 +20,12 @@ syn_stats_regex = re.compile(
 )
 
 
-def link_syndicate(syn_number):
-    return main_link('php/syndicate.php?rid={0}'.format(syn_number))
-
-
 def generate_rankings(session):
     # TODO: find a way to automatically determine
     # the upper bound of the available syndicates
     rankings = []
     for i in range(1, 31):
-        c = session.s.get(link_syndicate(i)).content
+        c = session.s.get(syndicate_link(i)).content
         rankings += scrape_syndicate(i, c)
     return generate_user_rankings(rankings)
 
@@ -63,7 +58,7 @@ def scrape_syndicate(syn_number, html):
     implements a check for self consistency:
     the sum of the scraped personal stats has to be equal
     to the scraped syndicate stats
-    if not self consistent -> save in error table
+    if not self consistent -> TODO
     """
     # Find relevant sections of the html
     start_index = html.find('Anzeige der Konzerne: START')
@@ -83,10 +78,6 @@ def scrape_syndicate(syn_number, html):
     check_land = sum(map(lambda x: x[2], personal_stats))
     check_net = sum(map(lambda x: x[3], personal_stats))
     if check_land != syn_land or check_net != syn_net:
-        # raise InconsistencyException(
-        #     message="Sum of stats of syndicate members "
-        #             "doesn't match syndicate stats!"
-        # )
         # TODO: handle incorrect rankings
         print('FAIL')
         return []
