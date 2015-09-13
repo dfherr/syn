@@ -26,5 +26,10 @@ def string_to_int(x):
 def main_link(page):
     return 'http://www.syndicates-online.de/{0}'.format(page)
 
+
+def syndicate_link(syn_number):
+    return main_link('php/syndicate.php?rid={0}'.format(syn_number))
+
 login_link = main_link('php/login.php')
 overview_link = main_link('php/statusseite.php')
+military_page = main_link('php/militaerseite.php')
