@@ -32,4 +32,4 @@ def syndicate_link(syn_number):
 
 login_link = main_link('php/login.php')
 overview_link = main_link('php/statusseite.php')
-military_page = main_link('php/militaerseite.php')
+military_link = main_link('php/militaerseite.php')
