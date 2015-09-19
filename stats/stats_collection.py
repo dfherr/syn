@@ -1,11 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from .owner_stats import get_owner_stats
 from syn_utils import military_link
 
+# TODO: move timing and forcing to the bot...
+
 
 class StatsCollection(object):
-    def __init__(self, update_limits, session):
+    def __init__(self, session):
         """
         game stats are saved in self.stats
         the last refresh point of these stats is saved in self.updates
@@ -16,9 +18,9 @@ class StatsCollection(object):
         self.update_limits = {}
         self.session = session
 
-        # transform the given update_limits to timedeltas
-        for key, value in update_limits.iteritems():
-            self.update_limits[key] = timedelta(seconds=value)
+        # # transform the given update_limits to timedeltas
+        # for key, value in update_limits.iteritems():
+        #    self.update_limits[key] = timedelta(seconds=value)
 
         # insert fake date for first update
         # and fully construction of values

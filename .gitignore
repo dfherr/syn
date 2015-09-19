@@ -14,6 +14,9 @@ syndicates.sql
 # Last Session Object
 last_session.pkl
 
+# Personal doc files
+.docs/*
+
 # PyCharm
 .idea/*
 

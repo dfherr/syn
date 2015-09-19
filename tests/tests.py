@@ -1,11 +1,11 @@
 import copy
 import random
 import unittest
-
 from PIL import Image
+
 from unipath import Path
 
-from captcha.captcha_solver import solve_captcha
+from api.captcha_solver import solve_captcha
 from stats.rankings import scrape_syndicate, generate_user_rankings
 from syn_utils import RES_DIR
 

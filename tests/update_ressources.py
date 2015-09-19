@@ -1,6 +1,6 @@
 from unipath import Path
 
-from login.login import LoggedInSession
+from api.login import LoggedInSession
 from syn_utils import overview_link, RES_DIR
 from stats.rankings import syndicate_link
 
