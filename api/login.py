@@ -8,6 +8,8 @@ import requests
 from .captcha_solver import solve_captcha
 from syn_utils import get_secret, main_link, overview_link, login_link
 
+__all__ = ['LoggedInSession', 'SynAPI']
+
 
 class LoggedInSession(object):
     def __init__(self, user, password):
@@ -84,7 +86,7 @@ class LoggedInSession(object):
         self.s.headers.update({'User-Agent': user_agent})
         self.s.post(main_link('index.php'), data=login_payload)
 
-    def check_login(self, html):
+    def check_login(self, html, build=True):
         """
         checks first if the login was successful
         if not rebuild a new session and return false
@@ -158,7 +160,8 @@ class LoggedInSession(object):
         """
         last_session = cls.load_session()
         if last_session is not None:
-            if last_session.successful_login():
+            r = last_session.s.get(overview_link)
+            if last_session.check_login(r.context):
                 return last_session
 
         return LoggedInSession(

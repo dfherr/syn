@@ -5,6 +5,9 @@ from scipy import signal as sig
 
 from .masks import classifier
 
+__all__ = ['solve_captcha']
+
+
 digit_width = 8
 digit_height = 10
 
