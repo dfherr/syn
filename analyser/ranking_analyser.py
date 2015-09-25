@@ -1,33 +1,33 @@
-# __author__ = 'sol1x'
-# ranking analysis
-#
-# In [100]: n = pd.merge(n2, n3, on=1)
-# In [101]: n.loc[:, 'z'] = pd.Series(n['3_x'] - n['3_y'])
-# n.sort_index(by='z', inplace=True)
-#
-# def diff(n1, n2):
-#     n = pd.merge(n1, n2, on=1)
-#     n.loc[:, 'z'] = pd.Series(n['3_x'] - n['3_y'])
-#     n.sort_index(by='z', inplace=True)
-#     return n
-#
-#
-# for x in log:
-#     data, data_date = x
-#     nw.append(data[data[1]=='Vollidioten'][3])
-#     ha.append(data[data[1]=='Vollidioten'][2])
-#     dates.append(data_date)
-#
-# pandas unicode -> ?!
-#
-#  for x in log:
-#     data, data_date = x
-#     nw.append(data[data[1]=='Vollidioten'][3])
-#     ha.append(data[data[1]=='Vollidioten'][2])
-#     dates.append(data_date)
-
-
+import matplotlib.pyplot as plt
 import pandas as pd
+
+
+from database import Database
+
+
+def analyse_player(rankings, name):
+    player_rankings = rankings[rankings[3] == name]
+    dates = player_rankings.loc[:, 1]
+    ha = player_rankings.loc[:, 5]
+    nw = player_rankings.loc[:, 6]
+
+    fig = plt.figure(figsize=[10, 6])
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212, sharex=ax1)
+
+    ax1.set_title(name)
+    ax1.set_ylabel('NW')
+    ax1.grid()
+    plt.setp(ax1.get_xticklabels(), visible=False)
+
+    ax2.set_ylabel('ha')
+    ax2.grid()
+
+    ax1.plot(dates, nw)
+    ax2.plot(dates, ha)
+
+    plt.savefig('docs/{0}.png'.format(name))
+    plt.show()
 
 
 def find_top_ha_diff(n1, n2):
@@ -42,3 +42,9 @@ def find_top_nw_diff(n1, n2):
     n.loc[:, 'nw_diff'] = pd.Series(n['3_x'] - n['3_y'])
     n.sort_index(by='nw_diff', inplace=True)
     return n
+
+if __name__ == '__main__':
+    with Database() as db:
+        rankings = db.read_rankings()
+        rankings = pd.DataFrame(rankings)
+        # analyse_player(rankings, "Vollidioten")
