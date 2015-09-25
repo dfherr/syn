@@ -9,6 +9,7 @@ if __name__ == '__main__':
 
     rankings = api.generate_rankings()
     with Database() as db:
+        # db.create_database()
         db.save_rankings(rankings)
 
     api.session.save_session()
