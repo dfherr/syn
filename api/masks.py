@@ -3,6 +3,7 @@ from sklearn import svm
 
 __all__ = ['masks', 'classifier']
 
+
 masks = [
     # 0
     np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
