@@ -1,6 +1,6 @@
 import re
 
-from syn_utils import string_to_int, syndicate_link
+import pandas as pd
 
 personal_stats_regex = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'
@@ -19,13 +19,37 @@ syn_stats_regex = re.compile(
     r'"absmiddle">[&nbsp;]+<strong>([0-9\.]+)</strong>[&nbsp;]+</td>'
 )
 
+pd.set_option('display.width', 200)
+pd.set_option('display.max_rows', 1000)
+
+
+def find_top_ha_diff(n1, n2):
+    n = pd.merge(n1, n2, on=1)
+    n.loc[:, 'ha_diff'] = pd.Series(n['2_x'] - n['2_y'])
+    n.sort_index(by='ha_diff', inplace=True)
+    return n
+
+
+def find_top_nw_diff(n1, n2):
+    n = pd.merge(n1, n2, on=1)
+    n.loc[:, 'nw_diff'] = pd.Series(n['3_x'] - n['3_y'])
+    n.sort_index(by='nw_diff', inplace=True)
+    return n
+
+
+def matching():
+    session = LoggedInSession.get_session()
+    ranks1 = generate_rankings(session)
+    ranks1 = pd.DataFrame(ranks1)
+    return ranks1
+
 
 def generate_rankings(session):
     # TODO: find a way to automatically determine
     # the upper bound of the available syndicates
     rankings = []
-    for i in range(1, 31):
-        c = session.s.get(syndicate_link(i)).content
+    for i in range(1, 29):
+        c = session.get(syndicate_link(i)).content
         rankings += scrape_syndicate(i, c)
     return generate_user_rankings(rankings)
 
@@ -39,7 +63,7 @@ def reformat_personal_stats(stats, syn_number):
     for person in stats:
         reformat.append([
             person[0],
-            person[1],
+            repr(person[1].decode('unicode-escape')),
             string_to_int(person[2]),
             string_to_int(person[3]),
             syn_number
