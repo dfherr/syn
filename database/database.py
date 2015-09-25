@@ -55,3 +55,11 @@ class Database(object):
                 rank
             )
             self.con.commit()
+
+    def read_rankings(self):
+        self.cur.execute('SELECT * FROM rankings')
+        r = map(list, self.cur.fetchall())
+        # Unicode Hack...
+        for i in r:
+            i[3] = eval(i[3])
+        return r
