@@ -2,15 +2,25 @@
 
 from api import SynAPI
 from database import Database
+from time import sleep
 
 if __name__ == '__main__':
     # Saves current rankings to db
     api = SynAPI()
 
-    rankings = api.generate_rankings()
     with Database() as db:
-        # db.create_database()
+        rankings = api.generate_rankings()
         db.save_rankings(rankings)
+
+    # with Database() as db:
+    #     # db.create_database()
+    #     for i in range(1000):
+    #         print('start')
+    #         rankings = api.generate_rankings()
+    #         db.save_rankings(rankings)
+    #         print('stop')
+    #         api.logout()
+    #         sleep(15*60)
 
     api.session.save_session()
 

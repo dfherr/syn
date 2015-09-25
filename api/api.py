@@ -20,6 +20,7 @@ links = {
     'aktuelles': main_link('aktuelles'),
     'bonus': main_link('bonus.php'),
     'home': main_link('statusseite.php'),
+    'logout': main_link('logout.php'),
     'military': main_link('militaerseite.php'),
     'market': main_link('market.php'),
     'shares': main_link('anleihenmarkt.php'),
@@ -60,6 +61,9 @@ class SynAPI(object):
     # buy from market / store(if 5% cheaper)
     # build military (-> HUC, Spies, Carrier...)
     # when selling, permanently tenders... to reasonable price
+    def logout(self):
+        self.session.get(links['logout'])
+
     def get_owner_resources(self):
         # TODO: use the smallest page for this step
         raise NotImplementedError
