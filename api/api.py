@@ -182,9 +182,6 @@ class SynAPI(object):
         }
         return self.session.post(links['market'], data=payload)
 
-    def order(self, unit, amount):
-        raise NotImplementedError
-
     def cancel_selling(self, i):
         raise NotImplementedError
 

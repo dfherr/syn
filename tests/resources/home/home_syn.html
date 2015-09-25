@@ -1,0 +1,435 @@
+ 
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://opengraph.org/schema/"><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><meta name="resource-type" content="document"><meta http-equiv="pragma" content="no-cache"><meta name="revisit-after" content="4 days"><meta name="classification" content="Entertainment"><meta name="description" content="Einen Großkonzern führen, nach der Weltherrschaft greifen, die Konkurrenz mit schmutzigen Tricks ins Abseits manövrieren und das alles bei nur 15 Minuten Spielzeit am Tag? Problemlos möglich bei unserem kostenlosen Multiplayerspiel Syndicates."><meta name="MSSmartTagsPreventParsing" content="TRUE"><meta name="keywords" content="RPG, Online, Game, Spiele, Onlinespiel, Onlinespiele, Spiel, Massive, User, browserbasiert, Fantasy, Fantasyspiel, Multiplayer, browser, spiel, online, mehrspieler, mmorpg, browserspiel, game, browsergame, kostenlos, free, action"><meta name="robots" content="FOLLOW"><meta name="distribution" content="Global"><meta name="rating" content="Safe For Kids"><meta name="copyright" content="Syndicates e.V."><meta name="author" content="Syndicates e.V."><meta http-equiv="reply-to" content=""><meta name="language" content="german"><meta name="doc-type" content="Web Page"><meta name="doc-class" content="Completed"><meta name="doc-rights" content="Copywritten Work"><meta property="fb:app_id" content="" /><title>Syndicates - Das Browsergame - Wenn Konzerne die Welt regieren</title><link rel="stylesheet" type="text/css" href="style.php?action=" /><link rel="shortcut icon" href="images/syn_favicon.ico" /><link rel="stylesheet" type="text/css" href="./js/fancybox/jquery.fancybox-1.3.4.css" /><link rel="stylesheet" type="text/css" href="./js/plugins.css" /><script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script><script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script><script type="text/javascript" src="https://apis.google.com/js/plusone.js">{lang: 'de'}</script><script type="text/javascript" src="http://connect.facebook.net/de_DE/all.js"></script><script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script><script type="text/javascript" src="js/plugins.js"></script>
+<script type="text/javascript">
+	// Your JavaScript-Code was crunched by www.seo-ranking-tools.de
+	var fraks = {	'uic' : 'United Industries Corporation',
+					'sl'  : 'Shadow Labs',
+					'pbf' : 'Brute Force',
+					'nof' : 'Nova Federation',
+					'neb' : 'New Economic Block'};
+	var act = new Array();
+	var heights = new Array();
+	var special = new Array();
+	var special_heigths = new Array();
+	
+	var news_height = '250'; // Auf diese Höhe werden die News verkleinert
+	var news_open = 1; // Die Anzahl der News die offen bleiben sollen
+	var tick_more = './images/startseite/pfeil_read_more.png'; // Pfeil für read more für die News
+	var tick_less = './images/startseite/pfeil_read_less.png'; // Pfeil für read less für die News
+	var init_first = true;
+	var klick = false;
+	var url, pre_url;
+	var searchinput_text = infos = false;
+	var content1 = 1, content2 = 2;
+	tmp1 = new Image(18, 18);
+	tmp1.src=tick_more;
+	tmp2 = new Image(18, 18);
+	tmp2.src=tick_less;
+	
+	if(tmp = $.param.fragment()){
+		window.location.replace('?'+tmp);
+	}
+	
+	
+	$().ready(init);
+	function init() {
+		if(init_first){
+			/* * * * *
+			 * Wird nur beim 1. Laden der Seite ausgeführt
+			 * :: START ::
+			 * * * * */
+			
+			$('.extern').children().each(function(){
+				var div = $('<div>', {'css':{'display':'none', 'font-size':'10px', 'margin-top':'-2px', 'color':'#BBB'}, 'html':'externer Link'}).appendTo(this);
+				$(this).mouseenter(function(){ div.fadeIn(200); }).mouseleave(function(){ div.fadeOut(200); });
+			});
+			 
+			if($('#input_name'.length > 0))	{     $('#input_name').InputHint({ 'span' : 'label_name', 'sec' : {'input' : 'input_password', 'span' : 'label_password' } }); $('#input_name').focus(); }
+			if($('#input_password').length > 0)   $('#input_password').InputHint({ 'span' : 'label_password' });
+			if($('#input_codeinput').length > 0){ $('#input_codeinput').InputHint({ 'span' : 'label_codeinput' }); $('#input_codeinput').focus(); }
+					
+			$.each(fraks, function(tag, val){
+				$('.'+tag)
+				.mouseenter(function(){
+					$('#desc_'+tag).fadeIn(200);
+					var position = $('.'+tag+'_blocked').position();
+					if(position != null){
+						act['div_'+tag] = $('<div>', {
+										'id' 	: tag+'_hint',
+										'css'	: {
+												'display'	: 'none',
+												'position'	: 'absolute',
+												'left'		: position.left+20,
+												'top'		: position.top+20,
+												'width'		: '250px',
+												'background-color'	: '#FFF',
+												'z-index'	: 50,
+												'font-size'	: '13px',
+												'padding'	: '4px',
+												'border'	: '1px solid #FF3333',
+												'text-align': 'center'
+										},
+										'html'	: 'Da jede Runde nur 3 von 5 Fraktionen spielbar sind, ist die Fraktion <strong>'+val+'</strong> diese Runde leider nicht verfügbar. Eventuell ist sie nächste Runde wieder mit von der Partie.'
+							  }).appendTo('.circle');
+					}
+				})
+				.mouseleave(function(){
+					if(act['div_'+tag]){
+						act['div_'+tag].remove();
+					}
+					$('#desc_'+tag).fadeOut(200);
+				});
+				
+				if($('.'+tag+'_blocked').html() != null){
+					act['div_'+tag] = false;
+					$('.'+tag).mousedown(function(){
+						if(act['div_'+tag].css('display') == 'none'){
+							act['div_'+tag].slideDown(500).delay(5000).fadeOut(500);
+						}
+					});
+				}
+				
+				if($('.'+tag+'_available').length > 0){
+					$('.'+tag).mousedown(function(){
+						$('.'+tag).fancybox({'href' : '?ajax=true&action=anmeldung&frak='+tag});
+					});
+				}
+			});
+			$.each($('.alert'), function(){
+				alert_(this);
+			});
+			
+			var x = 0;
+			$('.news_post').each(function(){
+				if(x >= news_open){
+					if($(this).height() > news_height){
+						var splits = $(this).attr('id').split('_');
+						var id = splits[0];
+						$('#'+id+'_tick').css('display', '').html();
+						read_more(this, id);
+						heights[id] = $(this).height();
+						$(this).height(news_height).css('overflow', 'hidden');
+						//$(this).html($(this).attr('id'));
+					}
+				}
+				x++;
+			});
+			
+			$('.bar_1').each(function(){
+				var regex = /bar_1([a-zA-Z0-9_]+)/;
+				var hover = /_hover/;
+				var attr = regex.exec($(this).attr('class'));
+				var h_true = hover.test(attr[0]);
+				var tmp = ohne = false;
+				var href = $(this).attr('href');
+				$(this).attr('href', '').fragment($.deparam.querystring(href));
+				if(!h_true){
+					$(this).css('font-weight', 400).css('margin-top', '4px');
+				}
+				else{
+					$(this).css('font-weight', 700);
+				}
+				$(this).mouseenter(function(){
+					if(!klick){
+						$(this).stop();
+						$(this).animate({ 'height': '25px', 'font-size' : '16px', 'padding-top' : '5px', 'margin-top' : '0px' }, 400, 'linear');
+					}
+				}).mouseleave(function(){
+					if($(this).css('font-weight') != 700){
+						if(!klick){
+							$(this).stop();
+							$(this).animate({ 'height': '20px', 'font-size' : '13px', 'padding-top' : '2px', 'margin-top' : '4px' }, 400, 'linear');
+						}
+					}
+				}).mousedown(function(){
+					klick = true;
+					$(this).css('font-weight', 700);
+					$(this).animate({ 'height': '25px', 'font-size' : '16px', 'padding-top' : '5px', 'margin-top' : '0px' }, 400, 'linear');
+					var akt = this;
+					$('.bar_1').each(function(){
+						if(this != akt){
+							$(this).animate({ 'height': '20px', 'font-size' : '13px', 'padding-top' : '2px', 'font-weight' : 400, 'margin-top' : '4px' }, 400, 'linear');
+						}
+					});
+					window.setTimeout('klick = false;', 400);
+				});
+			});
+			
+			if(!searchinput_text) var searchinput_text = $('#searchinput').val();
+			$('#searchinput').blur(function(){
+				if($(this).val() == ''){
+					$(this).val(searchinput_text);
+				}
+			}).focus(function(){
+				if($(this).val() == searchinput_text){
+					$(this).val('');
+				}
+			});
+			
+			if(infos){
+				var stock_m_h = 17;
+				$.each(special, function(tag, val){
+					special_heigths[val] = 0;
+					$('.special_'+val).each(function(){
+						special_heigths[val] = (special_heigths[val] < $(this).height() ? $(this).height() : special_heigths[val]);
+					});
+					$('.special_'+val).height(stock_m_h);
+					
+					$('#tr_'+val).mouseenter(function(){
+						$('.special_'+val).stop();
+						$('.special_'+val).animate({'height': special_heigths[val]+'px' }, 1500, 'easeOutElastic');
+					}).mouseleave(function(){
+						$('.special_'+val).stop();
+						$('.special_'+val).animate({'height': stock_m_h+'px' }, 1500, 'easeOutElastic');
+					});
+				});
+				
+				var inf_dur = 500;
+				var inf_klick = new Array();
+				var inf_show = new Array();
+				$('.toggle_infos').each(function(){
+					var id = $(this).attr('id');
+					if($('#infos_'+id).length > 0){
+						$('.tick_'+id).each(function(){
+							$(this).html($('<img>', {'src' : tick_more,'css' : {'vertical-align' : 'middle'}}));
+						});
+						$('#infos_'+id).hide();
+						$(this).mousedown(function(){
+							if(!inf_klick[id]){
+								inf_klick[id] = true;
+								if(inf_show[id] == true){
+									inf_show[id] = false;
+									$('#infos_'+id).slideUp(inf_dur, function(){ 
+										inf_klick[id] = false;
+										$('.tick_'+id).each(function(){
+											$(this).html($('<img>', {'src' : tick_more,'width' : '18px','height' : '18px','css' : {'vertical-align' : 'middle'}}));
+										});
+									});
+								}
+								else{
+									inf_show[id] = true;
+									$('#infos_'+id).slideDown(inf_dur, function(){ 
+										inf_klick[id] = false;
+										$('.tick_'+id).each(function(){
+											$(this).html($('<img>', {'src' : tick_less,'width' : '18px','height' : '18px','css' : {'vertical-align' : 'middle'}}));
+										});
+									});
+								}
+							}
+						});
+					}
+				});
+			}
+			
+			/* Share-Box für die News */
+			$('.box_share').each(function(){
+				var box = this;
+				$(box).children('.button_share').mouseenter(function(){
+					$(box).children('.box_share_all').clearQueue();
+					$(box).children('.box_share_all').fadeTo(200, 1);
+				}).mouseleave(function(){
+					$(box).children('.box_share_all').clearQueue();
+					$(box).children('.box_share_all').delay(1500).fadeTo(200, 0, function(){ $(this).css('display', 'none'); });
+				});
+				$(box).children('.box_share_all').mouseenter(function(){
+					$(box).children('.box_share_all').clearQueue();
+					$(this).fadeTo(200, 1);
+				}).mouseleave(function(){
+					$(box).children('.box_share_all').clearQueue();
+					$(this).delay(500).fadeTo(200, 0, function(){ $(this).css('display', 'none'); });
+				});
+			});
+			
+			var bars = [ 'toolbar', 'toolbar2' ];
+			var toolbar_dur = 500;
+			var toolbar_easing = 'easeOutBack';
+			var url_go = false;
+			$.each(bars, function(tag, val){
+				$('.'+val+'.visible').css({'bottom' : '-34px'});
+				$('.'+val+'.visible.bounce').delay(5000).effect('shake', { 'times':2, 'direction':'left', 'distance':5 }, 100);
+				$('#'+val+'_small').mousedown(function(){
+					$(this).clearQueue();
+					$(this).stop();
+					$(this).animate({'bottom' : '-70px'}, toolbar_dur, toolbar_easing, function(){
+						$('#'+val+'_big').clearQueue();
+						$('#'+val+'_big').stop();
+						$('#'+val+'_big').animate({'bottom' : '-10px'}, toolbar_dur, toolbar_easing);
+					});
+				});
+				$('#'+val+'_big').mousedown(function(){
+					$('.'+val+'_content > a').mousedown(function(){
+						url_go = true;
+					});
+					if(!url_go){
+						$(this).clearQueue();
+						$(this).stop();
+						$(this).animate({'bottom' : '-70px'}, toolbar_dur, toolbar_easing, function(){
+							$('#'+val+'_small').clearQueue();
+							$('#'+val+'_small').stop();
+							$('#'+val+'_small').animate({'bottom' : '-34px'}, toolbar_dur, toolbar_easing);
+						});
+					}
+				});
+			});
+			
+			$('a.lightbox').fancybox();
+			$('.lightbox_el').fancybox({'transitionIn':'elastic','transitionOut':'elastic'});
+			
+			$(window).bind( "hashchange", function(e) {
+				pre_url = url;
+				url = $.param.fragment();
+				if(url == '' && pre_url){
+					url = $.param.querystring();
+				}
+				change_content(url);
+			});
+			$(window).trigger( "hashchange" );
+			/* * * * *
+			 * Wird nur beim 1. Laden der Seite ausgeführt
+			 * :: ENDE ::
+			 * * * * */
+		}
+		init_first = false;
+		
+		$('#content1 a').each(function(){
+			var href = $(this).attr('href');
+			$(this).attr('href', '');
+			$(this).fragment($.deparam.querystring(href));
+		});
+		$('#content2 a').each(function(){
+			var href = $(this).attr('href');
+			$(this).attr('href', '');
+			$(this).fragment($.deparam.querystring(href));
+		});
+		
+		if($('#tbody_text').length > 0 && $('#tbody_chart').length > 0) $('#tbody_text').remove();
+		if($('#tbody_chart').length > 0 && plot_data && plot_color){
+			$('#tbody_chart').show();
+			var plot = jQuery.jqplot('anteil_chart', [plot_data],{
+					grid: {
+						drawBorder: true,
+						borderColor: '#BBB',
+						background: '#999',
+						shadow: 2,
+					},
+					seriesDefaults: {
+						renderer: jQuery.jqplot.PieRenderer,
+						rendererOptions: {
+							showDataLabels: true,
+							fill: true,
+							sliceMargin: 5,
+							dataLabelThreshold: 5,
+							padding: 10,
+							shadowDepth: 4,
+							dataLabels: 'value'
+						}
+					},
+					legend: { show:true, location: 'w' },
+					seriesColors: plot_color,
+			});
+		}
+	}
+	
+	function change_content(l){
+		if(l){
+			$.ajax({ 'url' : 'index.php?ajax=true&'+l, 'dataType' : 'text script' })
+			.success(function(data){
+				//$('#content1').fadeOut(200, function(){ $('#content1').html(data).fadeIn(200); init(); });
+				$('#content'+content2).html(data);
+				$('#content'+content2).slideDown(1000);
+				$('#content'+content1).slideUp(1000);
+				init();
+				content1 = (content1 == 1 ? 2 : 1);
+				content2 = (content2 == 1 ? 2 : 1);
+			});
+		}
+	}
+	
+	function alert_(th){
+		if(th == '[object HTMLDivElement]'){
+			alert_($(th));
+		}
+		else if(th == '[object Object]'){
+			th.delay(5000).animate({ 'opacity' : 0.5 }, 4000).slideUp(1000, function(){ th.remove(); });
+			th.mouseenter(function(){
+				var q = th.queue("fx");
+				if(q.length >= 2){
+					th.clearQueue().stop();
+					th.css('opacity', 1.0);
+				}
+			}).mouseleave(function(){
+				var q = th.queue()
+				if(q.length == 0){
+					th.animate({ 'opacity' : 0.5 }, 4000).slideUp(1000, function(){ th.remove(); });
+				}
+			});
+		}
+		else{
+			var tmp = $('<div>', { 'class' : 'alert', 'html' : th }).appendTo('.alert_box').hide().slideDown(500);
+			alert_(tmp);
+		}
+	}
+	
+	function read_more(this_, id){
+		var name = id + '_tickimage';
+		if('#'+name) $('#'+name).remove();
+		if('#'+id+'_tick_text') $('#'+id+'_tick_text').remove();
+		$('<div>', {
+				'id' : id+'_tick_text',
+				'css' : {'display' : 'inline','cursor' : 'pointer'},
+				'html' : 'mehr'
+		})
+		.mousedown(function(){
+			$(this_).animate({ 'height' : heights[id]+'px' }, heights[id]*1.5, 'easeOutExpo', function(){ read_less(this_, id) });
+		}).appendTo('#'+id+'_tick');
+		$('<img>', {
+		  		'id' : name,
+		  		'src' : tick_more,
+				'width' : '18px',
+				'height' : '18px',
+				'css' : {'display' : 'inline','cursor' : 'pointer'}
+		}).mousedown(function(){
+			$(this_).animate({ 'height' : heights[id]+'px' }, heights[id]*1.5, 'easeOutExpo', function(){ read_less(this_, id) });
+		}).appendTo('#'+id+'_tick');
+	}
+	
+	function read_less(this_, id){
+		var name = id + '_tickimage';
+		if('#'+name) $('#'+name).remove();
+		if('#'+id+'_tick_text') $('#'+id+'_tick_text').remove();
+		$('<div>', {
+				'id' : id+'_tick_text',
+				'css' : {'display' : 'inline','cursor' : 'pointer'},
+				'html' : 'weniger'
+		})
+		.mousedown(function(){
+			$(this_).animate({ 'height' : news_height+'px' }, heights[id]*1.5, 'easeOutExpo', function(){ read_more(this_, id) });
+		}).appendTo('#'+id+'_tick');
+		$('<img>', {
+		  		'id' : name,
+		  		'src' : tick_less,
+				'width' : '18px',
+				'height' : '18px',
+				'css' : {'display' : 'inline','cursor' : 'pointer'}
+		}).mousedown(function(){
+			$(this_).animate({ 'height' : news_height+'px' }, heights[id]*1.5, 'easeOutExpo', function(){ read_more(this_, id) });
+		}).appendTo('#'+id+'_tick');
+	}
+</script>
+</head><body><noscript><div class="js-warning"><strong>Achtung</strong><br />Um diese Seite, und damit das Spiel Syndicates, nutzen zu können, wird Javascript benötigt. Bitte aktiviere es in deinen Browsereinstellungen oder erlaube es im jeweiligen Add-On</div></noscript><div class="alert_box"></div>
+		<div id="fb-root"></div>
+		<script type="text/javascript">
+		FB.init({appId: '', status:true, cookie:true, xfbml:true, channelUrl:'http://syndicates-online.de/channel.php', oauth:true});
+		</script>
+		<div class="circle"><!-- positiv, neutral, negativ --><div class="special_roundstatus1 special_positiv">Runde läuft</div><div class="special_roundstatus2 special_positiv">noch 38 Tage</div><div class="circle_input"><div class="desc uic"></div><div class="desc sl"></div><div class="desc pbf"></div><div class="desc nof"></div><div class="desc neb"></div><div class="desc uic_hover uic_available" id="desc_uic"><div style="text-align:center; font-weight:bold; font-size:13px;">United Industries Corporation<br />- Der Wirtschaftsboss -</div>"Als ich den maroden Laden vor 15 Jahren von meinem Vater &uuml;bernommen habe, standen wir kurz davor von Cushinbery Cybergenetics ge&shy;fressen zu werden. Ich habe diese Anf&auml;nger in 5 Jahren komplett aus dem Markt gedr&auml;ngt und produziere jetzt 55% aller weltweit eingesetzt Firestorm Kampfroboter."</div><div class="desc sl_hover sl_available" id="desc_sl"><div style="text-align:center; font-weight:bold; font-size:13px;">Shadow Labs<br />- Der Forscher -</div>"Gentechnologie ist illegal haben sie gesagt! Tarnkappenbomber sind umoralisch haben sie gesagt! Und wo sind sie geblieben? Der Fort&shy;schritt l&auml;sst sich nicht aufhalten. Stealth-Tec ist den meisten da drau&szlig;en um Lichtjahre in der Forschung voraus. Wir produzieren effizienter, k&auml;mpfen mit fortschrittlichen Waffen und wachsen schneller."</div><div class="desc pbf_hover pbf_available" id="desc_pbf"><div style="text-align:center; font-weight:bold; font-size:13px;">Brute Force<br />- Der Militarist -</div>"Wenn du deinem Gegner Auge um Auge gegen&uuml;ber stehst, ist es egal, ob dein Arsch vergoldet ist. Unsere Wartanks sind vielleicht nicht sch&ouml;n, aber eine Plasmagranate in deinem Hintern ist noch viel h&auml;sslicher. Deshalb entschlie&szlig;en sich st&auml;ndig Konkurrenten dazu, einen Teil ihrer Konzerne an uns abzutreten. Aber dass man uns deshalb als &uuml;berregionale Bedrohung darstellen muss..."</div><div class="desc nof_hover nof_available" id="desc_nof"><div style="text-align:center; font-weight:bold; font-size:13px;">Nova Federation<br />- Der Waffenh&auml;ndler -<!-- - Der Kriegsspezialist - --></div>"Sollen sich die anderen Konzerne doch gegenseitig die Sch&auml;del wegblasen. Wir verdienen an jedem Krieg. Wenn du nicht untergehen willst, hat selbst der Frieden seinen Preis. Und da sei mal nicht allzu knickrig. Am Ende helfen wir sogar den Kosten bewussten Kunden, indem wir sie auf ein ihrer Verteidigung angemessenes Ma&szlig; verschlanken."<!-- "Mit einem NOF legt man sich nur ungern an! Wir k&ouml;nnen zwar auch bei&szlig;en, doch unsere Abwehr ist unsere St&auml;rke. Spionage? Sabota&shy;ge? Angriffe? An uns bei&szlig;t man sich die Z&auml;hne aus. Und zum Dank nimmt die gegnerische Armee noch einen zweist&uuml;ndigen Umweg in Kauf"  --></div><div class="desc neb_hover neb_available" id="desc_neb"><div style="text-align:center; font-weight:bold; font-size:13px;">New Economic Block<br />- Der &Uuml;berstarter -</div>"UIC als Wirtschaftsboss? Vergesst es! Dem NEB geh&ouml;rt die Zukunft! Als der NEB sich vor Jahren vom UIC abspaltete, hielt man uns f&uuml;r verr&uuml;ckt! Aber wir zeigen es allen! Wir wachsen schneller und preisg&uuml;nstiger und unsere tech&shy;nisch aufgewerteten Erzf&ouml;rderanlagen laufen dem UIC den Rang ab."</div><form action="?" method="post" name="form_login"><input type="hidden" name="action" value="login" /><div class="back_1234"><div class="navi_left text_name"><div class="input"><span id="label_name">Name</span><input class="absolute" type="text" name="user" id="input_name" /></div></div><div class="navi_left text_password"><div class="input"><span id="label_password">Passwort</span><input class="absolute" type="password" name="password" id="input_password" /></div></div><input type="submit" style="display:none;" /><div class="logged_in navi_left">Login speichern <input type="checkbox" name="savelogin" style="vertical-align:middle" /></div><a class="button button_login" href="javascript: document.form_login.submit()"></a><div class="navi_left" style="position:absolute; top:156px; width:201px; left:0px; text-align:center"><hr width="20%" style="display:inline-block; height:1px; background-color:#999; color:#999; margin-right:15px; border:none" noshade="noshade" />oder<hr width="20%" style="display:inline-block; height:1px; background-color:#999; color:#999; margin-left:15px; border:none" noshade="noshade" /></div><div style="position:absolute; top:180px; left:45px; text-align:center"><a href="?action=lost_password" class="navi_left link"><nobr>Passwort vergessen?</nobr></a></div></div></form><div class="register_outer">Jetzt <strong>kostenlos</strong><br /><a class="button_orange register lightbox" href="?action=anmeldung"></a></div><a class="clean" href="?"><div class="navi_right link_1">NEWS</div></a><a class="clean" href="?action=infos"><div class="navi_right link_2">INFOS</div></a><a class="extern clean" href="http://forum.syndicates-online.de?title=" target="_blank"><div class="navi_right link_3">FORUM</div></a><a class="extern clean" href="http://www.syndicates-wiki.de/index.php?title=" target="_blank"><div class="navi_right link_4">SYNPEDIA</div></a><a class="clean" href="?action=stats"><div class="navi_right link_5">STATISTIKEN</div></a><form action="http://www.syndicates-wiki.de/index.php?title=" target="_blank" style="padding:0px; margin:0px;"><div class="searchform"><input type="text" name="search" class="searchinput" id="searchinput" value="In Synpedia finden" /><button type="submit" name="fulltext" id="mw-searchButton" class="searchbutton"><img src="images/startseite/search.png" width="12px" height="13px;" /></button></div><input type="hidden" name="title" value="Spezial:Suche" /></form></div></div><div class="social_box" id="social_box"><div class="facebook_like"><fb:like href="https://www.facebook.com/syndicates.eV" width="77px" layout="box_count" font="tahoma"></fb:like></div></div><div class="content"><div class="c_head"></div><div class="c_inner"><div class="circle_foot" style="z-index:1;"></div><div style="z-index:2; position:relative;"><div class="news"><div class="news_bar"><div class="text"><a href="?action=show_news&id=32">Verlorene Forschungspunkte und Spionageeinheiten</a></div><div class="date">17.09.15 - 13:35 Uhr</div></div><div class="news_content"><div class="n_head"></div><div class="n_inner news_post" id="32_inner"><table cellspacing="3px" cellpadding="3px;" align="center" width="650px"><tr><td style="height:20px;"></td></tr><tr><td style="text-align:justify;"><p>Liebe Syndicates-Spieler,</p><p>wie ihr bereits heute Morgen hier lesen konntet, sind letzte Nacht zwischen 1:30 und 1:58 Uhr alle Forschungspunkte und Spionageeinheiten (ausschließlich Agents) verschwunden. Nach ausführlichen Untersuchungen unseres Technik-Teams gehen wir davon aus, dass hierfür ein unbekannter Angreifer verantwortlich war, der gezielt eine Lücke ausfindig gemacht und ausgenutzt hat.</p><p>Wir haben als Konsequenz darauf den gesamten Code nochmal auf verschiedene Sicherheitslücken hin überprüft und alle geschlossen, die wir ausfindig machen konnten. Sollten hierdurch unerwartete Bugs auftreten, meldet diese bitte im <a href="http://forum.syndicates-online.de/index.php/Board/4-Bugs-Fehlermeldungen/">Forum für Bugs & Fehlermeldungen</a>.</p><p>Da wir davon ausgehen, dass alle Forschungspunkte auf 0 gesetzt wurden, die alle Spieler zu einem bestimmten Zeitpunkt zwischen 1:30 und 1:58 Uhr auf der Hand hatten und die Ressourcenstände aller Konzerne immer jeweils zum Tick mitgeloggt werden, haben wir uns dazu entschlossen, dass jeder Konzern die Forschungspunkte, die er um 1:00 Uhr auf der Hand hatte, in sein Syndikatslager erstattet bekommt.</p><p>Darüber hinausgehende Erstattungen/Wiedergutmachungen von Agents sind nur im Ausnahmefall bei wirklich sehr großen Verlusten (Größenordnung ab ca. 5000 Agents aufwärts) durch manuelle Prüfung möglich, bitte erstellt zu diesem Zweck ingame einen Meldung (rechts unten unter Support) und beschreibt darin kurz, welche Menge an Agents ihr ungefähr verloren habt (wie gesagt wird es eine Erstattung nur bei größeren Mengen geben), was die Game Master dann unter Berücksichtigung aller Logs seit Rundenstart von Hand manuell nachrechnen müssen.</p><p>Uns ist klar, dass hierdurch nicht alle Verluste ausgeglichen werden. Vor allem kleinere Mengen an Agents und zwischen 1:00 und 1:30 Uhr gekaufte/ausgelagerte Forschungspunkte können hierbei nicht berücksichtigt werden. Ebenso dürfte es bei einigen Spielern zu einem kürzeren oder längeren Forschungsausfall gekommen sein. Eine Erstattung ist in diesen Fällen leider nicht möglich, da der Aufwand, jeden einzelnen Konzern anhand der Logs von Hand zu überprüfen, hierfür einfach deutlich zu groß und von uns nicht leistbar ist. Auch das Einspielen eines Backups vom 16.09. vom 4:00 Uhr Tick oder ein Neustart der Runde als weitere Möglichkeiten wurden in Betracht gezogen, werden allerdings nicht umgesetzt, da die hieraus resultierenden Nachteile in Anbetracht des eher geringen Schadens aus unserer Sicht deutlich überwiegen.</p><p>Als weitere Konsequenz werden wir zukünftig zusätzlich zu den stündlichen Ressourcenständen auch die stündlich vorhandene Menge an Militär- und Spionageeinheiten mitloggen sowie die Anzahl an Backups erhöhen. Hierdurch können wir bei zukünftigen Problemen noch besser reagieren, auch wenn wir natürlich hoffen, dass etwas derartiges nicht mehr verkommt und wir daher auf diese Mechanismen auch gar nicht mehr zurückgreifen müssen.</p><p>Wir haben versucht, die Verluste für alle möglichst gering zu halten und hoffen, dass ihr unsere Entscheidungen in dieser Situation nachvollziehen könnt. Wir hoffen, dass durch die erfolgten Bugfixes zukünftig etwas derartiges nicht mehr auftreten kann.</p></td></tr><tr><td style="height:20px;"></td></tr></table></div><div class="n_inner" style="text-align:right; padding-right:25px; padding-top:5px; display:none;" id="32_tick"></div><div class="n_foot"></div><div class="n_hr"></div></div></div><div class="news"><div class="news_bar"><div class="text"><a href="?action=show_news&id=31">Verschwunde Forschungspunkte und Spionageeinheiten</a></div><div class="date">17.09.15 - 08:01 Uhr</div></div><div class="news_content"><div class="n_head"></div><div class="n_inner news_post" id="31_inner"><table cellspacing="3px" cellpadding="3px;" align="center" width="650px"><tr><td style="height:20px;"></td></tr><tr><td style="text-align:justify;"><p>Liebe Syndicates-Spieler,</p><p>heute Morgen zwischen 1:30 und 1:58 Uhr sind aus noch ungeklärten Gründen bei allen Konzernen Forschungspunkte und Agents abhanden gekommen.</p><p>Wir betreiben gerade Ursachenforschung und versuchen schnellstmöglich die Fehlerursache zu identifizieren. Das Team arbeitet bereits seit 6:30 gemeinsam an diesem Fall.</p><p>Ob und wenn ja in welcher Form ein Ausgleich der verlorenen Ressourcen/Einheiten erfolgen kann, werden wir ebenfalls zeitnah (wahrscheinlich noch heute) klären.</p><p>Wenn jemand relevante Informationen zum Geschehen beitragen kann, möge er diese bitte <a href='http://forum.syndicates-online.de/index.php/Thread/1430-Fp-verschwunden/'>in diesem Forum-Thread</a> posten.</p></td></tr><tr><td style="height:20px;"></td></tr></table></div><div class="n_inner" style="text-align:right; padding-right:25px; padding-top:5px; display:none;" id="31_tick"></div><div class="n_foot"></div><div class="n_hr"></div></div></div><div class="news"><div class="news_bar"><div class="text"><a href="?action=show_news&id=29">Gewinner von Runde 76</a></div><div class="date">10.09.15 - 20:00 Uhr</div></div><div class="news_content"><div class="n_head"></div><div class="n_inner news_post" id="29_inner"><table cellspacing="3px" cellpadding="3px;" align="center" width="650px"><tr><td style="height:20px;"></td></tr><tr><td style="text-align:justify;"><b>Letzte Runde konnten sich folgende Syndikate einen Platz in den Top 10 sichern:</b><br /><br />         <table class=rand align=center cellspacing=0 cellpadding=0 width=730><tr><td><table align=center cellpadding=2 cellspacing=1><tr class=subhead><td width=60><b>Runde 76</b></td><td align=middle width=60>Rang</td><td align=middle width=200>Syndikat</td><td align=center width=340>Spieler</td></tr><tr class=body><td align=center><img src=php/images/pokalgold.gif width=35 height=66></td><td align=middle>1</td><td>&nbsp;&nbsp;Märchentroll (#20)</td><td align=right><i>leunawerke</i>, <i>das_schaf</i>, <i>Baumeister</i>, <i>Zahn !</i>, <i>moep</i>, <i>inok</i>, <i>BlackDevil</i>, <i>wahou</i>, <i>prawda</i>, <i>U-L-I</i>, <i>g3hK4ck3n</i>, <i>Aggro_Aggro</i></td></tr><tr class=body><td align=center><img src=php/images/pokalsilber.gif width=35 height=66></td><td align=middle>2</td><td>&nbsp;&nbsp;SLyndikat (#10)</td><td align=right><i>InuYasha</i>, <i>Pele-81</i>, <i>job2do</i>, <i>-n3mesis-</i>, <i>Wave27</i>, <i>Le Schreck</i>, <i>Creative</i>, <i>Tk1776</i>, <i>Buttaabrot</i>, <i>King_O</i>, <i>Black-Wolf</i>, <i>MMS1337</i></td></tr><tr class=body><td align=center><img src=php/images/pokalbronze.gif width=35 height=66></td><td align=middle>3</td><td>&nbsp;&nbsp;Romulan Empire (#9)</td><td align=right><i>Watchdogs</i>, <i>Dark-John</i>, <i>rex mundi</i>, <i>Kessel</i>, <i>snake</i>, <i>Elron</i>, <i>fuenferkarli</i>, <i>SLaanesh</i>, <i>fabi01</i>, <i>Bathyl</i>, <i>Tamtam</i>, <i>Fedaykin</i></td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>4</td><td>&nbsp;&nbsp;born behind a wall (#12)</td><td align=right><i>Everlost</i>, <i>badrat</i>, <i>da_f33</i>, <i>Spooz</i>, <i>fischi</i>, <i>soso</i>, <i>Ancoron</i>, <i>MICHA83</i>, <i>Streifenhoernchen</i>, <i>Datentroll</i>, <i>Violence_Fetish</i>, <i>.o19</i></td></tr><tr class=body><td align=center><img src=php/images/medaillesilber.gif width=25 height=35></td><td align=middle>5</td><td>&nbsp;&nbsp;Die Rohre (#15)</td><td align=right><i>Jonny25k</i>, <i>TopTik</i>, <i>ja!Erdnuss</i>, <i>Corlis Fataneya</i>, <i>MisterY</i>, <i>BieneMaya</i>, <i>aMandalaY</i>, <i>sPuCkY.f4L</i>, <i>Misuke</i>, <i>hayyel</i>, <i>PsYcO</i></td></tr><tr class=body><td align=center><img src=php/images/medaillesilber.gif width=25 height=35></td><td align=middle>6</td><td>&nbsp;&nbsp;Dino World - Never Ever Forever (#30)</td><td align=right><i>Krebbl</i>, <i>kapitol</i>, <i>Syrana</i>, <i>Remake...?</i>, <i>Toemmer</i>, <i>bieHrLe</i>, <i>Takamaka</i>, <i>Knut45</i>, <i>Lasche</i>, <i>Dioskouroi</i>, <i>DMF-Joker</i></td></tr><tr class=body><td align=center><img src=php/images/medaillebronze.gif width=25 height=35></td><td align=middle>7</td><td>&nbsp;&nbsp;Mexikanische Beef-Lasagne (#11)</td><td align=right><i>Newcomer-TJ</i>, <i>Hoschi</i>, <i>gomesch</i>, <i>WipeOut</i>, <i>twist187</i>, <i>paradise1977</i>, <i>Kdeath</i>, <i>Splashcom</i>, <i>Tares</i>, <i>playthegames</i>, <i>rikugun</i></td></tr><tr class=body><td align=center><img src=php/images/medaillebronze.gif width=25 height=35></td><td align=middle>8</td><td>&nbsp;&nbsp;Ritter der Tafelrunde (#16)</td><td align=right><i>ritzcrackey1</i>, <i>RTW</i>, <i>derMatze</i>, <i>Zakkar</i>, <i>dtdesign</i>, <i>Dreamteam</i>, <i>Sokar.</i>, <i>Karashin</i>, <i>fusi</i>, <i>LordsDisciple</i>, <i>Snake2305</i>, <i>Mokujinso</i></td></tr><tr class=body><td align=center><img src=php/images/medaillebronze.gif width=25 height=35></td><td align=middle>9</td><td>&nbsp;&nbsp;Dragon Riders (#28)</td><td align=right><i>söldner</i>, <i>Ascar</i>, <i>[mow]mad</i>, <i>RoE</i>, <i>carschti</i>, <i>Ka-ef</i>, <i>TD21</i>, <i>yassy</i>, <i>Rogardeh</i>, <i>GrafvomBerg</i>, <i>Katox</i>, <i>Frids</i>, <i>Neddemaus</i></td></tr><tr class=body><td align=center><img src=php/images/medaillebronze.gif width=25 height=35></td><td align=middle>10</td><td>&nbsp;&nbsp;Die Rote Liste (#23)</td><td align=right><i>chobolon</i>, <i>onyx3o0o</i>, <i>Dicht ist Pflicht</i>, <i>Rowtag</i>, <i>JansenB</i>, <i>plupp</i>, <i>VeeseL</i>, <i>Beathouse</i>, <i>empty``</i>, <i>cibby</i>, <i>kleinerulpi</i>, <i>tishunkaww</i></td></tr></table></td></tr></table><br />			<br><br />        <center>Herzlichen Glückwunsch!</center><br />			<br><br>Außerdem konnten die folgenden 10 Spieler die letzte Runde im Einzelranking am besten abschneiden:<br><br><br />        <table class=rand align=center cellspacing=0 cellpadding=0><tr><td><table align=center cellpadding=2 cellspacing=1><tr class=subhead><td width=60><b>Runde 76</b></td><td align=middle width=80>Rang</td><td align=middle width=100>Spieler</td><td align=center width=220>Konzern (#Syndikatsnummer)</td></tr><tr class=body><td align=center><img src=php/images/pokalgold.gif width=35 height=66></td><td align=middle>1</td><td>&nbsp;&nbsp;sPuCkY.f4L</td><td align=right>Rohrisolierung (#15) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/pokalsilber.gif width=35 height=66></td><td align=middle>2</td><td>&nbsp;&nbsp;TopTik</td><td align=right>Rohrknall (#15) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/pokalbronze.gif width=35 height=66></td><td align=middle>3</td><td>&nbsp;&nbsp;Dark-John</td><td align=right>Merrok (#9) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>4</td><td>&nbsp;&nbsp;WipeOut</td><td align=right>Fett für die Form (#11) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>5</td><td>&nbsp;&nbsp;Black-Wolf</td><td align=right>SLitzohr (#10) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>6</td><td>&nbsp;&nbsp;white-sheep</td><td align=right>Wladimir Putin (#26) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>7</td><td>&nbsp;&nbsp;fabi01</td><td align=right>Frenchotte (#9) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>8</td><td>&nbsp;&nbsp;BlackDevil</td><td align=right>Teufelmit3goldenHaar (#20) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>9</td><td>&nbsp;&nbsp;MisterXYZ</td><td align=right>Kreios (#14) &nbsp;&nbsp;</td></tr><tr class=body><td align=center><img src=php/images/medaillegold.gif width=25 height=35></td><td align=middle>10</td><td>&nbsp;&nbsp;prawda</td><td align=right>Franz Josef Wagner (#20) &nbsp;&nbsp;</td></tr></table></td></tr></table> </td></tr><tr><td style="height:20px;"></td></tr></table></div><div class="n_inner" style="text-align:right; padding-right:25px; padding-top:5px; display:none;" id="29_tick"></div><div class="n_foot"></div><div class="n_hr"></div></div></div><div class="news"><div class="news_bar"><div class="text"><a href="?action=show_news&id=28">Änderungen Runde 77</a></div><div class="date">09.09.15 - 12:00 Uhr</div></div><div class="news_content"><div class="n_head"></div><div class="n_inner news_post" id="28_inner"><table cellspacing="3px" cellpadding="3px;" align="center" width="650px"><tr><td style="height:20px;"></td></tr><tr><td style="text-align:justify;"><p>Liebe Syndicates-Spieler,</p><p>zunächst eine Änderung personeller Art: Nachdem die zur vergangenen Runde neu vorgestellten Game Master sich jetzt etwas einarbeiten konnten, wird treehouse (wie schon länger intern angekündigt) das Game Master Team aus zeitlichen Gründen verlassen. An dieser Stelle daher vielen Dank für sein Engagement als Game Master und dafür, dass er viel Zeit und Mühe in diese Arbeit gesteckt hat.</p><p>Wie bereits angekündigt gibt es einen neuen vierten Forschungsbaum! Dieser ist in den Stufen 2 bis 6 jeweils durchgängig zweistufig (von denen natürlich jeweils nur eine erforscht werden kann) und bringt einige Veränderungen auch auf bereits bestehende Taktiken mit sich.</p><p>Im Punkt Usability/Design der Änderungen werden einige Änderungen aufgeführt, die zu Rundenstart noch nicht implementiert sind. Wir werden künftig derartige kleinere Änderungen, die keinerlei Einfluss auf das Spielgeschehen haben, nach erfolgreichen internen Tests auch im Laufe der Runde einspielen. Dies soll dabei helfen, nützliche Änderungen ohne große Wartezeit bis zu den nächsten Änderungen sofort umsetzen zu können und ermöglicht unseren Entwicklern eine flexiblere Zeitplanung.</p><p>Fragen und Diskussionen zu den Änderungen findet ihr wie immer <a href="http://forum.syndicates-online.de/index.php/Thread/1388">im Syndicates-Forum</a>, ihr könnt euch dort übrigens einfach mit eurem Syndicates-Account direkt einloggen.</p><p>Hier nun die Änderungen:</p><p><b>Forschungen:</b><ul><li>Ranger & Marine Training: Ranger und Marines erhalten pro Stufe je 2 AP und 2 VP (2 Stufen, 40.000 FP / 120.000 FP) (bisher: 3 Stufen mit +1/+1/+2)<li>"Investment Strategies" im Intelligence-Baum wandert in den neuen Forschungsbaum und wird ersetzt durch "Intelligence Training": +0,5 iP für alle Spionageeinheiten (1 Stufe, 80.000 FP)<li>Inner Syndicates Spy Defense Network: Jeder Spieler im Syndikat erhält 2% Bonus auf seine Spionageverteidigung gegen Sabotageaktionen pro Forschungslevel. (übrige Boni bleiben unverändert) (bisher: 1%) (<a href="http://forum.syndicates-online.de/index.php/Thread/1269-Freies-Sabben/?postID=18816#post18816">zur Idee</a>)<li>Die Forschung "Fog of War" in ihrer derzeitigen Form (erforschbar bei beliebiger Level 6 Forschung) entfällt und wird mit geringfügig abgeänderter Wirkung Teil des neuen Forschungsbaums (mehr dazu im Punkt "Neuer Forschungsbaum")</ul></p><p><b>Fraktionsboni:</b><ul><li>Die Fraktionen UIC, NEB, BF und NoF können jeweils einmalig einen Forschungsbaum wählen, für den dauerhaft -25% Forschungszeit gilt. (<a href="http://forum.syndicates-online.de/index.php/Thread/1213-25-Forschungszeit-Fraktionsbonus-SL-ab%C3%A4ndern/">zur Idee</a>)</ul></p><p><b>Lager:</b><ul><li>Die Steuern bei Überschreitung des geschützten Guthabens im Lager können maximal so hoch sein, dass man hierdurch auf diesen maximalen Freibetrag zurückfällt. (<a href="http://forum.syndicates-online.de/index.php/Thread/1295-Lagerlimit-Steuern-anpassen/">zur Idee</a>)</ul></p><p><b>Militäreinheiten:</b><ul><li>Patriot: 0 AP / 16 VP (bisher: 0 / 15)<li>Robotic Wall: Eine im Kampf vernichtete Robotic Wall wird für 80% ihrer Produktionskosten in Form der jeweiligen Ressourcen recycelt. (bisher: 100%) (<a href="http://forum.syndicates-online.de/index.php/Thread/1312-Robotic-Wall/?postID=21322#post21322">zur Idee</a>)</ul></p><p><b>Neuer Forschungsbaum: Common Sciences</b> (<a href="http://forum.syndicates-online.de/index.php/Thread/977-4-Forschungsbaum-Miscellaneous-Sciences/">zur Idee</a>)<ul><li>Stufe 1:<ul><li>(BES) Basic Exchange System (1 Stufe, 0 FP, Forschungsbonus nicht nutzbar): Schaltet den Anleihenmarkt frei. Achtung: Der Anleihenmarkt ist frühestens 78h nach Rundenstart verfügbar.</ul><li>Stufe 2:<ul><li>(ISC) Increased Storage Capacity (3 Stufen, 10.000/30.000/80.000 FP): Erhöht das maximal geschützte Lagerguthaben um 10% pro Stufe.<li>(LST) Lesser Storage Taxes (3 Stufen, 10.000/30.000/80.000 FP): Verringert die Steuern bei Überschreitung des geschützten Lagerguthabens um 10% pro Stufe.</ul><li>Stufe 3:<ul><li>(FMH) Flexible Military Halls (2 Stufen, 20.000/60.000 FP): Lagerhallen bieten Platz für 2 zusätzliche Spionageeinheiten pro Stufe.<li>(FSH) Flexible Spy Halls (2 Stufen, 20.000/60.000 FP): Spionageeinrichtungen bieten Platz für 2 zusätzliche Militäreinheiten pro Stufe.</ul><li>Stufe 4:<ul><li>(Invest) Investment Strategies (3 Stufen, 20.000/60.000/160.000 FP): Bis zu 10 Mio. Credits pro Forschungsstufe werden stündlich mit einem Zinssatz von 2,5% verzinst. Bei höherem Level steigt der Zinssatz pro Level um 0,5% pro Stufe auf einen Zinssatz von 4% bei Level 4 (PB + Invest3). Zusätzlich schaltet diese Forschung das Gebäude Bank frei.<li>(SI) Storage Investment (3 Stufen, 20.000/60.000/160.000 FP): Bis zu 50 Mio. Lagerguthaben pro Forschungsstufe werden stündlich mit einem Zinssatz von 0,3% verzinst. Bei höherem Level steigt der Zinssatz pro Level um 0,1% pro Stufe auf einen Zinssatz von 0,5% bei Level 3. Die Zinsen werden dem Lager in Form von Credits hinzugefügt und dem Spieler als Lagerguthaben gutgeschrieben.</ul><li>Stufe 5:<ul><li>(GLP) Greater Land Purchase (1 Stufe, 150.000 FP): Erhöht die maximal kaufbare Landmenge von 1000ha auf 1500ha.<li>(PL) Partner Lobbying (1 Stufe, 150.000 FP): Unabhängig von der Landgröße ist ein zusätzlicher Partnerschaftsbonus aus einer beliebigen Kategorie wählbar.</ul><li>Stufe 6:<ul><li>(IDD) Increased Dividend Distribution (3 Stufen, 80.000/240.000/640.000 FP): Erhöht die Dividendenausschüttung durch Syndikatsanleihen um 10% pro Stufe.<li>(BSP) Better Stocks Protection (1 Stufe, 300.000 FP): Senkt die benötigten Anleihen für Angriffs- und Spionageschutz von 10% auf 8%.</ul><li>Stufe 7:<ul><li>(FoW) Fog of War (1 Stufe, 500.000 FP): 25% Verteidigungsbonus, 10% weniger Landverlust bei verlorenen Angriffen, 20% weniger Einheitenverluste bei Angriffen. Der Angriffsschutz nach einem erfolgreichen Angriff (inkl. der gelben/roten Färbung des Konzerns) hält doppelt so lange. (bisher +2 VP für alle Units außer Carrier statt pauschal +25% Verteidigungsbonus)</ul></ul></p><p><b>Partnerboni:</b><ul><li>Gebäude verbrauchen 50% weniger Energie (bisher: 20%)<li>-30% Einheitenverluste bei defensiven Kampfhandlungen (bisher -10% bei allen Kampfhandlungen)<li>50% höhere Produktion durch die Forschung Ranger & Marines Upgrade (Bereich: Wirtschaft) (neu) (<a href="http://forum.syndicates-online.de/index.php/Thread/1286-7-Wirtschafts-Partnerboni/?postID=19037#post19037">zur Idee</a>)</ul></p><p><b>Sabotage und Spionage:</b><ul><li>Neue Formel für Erfolgswahrscheinlichkeit von Spionage- und Sabotageaktionen ("Verstärkung des Stärkeren" entfällt hierdurch, 2% (Miss-)Erfolgsrate sind davon nicht betroffen, für Spionage gilt natürlich dieselbe Formel mit ip statt op) (<a href="http://forum.syndicates-online.de/index.php/Thread/1269-Freies-Sabben/?postID=18924#post18924">zur Idee</a>):<br><img src="http://latex.codecogs.com/gif.latex?\binoppenalty=10000%20\text{Erfolgswahrscheinlichkeit}%20=%201%20-%20\frac{\text{dp}}{2\cdot\text{op}}%20\relpenalty=10000"><li>Die Schwierigkeit aller Diebstahl-Aktionen wird von schwer auf mittel herabgesetzt<li>Die Sabotagekapazitäten aller Spionageeinheiten wird reduziert (<a href="http://forum.syndicates-online.de/index.php/Thread/1269-Freies-Sabben/?postID=18494#post18494">zur Idee</a>):<ul><li>Milistäreinheiten zerstören: 0,01 / Thief (0,005 / Agent und Guardian) (bisher: 0,015 bzw. 0,0075)<li>Gebäude zerstören: 0,0012 / Thief (0,0006 / Agent und Guardian) (bisher: 0,003 bzw. 0,0015)</ul></ul></p><p><b>Urlaubsmodus:</b><ul><li>Kann nur aktiviert werden, wenn keine Aufträge auf dem Auftragsmarkt stehen.<li>Nach Aktivierung können keine Aufträge mehr eingestellt werden.</ul></p><p><b>Usability/Design (teilweise erst während der Runde verfügbar):</b><ul><li>Angriffsrechner: Der 10/4-Button kommt zurück (<a href="http://forum.syndicates-online.de/index.php/Thread/1189-Petition-zur-Rettung-des-10-4-Buttons/">zur Idee</a>)<li>Gesendete Buddy-Anfragen werden aufgelistet und können zurückgenommen werden (<a href="http://forum.syndicates-online.de/index.php/Thread/1359-Buddyliste-Gesendete-Anfragen-stornieren/">zur Idee</a>)<li>Global Market: "Rohstoffe" in "Ressourcen" umbenannt (<a href="http://forum.syndicates-online.de/index.php/Thread/1309-Diverse-%C3%84nderungen/">zur Idee</a>)<li>Konzernübersicht: Partnerboni werden innerhalb ihrer jeweiligen Kategorie alphabetisch sortiert (<a href="http://forum.syndicates-online.de/index.php/Thread/1309-Diverse-%C3%84nderungen/">zur Idee</a>)<li>Nachrichten: Neuer Button zum Anzeigen aller Nachrichten der letzten 6 Ticks (<a href="http://forum.syndicates-online.de/index.php/Thread/1318-k%C3%BCrzliche-Nachrichten/">zur Idee</a>)<li>Ranking: Konzernstärke in Networth umbenannt (<a href="http://forum.syndicates-online.de/index.php/Thread/1309-Diverse-%C3%84nderungen/">zur Idee</a>)<li>Syndikatsforum: [utube] BB-Code in [youtube] geändert und in den Hilfstext aufgenommen (<a href="http://forum.syndicates-online.de/index.php/Thread/1309-Diverse-%C3%84nderungen/">zur Idee</a>)<li>Syndikatsübersicht: Konzerne werden zu Rundenbeginn standardmäßig nach NW sortiert (bisher: Land) (<a href="http://forum.syndicates-online.de/index.php/Thread/1309-Diverse-%C3%84nderungen/">zur Idee</a>)<li>Urlaubsmodus: Bei Aktivierung findet eine Sicherheitsabfrage statt (<a href="http://forum.syndicates-online.de/index.php/Thread/1354-Umode-absichern/">zur Idee</a>)</ul></p></br><p><b>Anmerkungen:</b><ul><li>Der schon seit einiger Zeit angedachte Chat konnte aufgrund von Zeitmangel leider noch nicht realisiert werden, ist aber weiterhin geplant. Ascar übernimmt dieses Projekt ab jetzt federführend von BlaaacK.</ul></p></td></tr><tr><td style="height:20px;"></td></tr></table></div><div class="n_inner" style="text-align:right; padding-right:25px; padding-top:5px; display:none;" id="28_tick"></div><div class="n_foot"></div><div class="n_hr"></div></div></div><div class="news"><div class="news_bar"><div class="text"><a href="?action=show_news&id=27">Missbrauch von Rechten</a></div><div class="date">04.09.15 - 18:00 Uhr</div></div><div class="news_content"><div class="n_head"></div><div class="n_inner news_post" id="27_inner"><table cellspacing="3px" cellpadding="3px;" align="center" width="650px"><tr><td style="height:20px;"></td></tr><tr><td style="text-align:justify;"><p>Dieser Post hier dient der Transparenz des Missbrauchs von Rechten durch unser Technik-Team Mitglied Ascar. Dieser hat zu Beginn dieser Runde beim Fixen eines Bugs, der es einem Spieler erlaubte die Identität anderer Spieler zu erfahren, die Identität des Bug-usenden Spielers erfahren. 5 Tage später kaufte Ascar Anleihenschutz von dessen Syndikat. Dass ihm die Information auf Basis derer er Anleihenschutz von diesem Syndikat holte, ohne seine Tätigkeit als Entwickler gar nicht zustände, wurde ihm erst später bewusst. Für dieses Fehlverhalten hat er intern eine Verwarnung erhalten.</p><p>Wir möchten diesen unbeabsichtigten Missbrauch von Rechten auf diesem Weg transparent dokumentieren und versuchen derartiges für die Zukunft durch strengere interne Richtlinien auszuschließen.</p><p>Hier noch Ascars persönliche Entschuldigung an euch:</p><p>&nbsp;&nbsp;&nbsp;<i>"Es tut mir leid, dass ich im Laufe der Runde Informationen, die ich als Entwickler von Syndicates erhalten habe, missbraucht habe. Den Anleihenschutz habe ich geholt, weil ich wusste, dass mir der Spieler schaden will und da ich wusste, dass er meinen Konzern kennt. Dass ich ohne meine Tätigkeit als Entwickler gar nicht wissen konnte wer er ist, war mir zu diesem Zeitpunkt nicht mehr bewusst. Ich werde künftig genauer darauf achten, welche Informationen ich als Spieler und welche als Entwickler erhalten habe und aufpassen, dass so etwas nicht mehr vorkommt."</i></p></td></tr><tr><td style="height:20px;"></td></tr></table></div><div class="n_inner" style="text-align:right; padding-right:25px; padding-top:5px; display:none;" id="27_tick"></div><div class="n_foot"></div></div></div></div></div><div class="c_foot"></div><div class="more_news_bar"><a href="?action=news_archiv">MEHR NEWS</a></div></div><div class="foot"><div class="outer"><div style="text-align:center"><strong>Partner</strong></div><table width="100%" class="partner_table"><tr><td width="50%"></td><td width="50%" style="line-height:30px;"></td></tr></table></div><div class="outer copy">Bei Fragen zum Spiel: <a href="mailto:info@syndicates-verein.de">Mail an den E-Mail-Support</a><br /><a href="?action=agb">AGB</a> - <a href="?action=nutzungsbedingungen">Nutzungsbedingungen</a> - <a href="?action=impressum">Impressum</a><br /><br />Syndicates Online Game <br /><br /><div class="area"><img src="images/startseite/verein_logo.png" alt="Syndicates e.V." /></div><div class="area" style="text-align:right;">&copy; 2002-2015<br /><a href="http://www.syndicates-verein.de" target="_blank">Syndicates e.V.</a></div></div></div><div class="toolbar_outer"><div class="toolbar visible" id="toolbar_small"><div class="toolbar_left"></div><div class="toolbar_content"><img src="images/startseite/icon_i_green.png" style="width:24px; height:24px;" alt="green" /></div><div class="toolbar_right"></div></div><div class="toolbar" id="toolbar_big"><div class="toolbar_left"></div><div class="toolbar_content"><strong>Runde läuft</strong><br />Rundenende: 28.10.2015, 20:00 Uhr</div><div class="toolbar_right"></div></div></div>
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+				var pageTracker = _gat._getTracker("UA-745697-5");
+				pageTracker._trackPageview();
+			} catch(err) {}
+		</script>
+		</body></html>

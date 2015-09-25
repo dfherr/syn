@@ -1,8 +1,8 @@
 from unipath import Path
 
-from api.login import LoggedInSession
+from api import LoggedInSession
 from syn_utils import overview_link, RES_DIR
-from stats.rankings import syndicate_link
+from scraper.rankings import syndicate_link
 
 
 def update_captcha(session):
@@ -19,7 +19,7 @@ def update_syndicates(session):
 
 def update_home(session):
     c = session.s.get(overview_link).content
-    with open(Path(RES_DIR, 'home/home_basic.html'), 'w') as f:
+    with open(Path(RES_DIR, 'home/home_account.html'), 'w') as f:
         f.write(c)
 
 
