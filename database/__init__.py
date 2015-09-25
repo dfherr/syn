@@ -1,1 +1,3 @@
-__author__ = 'sol1x'
+from .database import Database
+
+__all__ = ['Database']
