@@ -45,6 +45,7 @@ class Database(object):
         to the database table 'rankings':
         | ID | DATE | RANK | NAME | CLASS | HA | NW | SYN |
         """
+        # TODO: bulk upload...
         for rank in rankings:
             self.cur.execute(
                 'INSERT INTO rankings '
