@@ -6,12 +6,13 @@ from database import Database
 if __name__ == '__main__':
     # Saves current rankings to db
     api = SynAPI()
+
+    rankings = api.generate_rankings()
     with Database() as db:
-        # db.create_database()
-        rankings = api.generate_rankings()
         db.save_rankings(rankings)
 
     api.session.save_session()
+
 
 """
 Basic Ideas:

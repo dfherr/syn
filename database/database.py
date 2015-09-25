@@ -22,13 +22,14 @@ class Database(object):
         """
         create_string = """
                 CREATE TABLE rankings (
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER PRIMARY KEY NOT NULL,
                     rank_date TIMESTAMP NOT NULL,
                     current_rank INTEGER NOT NULL,
                     name TEXT NOT NULL,
                     class TEXT NOT NULL,
                     ha INTEGER NOT NULL,
-                    nw INTEGER NOT NULL)"""
+                    nw INTEGER NOT NULL,
+                    syn INTEGER NOT NULL)"""
         self.con.execute("DROP TABLE IF EXISTS rankings")
         self.con.execute(create_string)
         self.con.commit()
@@ -37,14 +38,19 @@ class Database(object):
         """
         saves the scraped and ordered rankings
         from scraper.rankings in form of
-        [(datetime.now(), 'rank', 'name', 'class', 'ha', 'nw'), ...]
+
+        [(datetime.now(), 'rank', 'name',
+        'class', 'ha', 'nw', 'syn'), ...]
+
         to the database table 'rankings':
-        | ID | DATE | RANK | NAME | CLASS | HA | NW |
+        | ID | DATE | RANK | NAME | CLASS | HA | NW | SYN |
         """
-        self.cur.execute('BEGIN TRANSACTION')
         for rank in rankings:
             self.cur.execute(
-                'INSERT INTO rankings VALUES (?, ?, ?, ?, ?, ?)',
+                'INSERT INTO rankings '
+                '(rank_date, current_rank, name, class, '
+                'ha, nw, syn) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
                 rank
             )
-        self.cur.execute('COMMIT')
+            self.con.commit()

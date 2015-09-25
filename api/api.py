@@ -246,7 +246,8 @@ class SynAPI(object):
         'syndikat' page.
 
         returns:
-        [(datetime.now(), 'rank', 'name', 'class', 'ha', 'nw'), ...]
+        [(datetime.now(), 'rank', 'name',
+        'class', 'ha', 'nw', 'syn'), ...]
 
         for manual output following pandas settings
         are recommended:

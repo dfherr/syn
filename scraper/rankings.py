@@ -42,7 +42,7 @@ def scrape_syndicate(syn_number, html):
     Scrapes a syndicate to generate a live rating
 
     personal stats are like
-    [('class', 'username', 'land', 'networth'), ...]
+    [('class', 'username', 'land', 'networth', 'syn'), ...]
     syndicate stats are saved in syn_net and syn_land
 
     implements a check for self consistency:
