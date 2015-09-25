@@ -4,19 +4,21 @@ import numpy as np
 
 # gets filled by scraper
 # cr, energy, erz, fp
-owner = np.asarray([1242100, 175110, 67, 27137])
-spy_price = np.asarray([280, 210, 0, 14])
+owner = np.asarray([175280, 28014, 113, 93591])
+spy_price = np.asarray([1100, 250, 150, 0])
 
 # energy to cr, erz to cr, fp to cr
 # insert 1 - cr to cr for consistent indexing
-ex_rate = np.asarray([1, 1.4, 7.3, 17.2])
+ex_rate = np.asarray([1, 1.2, 8.9, 10])
 # nrg, erz, fp available at scraped price at market
 # insert '0' for credits for consistent indexing
-market_cap = np.asarray([0, 150000, 100000, 42788])
+market_cap = np.asarray([0, 1942653, 134809, 42788])
 
 capacity_cap = 20000
-
-
+#  	  175.280 Cr 		  28.014 MWh 		  113 t 		  93.591 P
+# 1.100 Cr, 150 t, 250 MWh
+# 1.942.653 	13 	134.830
+#  Erz 		134.809 	89 	19.694
 def new_optimizer(owner, unit, ex, capacity_cap, market_cap):
     """
     Takes the scraped data and computes the optimal amount of
