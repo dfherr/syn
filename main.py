@@ -1,12 +1,19 @@
 #!/usr/bin/env python
-from api.login import LoggedInSession
+
+from api import SynAPI
+from database import Database
 
 if __name__ == '__main__':
-    with LoggedInSession.get_session() as session:
-        # scrape_own_stats()
-        # z = generate_rankings(session)
-        print('lol')
+    # Saves current rankings to db
+    api = SynAPI()
+    with Database() as db:
+        # db.create_database()
+        rankings = api.generate_rankings()
+        db.save_rankings(rankings)
 
+    api.session.save_session()
+
+"""
 # TODO: save rankings
 # TODO: save gamestats
 # to db
@@ -18,9 +25,6 @@ if __name__ == '__main__':
 # TODO: post für Land/Militär/GM
 # TODO: BOT -> self.gamestats ... some time handling....
 
-# check every action of the bot with check_login?!?
-
-"""
 Basic Ideas:
 First Step should always be determining the owner stats
 -> game_stats (research time / costs, unit cost, building cost, land cost,
@@ -40,6 +44,4 @@ energy usage) should be updated once every tick and saved
 
 -> a few minuts before each tick -> recheck game_stats
     -> if smth went wrong take ressources out of syn bank
-
-rankings should be saved every 30minutes or smth like that
 """
