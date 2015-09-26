@@ -6,6 +6,10 @@ from database import Database
 
 
 def analyse_player(rankings, name):
+    """
+    shows the development of player 'name'
+    plots ha and nw on a timeline
+    """
     player_rankings = rankings[rankings[3] == name]
     dates = player_rankings.loc[:, 1]
     ha = player_rankings.loc[:, 5]
@@ -30,6 +34,10 @@ def analyse_player(rankings, name):
     plt.show()
 
 
+def _find_logs(date1, date2):
+    raise NotImplementedError
+
+
 def find_top_ha_diff(n1, n2):
     n = pd.merge(n1, n2, on=1)
     n.loc[:, 'ha_diff'] = pd.Series(n['2_x'] - n['2_y'])
@@ -47,4 +55,7 @@ if __name__ == '__main__':
     with Database() as db:
         rankings = db.read_rankings()
         rankings = pd.DataFrame(rankings)
-        # analyse_player(rankings, "Vollidioten")
+        pd.set_option('display.width', 200)
+        pd.set_option('display.max_rows', 1000)
+        s = 'Wasserbombe'
+        analyse_player(rankings, s)
