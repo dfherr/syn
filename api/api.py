@@ -62,7 +62,13 @@ class SynAPI(object):
     # build military (-> HUC, Spies, Carrier...)
     # when selling, permanently tenders... to reasonable price
     def logout(self):
-        self.session.get(links['logout'])
+        """
+        logout of session -> get to captcha page
+        thus we have to use session.s (the python requests session)
+        instead the LoggedInSession. Else it would try to do it over
+        and over again -> see LoggedInSession.session.get docstring
+        """
+        self.session.s.get(links['logout'])
 
     def get_owner_resources(self):
         # TODO: use the smallest page for this step
@@ -267,7 +273,8 @@ class SynAPI(object):
         rankings = generate_user_rankings(rankings)
 
         # add datetime and current rank
+        date_now = dt.now()
         for i in range(len(rankings)):
-            rankings[i] = [dt.now(), i+1] + rankings[i]
+            rankings[i] = [date_now, i+1] + rankings[i]
 
         return rankings
