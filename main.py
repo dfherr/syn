@@ -8,19 +8,20 @@ if __name__ == '__main__':
     # Saves current rankings to db
     api = SynAPI()
 
-    with Database() as db:
-        rankings = api.generate_rankings()
-        db.save_rankings(rankings)
-
+    # manual update
     # with Database() as db:
-    #     # db.create_database()
-    #     for i in range(1000):
-    #         print('start')
-    #         rankings = api.generate_rankings()
-    #         db.save_rankings(rankings)
-    #         print('stop')
-    #         api.logout()
-    #         sleep(15*60)
+    #     rankings = api.generate_rankings()
+    #     db.save_rankings(rankings)
+
+    # automatic updates
+    with Database() as db:
+        for i in range(1000):
+            print('start')
+            rankings = api.generate_rankings()
+            db.save_rankings(rankings)
+            api.logout()
+            print('stop')
+            sleep(15*60)
 
     api.session.save_session()
 
