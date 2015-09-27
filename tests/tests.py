@@ -10,7 +10,33 @@ from api import LoggedInSession
 from api.pages import SynPages
 from api.captcha_solver import solve_captcha
 from scraper.rankings import scrape_syndicate, generate_user_rankings
+from scraper.owner_stats import scrape_owner_stats
 from syn_utils import BASE_DIR, RES_DIR, session_file, overview_link
+
+
+class TestScrapers(unittest.TestCase):
+    def test_owner_stats(self):
+        """
+        tests the correct parsing of all owner stats
+        as net worth, ha, resources, capacities
+        """
+        with open(Path(RES_DIR, 'home/home_military.html')) as f:
+            html = f.read()
+        stats = scrape_owner_stats(html)
+
+        check = {
+            'fp': 74711,
+            'capas_carrier': 44770,
+            'energy': 115,
+            'erz': 58897,
+            'capas_spies': 327,
+            'credits': 15,
+            'ha': 4215,
+            'capas_military': 11301,
+            'nw': 860892
+        }
+
+        self.assertDictEqual(stats, check)
 
 
 class TestSynPageMethods(unittest.TestCase):
