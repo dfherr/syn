@@ -1,6 +1,6 @@
 import re
 
-from syn_utils import string_to_int
+from utils import string_to_int
 
 personal_stats_regex = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'

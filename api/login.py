@@ -6,14 +6,11 @@ from PIL import Image
 import requests
 
 from .captcha_solver import solve_captcha
-# TODO: work on these imports -> moved to api
-from syn_utils import (
-    get_secret, main_link, overview_link, login_link, session_file
-)
+from .utils import links, main_link
+from settings import get_secret, session_file
+
 
 __all__ = ['LoggedInSession']
-
-# TODO: last request...
 
 
 class LoggedInSession(object):
@@ -42,7 +39,7 @@ class LoggedInSession(object):
         self.refresh_session_captcha()
 
         # check if session successful
-        r = self.session.get(overview_link)
+        r = self.session.get(links['home'])
         if not self.check_login(r.content):
             raise Exception('Login Error')
 
@@ -153,7 +150,7 @@ class LoggedInSession(object):
             'action': 'login',
             'codeinput': code,
         }
-        self.session.post(login_link, data=captcha_payload)
+        self.session.post(links['login'], data=captcha_payload)
 
     def save_session(self):
         """
@@ -185,7 +182,7 @@ class LoggedInSession(object):
             last_session = cls.load_session()
             if last_session is not None:
                 try:
-                    r = last_session.s.get(overview_link)
+                    r = last_session.s.get(links['home'])
                     if last_session.check_login(r.context):
                         return last_session
                 except AttributeError as e:

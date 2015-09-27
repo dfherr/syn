@@ -1,52 +1,11 @@
 from datetime import datetime as dt
 
 from .login import LoggedInSession
+from .utils import *
 from scraper.rankings import scrape_syndicate, generate_user_rankings
+from settings import syns_amount
 
-# TODO: scraping with imported parser...
-# TODO: stats_collection extern
-
-__all__ = ['main_link', 'links', 'SynAPI']
-
-
-def main_link(page):
-    return 'http://www.syndicates-online.de/php/{0}'.format(page)
-
-
-def syndicate_link(syn_number):
-    return main_link('syndicate.php?rid={0}'.format(syn_number))
-
-links = {
-    'aktuelles': main_link('aktuelles'),
-    'bonus': main_link('bonus.php'),
-    'home': main_link('statusseite.php'),
-    'logout': main_link('logout.php'),
-    'military': main_link('militaerseite.php'),
-    'market': main_link('market.php'),
-    'shares': main_link('anleihenmarkt.php'),
-    'store': main_link('pod.php'),
-    'research': main_link('forschung.php'),
-}
-
-request_names = {
-    'marine': 'offspecs',
-    'ranger': 'defspecs',
-    'buc': 'elites',
-    'auc': 'elites2',
-    'huc': 'techs',
-    'thief': 'offspies',
-    'guardian': 'defspies',
-    'agent': 'intelspies',
-    'energy': 'energy',
-    'erz': 'metal',
-    'fp': 'sciencepoints',
-    'credits': 'money',
-}
-buildings = ['']
-bonus_types = [1, 2]
-military = ['marine', 'ranger', 'buc', 'auc', 'huc',
-            'thief', 'guardian', 'agent']
-resources = ['credits', 'energy', 'erz', 'fp']
+__all__ = ['SynAPI']
 
 
 class SynAPI(object):
@@ -68,7 +27,7 @@ class SynAPI(object):
         instead the LoggedInSession. Else it would try to do it over
         and over again -> see LoggedInSession.session.get docstring
         """
-        self.session.s.get(links['logout'])
+        self.session.session.get(links['logout'])
 
     def get_owner_resources(self):
         # TODO: use the smallest page for this step
@@ -267,7 +226,7 @@ class SynAPI(object):
         # TODO: find a way to automatically determine
         # amount of syndicates
         rankings = []
-        for i in range(1, 29):
+        for i in range(1, syns_amount+1):
             r = self.session.get(syndicate_link(i))
             rankings += scrape_syndicate(i, r.content)
         rankings = generate_user_rankings(rankings)

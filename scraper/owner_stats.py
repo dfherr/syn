@@ -1,6 +1,6 @@
 import re
 
-from syn_utils import string_to_int
+from .utils import machine_readable_stats
 
 # Every value
 base_regex = r'[&nbsp; ]([0-9\.]+) {0}'
@@ -11,7 +11,7 @@ energy_regex = re.compile(base_regex.format('MWh'))
 erz_regex = re.compile(base_regex.format('t'))
 fp_regex = re.compile(base_regex.format('P'))
 
-capacity_base_regex = '<b class="highlightAuftableInner">([0-9\.]+)</b> {0}'
+capacity_base_regex = r'<b class="highlightAuftableInner">([0-9\.]+)</b> {0}'
 military_regex = re.compile(capacity_base_regex.format('Milit'))
 spies_regex = re.compile(capacity_base_regex.format('Spionage'))
 carrier_regex = re.compile(capacity_base_regex.format('Carrier'))
@@ -51,9 +51,4 @@ def scrape_owner_stats(html):
     owner_stats['capas_spies'] = spies_regex.search(tmp).group(1)
     owner_stats['capas_carrier'] = carrier_regex.search(tmp).group(1)
 
-    # transform the string in machine readable format
-    for key in owner_stats.keys():
-        print(owner_stats[key])
-        owner_stats[key] = string_to_int(owner_stats[key])
-
-    return owner_stats
+    return machine_readable_stats(owner_stats)

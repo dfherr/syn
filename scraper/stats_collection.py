@@ -1,10 +1,5 @@
 from datetime import datetime
 
-from .owner_stats import get_owner_stats
-from syn_utils import military_link
-
-# TODO: move timing and forcing to the bot...
-
 
 class StatsCollection(object):
     def __init__(self, session):
@@ -54,16 +49,7 @@ class StatsCollection(object):
         update it
         add random distribution on update limits
         """
-        refresh_time = datetime.now()
-
-        # military page can be used for both
-        # owner_stats and owner_military
-        stats_refresh = self.time_add('owner_stats') < refresh_time
-        military_html = self.session.s.get(military_link)
-        # TODO: think about interaction with bot... what does really need updates
-        if stats_refresh:
-            # TODO:
-            self.updates['owner_stats'] = refresh_time
+        raise NotImplementedError
 
     def force_refresh(self):
         raise NotImplementedError

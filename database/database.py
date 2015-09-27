@@ -1,6 +1,6 @@
 import sqlite3 as sql
 
-from syn_utils import sql_file
+from settings import sql_file
 
 
 class Database(object):

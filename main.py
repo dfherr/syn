@@ -9,19 +9,19 @@ if __name__ == '__main__':
     api = SynAPI()
 
     # manual update
-    # with Database() as db:
-    #     rankings = api.generate_rankings()
-    #     db.save_rankings(rankings)
+    with Database() as db:
+        rankings = api.generate_rankings()
+        db.save_rankings(rankings)
 
     # automatic updates
-    with Database() as db:
-        for i in range(1000):
-            print('start')
-            rankings = api.generate_rankings()
-            db.save_rankings(rankings)
-            api.logout()
-            print('stop')
-            sleep(15*60)
+    # with Database() as db:
+    #     for i in range(1000):
+    #         print('start')
+    #         rankings = api.generate_rankings()
+    #         db.save_rankings(rankings)
+    #         api.logout()
+    #         print('stop')
+    #         sleep(60*60)
 
     api.session.save_session()
 
@@ -46,4 +46,7 @@ energy usage) should be updated once every tick and saved
 
 -> a few min before each tick -> recheck game_stats
     -> if something went wrong take resources out of syn bank
+
+-> update storage prices once an hour...
+-> if no tender online -> check resources and compare with store prices
 """

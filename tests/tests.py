@@ -6,12 +6,11 @@ from PIL import Image
 
 from unipath import Path
 
-from api import LoggedInSession
-from api.pages import SynPages
+from api import LoggedInSession, links
 from api.captcha_solver import solve_captcha
 from scraper.rankings import scrape_syndicate, generate_user_rankings
 from scraper.owner_stats import scrape_owner_stats
-from syn_utils import BASE_DIR, RES_DIR, session_file, overview_link
+from settings import BASE_DIR, RES_DIR, session_file
 
 
 class TestScrapers(unittest.TestCase):
@@ -45,16 +44,11 @@ class TestSynPageMethods(unittest.TestCase):
     """
     def test_home(self):
         session = LoggedInSession.get_session()
-        pages = SynPages(session)
-
-        self.assertEqual(pages.home.status_code, 200)
-        self.assertEqual(pages.area.status_code, 200)
-        self.assertEqual(pages.military.status_code, 200)
-        self.assertEqual(pages.research.status_code, 200)
-        self.assertEqual(pages.syndicate(1).status_code, 200)
-        self.assertEqual(pages.market.status_code, 200)
-        self.assertEqual(pages.storage.status_code, 200)
-        self.assertEqual(pages.shares.status_code, 200)
+        for key in links.keys():
+            self.assertEqual(
+                session.session.get(links[key]).status_code,
+                200
+            )
 
 
 class TestLoginMethods(unittest.TestCase):
@@ -70,7 +64,7 @@ class TestLoginMethods(unittest.TestCase):
         with open(Path(RES_DIR, 'home/home_account.html'), 'r') as f:
             overview_html = f.read()
             self.assertEqual(
-                session.check_login(overview_html, build=False),
+                session.check_login(links['home'], build=False),
                 True
             )
 
@@ -93,7 +87,7 @@ class TestLoginMethods(unittest.TestCase):
         loads the session of the last test and makes a request
         """
         with LoggedInSession.get_session() as session:
-            r = session.s.get(overview_link)
+            r = session.s.get(links['home'])
             self.assertEqual(session.check_login(r.content), True)
 
     def test_refresh_session(self):
@@ -109,14 +103,14 @@ class TestLoginMethods(unittest.TestCase):
         session2 = LoggedInSession.get_session(new_session=True)
 
         # old session got deleted server side
-        r = session.s.get(overview_link)
+        r = session.s.get(links['home'])
         self.assertEqual(session.check_login(r.content, build=False), False)
         # but the new one should work
-        r = session2.s.get(overview_link)
+        r = session2.s.get(links['home'])
         self.assertEqual(session2.check_login(r.content, build=False), True)
 
         # with the new get method the session should get refreshed
-        r = session.get(overview_link)
+        r = session.get(links['home'])
         self.assertEqual(session.check_login(r.content, build=False), True)
 
 
