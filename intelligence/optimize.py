@@ -60,3 +60,10 @@ def new_optimizer(owner, unit, ex, capacity_cap, market_cap):
 
 
 print(new_optimizer(owner, spy_price, ex_rate, capacity_cap, market_cap))
+
+
+def store_res_in():
+    pass
+
+def store_res_out():
+    pass

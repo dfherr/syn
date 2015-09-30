@@ -57,5 +57,5 @@ if __name__ == '__main__':
         rankings = pd.DataFrame(rankings)
         pd.set_option('display.width', 200)
         pd.set_option('display.max_rows', 1000)
-        s = 'Wasserbombe'
+        s = 'Wurst'
         analyse_player(rankings, s)

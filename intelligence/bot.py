@@ -1,4 +1,5 @@
 from scraper.stats_collection import StatsCollection
+from .optimize import *
 
 
 class Bot(object):

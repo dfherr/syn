@@ -102,7 +102,7 @@ class LoggedInSession(object):
 
         self.session = requests.Session()
         self.session.headers.update({'User-Agent': user_agent})
-        self.session.post(main_link('index.php'), data=login_payload)
+        self.session.post(links['login'], data=login_payload)
 
     def check_login(self, html, build=True):
         """
@@ -142,7 +142,7 @@ class LoggedInSession(object):
         refreshes the session captcha
         raises an Exception if the captcha isn't solvable
         """
-        captcha = self.session.get(main_link('captcha.php?t={0}'.format(time.time)))
+        captcha = self.session.get('http://www.syndicates-online.de/captcha.php?t=1441314520')  # main_link('captcha.php?t={0}'.format(time.time)))
         img = Image.open(StringIO(captcha.content))
         code = solve_captcha(img)
 
@@ -150,7 +150,7 @@ class LoggedInSession(object):
             'action': 'login',
             'codeinput': code,
         }
-        self.session.post(links['login'], data=captcha_payload)
+        self.session.post(main_link('login.php'), data=captcha_payload)
 
     def save_session(self):
         """
