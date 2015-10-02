@@ -2,6 +2,7 @@ from datetime import datetime as dt
 
 from .login import LoggedInSession
 from .utils import *
+from scraper import scrape_owner_stats
 from scraper.rankings import scrape_syndicate, generate_user_rankings
 from settings import syns_amount
 
@@ -29,9 +30,13 @@ class SynAPI(object):
         """
         self.session.session.get(links['logout'])
 
-    def get_owner_resources(self):
-        # TODO: use the smallest page for this step
-        raise NotImplementedError
+    def get_owner_stats(self):
+        """
+        Loads and scrapes from links['military'] to get all resources
+        and remaining capacities
+        """
+        r = self.session.get(links['military'])
+        return scrape_owner_stats(r.content)
 
     def get_gm_resources(self):
         raise NotImplementedError
