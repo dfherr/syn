@@ -13,6 +13,7 @@ index_link = 'http://www.syndicates-online.de/index.php'
 links = {
     'aktuelles': main_link('aktuelles'),
     'bonus': main_link('bonus.php'),
+    'captcha': 'http://www.syndicates-online.de/captcha.php?t={0}',
     'home': main_link('statusseite.php'),
     'login': 'http://www.syndicates-online.de/index.php',
     'logout': main_link('logout.php'),

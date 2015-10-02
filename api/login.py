@@ -156,7 +156,7 @@ class LoggedInSession(object):
         refreshes the session captcha
         raises an Exception if the captcha isn't solvable
         """
-        captcha = self.session.get('http://www.syndicates-online.de/captcha.php?t=1441314520')  # main_link('captcha.php?t={0}'.format(time.time)))
+        captcha = self.session.get(links['captcha'].format(time.time))
         img = Image.open(StringIO(captcha.content))
         code = solve_captcha(img)
 
@@ -200,8 +200,8 @@ class LoggedInSession(object):
                     if last_session.check_login(r.context):
                         return last_session
                 except AttributeError as e:
-                    # If session object is corrupted
-                    pass
+                    print('Session object corrupted {0}'.format(e))
+                    print('Generating a new session')
 
         return LoggedInSession(
             user=get_secret('user'),
