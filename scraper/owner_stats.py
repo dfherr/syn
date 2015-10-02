@@ -2,6 +2,8 @@ import re
 
 from .utils import machine_readable_stats
 
+__all__ = ['scrape_owner_stats']
+
 # Every value
 base_regex = r'[&nbsp; ]([0-9\.]+) {0}'
 networth_regex = re.compile(base_regex.format('NW'))

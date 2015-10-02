@@ -1,13 +1,6 @@
 import re
 
-from unipath import Path
-
-from scraper.utils import machine_readable_stats
-from settings import RES_DIR
-
-
-with open(Path(RES_DIR, 'home/home_store.html')) as f:
-    html = f.read()
+from .utils import machine_readable_stats
 
 base_resource_regex = r'<td>{0}</td>\s+<td align=right>([0-9\.]+)&nbsp;'
 energy_regex = re.compile(base_resource_regex.format('Energie'))
@@ -43,12 +36,12 @@ def scrape_store(html):
     store['erz'] = erz_regex.search(tmp).group(1)
     store['fp'] = fp_regex.search(tmp).group(1)
 
+    # convert numbers here, since exchange rates are actually floats
+    store = machine_readable_stats(store)
+
     matches = exchange_rate_regex.search(tmp)
-    store['ex_energy'] = matches.group(1)
-    store['ex_erz'] = matches.group(2)
-    store['ex_fp'] = matches.group(3)
+    store['ex_energy'] = float(matches.group(1))
+    store['ex_erz'] = float(matches.group(2))
+    store['ex_fp'] = float(matches.group(3))
 
-    return machine_readable_stats(store)
-
-if __name__ == '__main__':
-    print(scrape_store(html))
+    return store
