@@ -196,8 +196,8 @@ class LoggedInSession(object):
             last_session = cls.load_session()
             if last_session is not None:
                 try:
-                    r = last_session.s.get(links['home'])
-                    if last_session.check_login(r.context):
+                    r = last_session.session.get(links['home'])
+                    if last_session.check_login(r.content):
                         return last_session
                 except AttributeError as e:
                     print('Session object corrupted {0}'.format(e))
