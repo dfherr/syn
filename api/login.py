@@ -4,6 +4,7 @@ import time
 from PIL import Image
 
 import requests
+from requests.exceptions import ConnectionError
 
 from .captcha_solver import solve_captcha
 from .utils import links, main_link
@@ -55,37 +56,49 @@ class LoggedInSession(object):
             print('Request failed try again in {0}s'.format(seconds))
             time.sleep(seconds)
 
-    def get(self, link, params={}, referral_link=''):
+    def _request(self, method, link, **kwargs):
         """
-        http get request
+        http request (only get / post implemented here)
 
         check every get request for session validity
         and captcha validity
         if both is fine return the request object
+        catch Connection Errors
         """
         self._retry_timer()
-        r = self.session.get(
-            link, params=params, headers={'referrer': referral_link}
-        )
-        if not self.check_login(r.content):
-            r = self.get(link)
+        try:
+            if method == 'GET':
+                params = kwargs.get('params', {})
+                referral_link = kwargs.get('referral_link', '')
+                r = self.session.get(
+                    link, params=params, headers={'referrer': referral_link}
+                )
+            elif method == 'POST':
+                data = kwargs.get('data', {})
+                r = self.session.post(link, data=data, headers={'referrer': link})
+        except ConnectionError as e:
+            print('Connection Error {0}. Try again...'.format(e))
+            successful_request = False
+
+        if not self.check_login(r.content) or not successful_request:
+            r = self._request(method, link, **kwargs)
 
         return r
+
+    def get(self, link, params={}, referral_link=''):
+        """ HTTP GET REQUEST """
+        send_kwargs = {
+            'params': params,
+            'referral_link': referral_link
+        }
+        return self._request('GET', link, **send_kwargs)
 
     def post(self, link, data):
-        """
-        http post request
-
-        check every post request for session validity
-        and captcha validity
-        if both is fine return the request object
-        """
-        self._retry_timer()
-        r = self.session.post(link, data=data, headers={'referrer': link})
-        if not self.check_login(r.content):
-            r = self.post(link, data=data)
-
-        return r
+        """ HTTP POST REQUEST """
+        send_kwargs = {
+            'data': data
+        }
+        return self._request('POST', link, **send_kwargs)
 
     def build_session(self):
         """
