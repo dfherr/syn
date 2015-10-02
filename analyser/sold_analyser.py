@@ -1,10 +1,12 @@
 import re
 
 import pandas as pd
+from unipath import Path
 
 from api import links
 from api import LoggedInSession
 from scraper.utils import string_to_int
+from settings import RES_DIR
 
 # TODO: NOT WORKING PROPERLY, FIX REGEX(?) BEFORE USAGE!
 
@@ -51,7 +53,7 @@ if __name__ == '__main__':
 
     pd.set_option('display.max_rows', 1000)
 
-    with open('test_log', 'w') as f:
+    with open(Path(RES_DIR, 'home/test_log'), 'w') as f:
         f.write(r.content)
         f.write('\n\n\n\n')
         f.write(str(df))
