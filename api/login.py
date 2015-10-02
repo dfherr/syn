@@ -76,6 +76,7 @@ class LoggedInSession(object):
             elif method == 'POST':
                 data = kwargs.get('data', {})
                 r = self.session.post(link, data=data, headers={'referrer': link})
+            successful_request = True
         except ConnectionError as e:
             print('Connection Error {0}. Try again...'.format(e))
             successful_request = False
