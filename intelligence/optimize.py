@@ -35,7 +35,7 @@ def new_optimizer(owner, unit, ex, capacity_cap, market_cap):
                     temp_owner[0] -= ex[i]*unit[i]
                     temp_market[i] -= unit[i]
                     temp_owner[i] += unit[i]
-                else:
+            else:
                     limiting_index = i
                     break
         if not temp_owner[0] > amount*unit[0]:
@@ -60,6 +60,11 @@ def new_optimizer(owner, unit, ex, capacity_cap, market_cap):
 
 
 print(new_optimizer(owner, spy_price, ex_rate, capacity_cap, market_cap))
+
+
+def optimize_storage_prices(exchange_rates):
+
+    return
 
 
 def store_res_in():
