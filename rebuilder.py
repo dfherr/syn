@@ -5,26 +5,50 @@ from database import Database
 from time import sleep
 
 if __name__ == '__main__':
-    # Saves current rankings to db
+    # from intelligence.bot import Bot
+    #
+    # bot = Bot()
+    # bot.run()
+
     api = SynAPI()
 
-    # manual update
-    with Database() as db:
-        rankings = api.generate_rankings()
-        db.save_rankings(rankings)
+    # call random page until tender is online, sleep(2 +/- std dev)
+    # check tender every 10 requests (at auto storing, too) (save in stats collection?)
 
-    # automatic updates
+    # set new tender if other one is lower -> 2k
+
+    # do until 5 tenders, then delete highest tender
+    # repeat until 55%...
+
+    # testing of rebuild function...
+
+    # Auto storing
+    limit = 3000000
+    for i in range(300000):
+        stats = api.get_owner_stats()
+        print(i, stats)
+        if stats['credits'] > limit:
+            print('stored...')
+            api.store_resources('credits', stats['credits']-limit)
+        sleep(3)
+
+    # Update Database Rankings
+    # # manual update
     # with Database() as db:
-    #     for i in range(1000):
-    #         print('start')
-    #         rankings = api.generate_rankings()
-    #         db.save_rankings(rankings)
-    #         api.logout()
-    #         print('stop')
-    #         sleep(60*60)
+    #     rankings = api.generate_rankings()
+    #     db.save_rankings(rankings)
+    #
+    # # automatic updates
+    # # with Database() as db:
+    # #     for i in range(1000):
+    # #         print('start')
+    # #         rankings = api.generate_rankings()
+    # #         db.save_rankings(rankings)
+    # #         api.logout()
+    # #         print('stop')
+    # #         sleep(60*60)
 
     api.session.save_session()
-
 
 """
 Basic Ideas:
@@ -46,6 +70,7 @@ energy usage) should be updated once every tick and saved
 
 -> a few min before each tick -> recheck game_stats
     -> if something went wrong take resources out of syn bank
+       (e.g. not enough fp for research)
 
 -> update storage prices once an hour...
 -> if no tender online -> check resources and compare with store prices
