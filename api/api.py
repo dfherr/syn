@@ -2,8 +2,13 @@ from datetime import datetime as dt
 
 from .login import LoggedInSession
 from .utils import *
-from scraper import scrape_owner_stats
-from scraper.rankings import scrape_syndicate, generate_user_rankings
+from scraper import (
+    scrape_market_resources,
+    scrape_owner_stats,
+    scrape_store,
+    scrape_syndicate,
+    generate_user_rankings
+)
 from settings import syns_amount
 
 __all__ = ['SynAPI']
@@ -39,10 +44,20 @@ class SynAPI(object):
         return scrape_owner_stats(r.content)
 
     def get_gm_resources(self):
-        raise NotImplementedError
+        """
+        Loads and scrapes from links['market'] to get all market
+        exchange rates and the market volumes
+        """
+        r = self.session.get(links['market'])
+        return scrape_market_resources(r.content)
 
     def get_store_resources(self):
-        raise NotImplementedError
+        """
+        Loads and scrapes from links['store'] to get all store
+        exchange rates and the store volumes
+        """
+        r = self.session.get(links['store'])
+        return scrape_store(r.content)
 
     def get_military_stats(self):
         raise NotImplementedError
