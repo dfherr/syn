@@ -65,6 +65,7 @@ class LoggedInSession(object):
         if both is fine return the request object
         catch Connection Errors
         """
+        # TODO: add status code = 200, connection error fix?!
         self._retry_timer()
         try:
             if method == 'GET':
