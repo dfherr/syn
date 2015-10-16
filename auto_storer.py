@@ -7,7 +7,7 @@ if __name__ == '__main__':
     api = SynAPI()
 
     # Auto storing
-    limit = 3000000
+    limit = 5000000
     for i in range(300000):
         stats = api.get_owner_stats()
         print(i, stats)

@@ -8,7 +8,7 @@ from api import SynAPI
 from .optimize import new_optimizer
 
 
-class Bot(object):
+class HUCBot(object):
     def __init__(self):
         """
         should handle all the session interaction
