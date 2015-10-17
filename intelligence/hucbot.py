@@ -5,7 +5,7 @@ from time import sleep
 import numpy as np
 
 from api import SynAPI
-from .optimize import new_optimizer
+from .dev import seller_optimizer as new_optimizer
 
 
 class HUCBot(object):
@@ -57,7 +57,7 @@ class HUCBot(object):
         print(volumes)
 
         if self.base_stats['capas_spies'] > 0:
-            # format for optimizer (requires credits, too)
+            # format for seller_optimizer (requires credits, too)
             ex_rates = np.asarray([1] + ex_rates)
             volumes = np.asarray([0] + volumes)
             owner_resources = np.asarray([

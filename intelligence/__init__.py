@@ -1,4 +1,3 @@
-from .bot import Bot
-from .optimize import new_optimizer
+from .optimize import area_optimizer, seller_optimizer
 
-__all__ = ['Bot', 'new_optimizer']
+__all__ = ['area_optimizer', 'seller_optimizer']
