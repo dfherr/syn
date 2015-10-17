@@ -12,6 +12,7 @@ def syndicate_link(syn_number):
 index_link = 'http://www.syndicates-online.de/index.php'
 links = {
     'aktuelles': main_link('aktuelles'),
+    'area': main_link('gebaeude.php'),
     'bonus': main_link('bonus.php'),
     'captcha': 'http://www.syndicates-online.de/captcha.php?t={0}',
     'home': main_link('statusseite.php'),
@@ -39,6 +40,7 @@ request_names = {
     'fp': 'sciencepoints',
     'credits': 'money',
 }
+
 buildings = ['']
 bonus_types = [1, 2]
 military = ['marine', 'ranger', 'buc', 'auc', 'huc',

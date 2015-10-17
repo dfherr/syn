@@ -3,6 +3,7 @@ from datetime import datetime as dt
 from .login import LoggedInSession
 from .utils import *
 from scraper import (
+    scrape_area_cost,
     scrape_market_resources,
     scrape_owner_stats,
     scrape_store,
@@ -93,8 +94,29 @@ class SynAPI(object):
             referral_link=links['home']
         )
 
+    def get_area_cost(self):
+        """
+        Loads and scrapes from links['area'] to get
+        the cost of new ha
+        """
+        r = self.session.get(links['area'])
+        return scrape_area_cost(r.content)
+
     def build_area(self, amount):
-        raise NotImplementedError
+        """
+        sends a post request to build the 'unit'
+        'amount' times
+
+        request example:
+        inneraction=land&action=gebaeude&build_land=4&submit2=kaufen
+        """
+        payload = {
+            'inneraction': 'land',
+            'action': 'gebaeude',
+            'build_land': amount,
+            'submit2': 'kaufen'
+        }
+        return self.session.post(links['area'], data=payload)
 
     def build_buildings(self, building, amount):
         raise NotImplementedError
