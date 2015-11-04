@@ -7,6 +7,7 @@ from scraper import (
     scrape_market_resources,
     scrape_owner_stats,
     scrape_store,
+    scrape_shares,
     scrape_syndicate,
     generate_user_rankings
 )
@@ -119,7 +120,23 @@ class SynAPI(object):
         return self.session.post(links['area'], data=payload)
 
     def build_buildings(self, building, amount):
-        raise NotImplementedError
+        """
+        inneraction=gebaeude&action=gebaeude&
+        tradecenters=&powerplants=&depots=1&
+        ressourcefacilities=&sciencelabs=&
+        spylabs=&buildinggrounds=&factories=&
+        offtowers=&deftowers=&s_tradecenters=&
+        s_powerplants=&schools=&workshops=&decision=build
+        """
+        if building not in buildings:
+            raise KeyError('{0} is not a building!'.format(building))
+        payload = {
+            'inneraction': 'gebaeude',
+            'action': 'gebaeude',
+            buildings[building]: amount,
+            'decision': 'build'
+        }
+        return self.session.post(links['area'], data=payload)
 
     def build_military(self, unit, amount):
         """
@@ -227,6 +244,9 @@ class SynAPI(object):
         return self._interact_with_store(unit, amount, 'get')
 
     def pull_syn_resources(self, unit, amount):
+        raise NotImplementedError
+
+    def pull_syn_resources(self, unit, amount):
         """
         sends a post request to pull resources from syn members
 
@@ -242,8 +262,24 @@ class SynAPI(object):
         }
         return self.session.post(links['store'], data=payload)
 
+    def get_shares(self):
+        """
+        Loads and scrapes from links['shares'] to get
+        all data on the shares page
+        """
+        r = self.session.get(links['shares'])
+        return scrape_shares(r.content)
+
     def buy_shares(self, syn, amount):
-        raise NotImplementedError
+        """
+        action=buy&rid=18&number=291
+        """
+        payload = {
+            'action': 'buy',
+            'rid': syn,
+            'number': amount
+        }
+        return self.session.post(links['shares'], data=payload)
 
     def get_fos_info(self):
         # fps = 0
@@ -271,11 +307,4 @@ class SynAPI(object):
         for i in range(1, syns_amount+1):
             r = self.session.get(syndicate_link(i))
             rankings += scrape_syndicate(i, r.content)
-        rankings = generate_user_rankings(rankings)
-
-        # add datetime and current rank
-        date_now = dt.now()
-        for i in range(len(rankings)):
-            rankings[i] = [date_now, i+1] + rankings[i]
-
-        return rankings
+        return generate_user_rankings(rankings)
