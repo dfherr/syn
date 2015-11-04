@@ -10,8 +10,7 @@ if __name__ == '__main__':
     api = SynAPI()
     last_log = -1
 
-    # Update Database Rankings
-    # argv hours, once per hour
+    # Update Database Rankings, storage prices and shares
     with Database() as db:
         while True:
             if last_log != dt.now().hour:
