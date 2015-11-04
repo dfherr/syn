@@ -41,7 +41,9 @@ request_names = {
     'credits': 'money',
 }
 
-buildings = ['']
+buildings = {
+    'lh': 'depots'
+}
 bonus_types = [1, 2]
 military = ['marine', 'ranger', 'buc', 'auc', 'huc',
             'thief', 'guardian', 'agent']
