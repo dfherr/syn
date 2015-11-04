@@ -19,7 +19,7 @@ exchange_rate_regex = re.compile(
 
 def scrape_store(html):
     """
-    scrapes all all store stats
+    scrapes all store stats
     resource volumes / exchange rates
     """
     store = {}
