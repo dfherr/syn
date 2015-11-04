@@ -4,7 +4,7 @@ import time
 from PIL import Image
 
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, ConnectTimeout
 
 from .captcha_solver import solve_captcha
 from .utils import links, main_link
@@ -65,7 +65,6 @@ class LoggedInSession(object):
         if both is fine return the request object
         catch Connection Errors
         """
-        # TODO: add status code = 200, connection error fix?!
         self._retry_timer()
         try:
             if method == 'GET':
@@ -78,11 +77,14 @@ class LoggedInSession(object):
                 data = kwargs.get('data', {})
                 r = self.session.post(link, data=data, headers={'referrer': link})
             successful_request = True
-        except ConnectionError as e:
+        except (ConnectionError, ConnectTimeout) as e:
             print('Connection Error {0}. Try again...'.format(e))
             successful_request = False
 
-        if not self.check_login(r.content) or not successful_request:
+        if not successful_request:
+            r = self._request(method, link, **kwargs)
+
+        if not self.check_login(r.content):
             r = self._request(method, link, **kwargs)
 
         return r
