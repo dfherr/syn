@@ -7,7 +7,7 @@ def area_optimizer(cr, cost):
     return cr // cost
 
 
-def seller_optimizer(owner, unit, ex, capacity_cap, market_cap):
+def seller_optimizer(owner, unit, ex, capacity_cap, market_cap, source):
     """
     Takes the scraped data and computes the optimal amount of
     units to produce using the current exchange rates,
@@ -22,18 +22,27 @@ def seller_optimizer(owner, unit, ex, capacity_cap, market_cap):
     temp_market = market_cap.copy()
     limiting_index = -1
 
-    for amount in range(1, capacity_cap+1):
+    amount = 0
+    breaker = True
+    while amount < capacity_cap:
+        amount += 1
+        # for amount in range(1, capacity_cap+1):
         for i in range(1, 4):
-            if temp_owner[i] < amount * unit[i]:
-                if temp_market[i] >= unit[i] and temp_owner[0] >= ex[i] * unit[i]:
-                    temp_owner[0] -= ex[i] * unit[i]
-                    temp_market[i] -= unit[i]
-                    temp_owner[i] += unit[i]
-                else:
-                    limiting_index = i
-                    break
+            if temp_market[i] >= unit[i]:
+                if temp_owner[i] < amount * unit[i]:
+                    if temp_owner[0] >= ex[i] * unit[i]:
+                        if source[i-1] == 'gm':
+                            temp_owner[0] -= ex[i] * unit[i]
+                        temp_market[i] -= unit[i]
+                        temp_owner[i] += unit[i]
+                    else:
+                        breaker = False
+                        break
+            else:
+                limiting_index = i
+                break
 
-        if temp_owner[0] < amount * unit[0] or limiting_index != -1:
+        if temp_owner[0] < amount * unit[0] or limiting_index != -1 or not breaker:
             amount -= 1
             break
 
@@ -47,7 +56,9 @@ def seller_optimizer(owner, unit, ex, capacity_cap, market_cap):
         amount * unit[i] - owner[i] for i in range(1, 4)
     ])
     to_buy[to_buy < 0] = 0
-    # if market is capped buy everything to get the next ex/volume
+
+    # if market provides only a limited amount
+    # buy everything to get the next ex/volume
     if limiting_index != -1:
         to_buy[limiting_index] = market_cap[limiting_index]
 

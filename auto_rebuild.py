@@ -14,7 +14,6 @@ put_money = 'ha'
 limit = 1000000
 
 
-# E2301
 if __name__ == '__main__':
     api = SynAPI()
 

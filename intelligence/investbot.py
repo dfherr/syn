@@ -1,89 +1,92 @@
 from __future__ import division
 
+from datetime import datetime, timedelta
 from time import sleep
 
 import numpy as np
 
 from api import SynAPI
-from .optimize import seller_optimizer as new_optimizer
+from database import Database
 
 
-class MAFIABot(object):
+def stamped_output(x):
+    d = datetime.now()
+    x = str(x)
+    # TODO: save to db
+    print(datetime.strftime(d, "%H:%M"), x)
+
+
+class INVESTBot(object):
     def __init__(self):
         """
-        - spends every cr over
+        - spends every cr over 40m on shares
+        - sells divis on market, spends rewards on shares
+        - tracks storage prices
+        - tracks rankings
+        TODO: if everything works, checks energy / fp usage next tick
+        TODO: if everything works, implement huc trading
         """
         self.api = SynAPI()
+        self.db = Database()
+        self.max_cash = 40000000
+        self.refresh_timedelta = 15
+        self.syn_shares = [8, 10, 13, 21]
 
+        self.refresh = datetime.now()-timedelta(minutes=self.refresh_timedelta)
+        self.last_log = datetime.now().hour - 1
         self.base_stats = None
-        self.storage_resources = None
-        self.gm_resources = None
-
-        self.max_cash = 0  # 1000000
-
-        # should be filled by scraper later..
-        self.spy_price = np.asarray([160, 120, 0, 8])
+        self.shares = None
 
     def handle_cash(self):
-        self.storage_resources = self.api.get_store_resources()
-        self.gm_resources = self.api.get_gm_resources()
+        """
+        buys energy and fp needed for next tick
+        spends cr on shares of self.syn_shares
+        maximizes percentage/own percentage?! -> max divi gain...
+        """
+        cr = self.base_stats['credits'] - self.max_cash
+        if cr > 0:
+            self.shares = self.api.get_shares()
+            syn = self.syn_shares[0]
+            owning = 100.
 
-        # where to pick which resource -> [energy, erz, fp]
-        # from gm or from store?
-        res_names = ['energy', 'erz', 'fp']
-        ex_rate_names = ['ex_energy', 'ex_erz', 'ex_fp']
-        resource_source = [
-            'gm' if
-            self.gm_resources[i] <= self.storage_resources[i] / 0.95
-            else 'store' for i in ex_rate_names
-        ]
-        ex_rates = [0, 0, 0]
-        volumes = [0, 0, 0]
+            # TODO in future: maximize divi... -> return syn and amount
+            for i in self.syn_shares:
+                if self.shares[i][1] < owning:
+                    syn = i
+                    owning = self.shares[i][1]
 
-        for i, x in enumerate(ex_rate_names):
-            if resource_source[i] == 'gm':
-                ex_rates[i] = self.gm_resources[x]
-                volumes[i] = self.gm_resources[res_names[i]]
-            else:
-                ex_rates[i] = self.storage_resources[x]
-                volumes[i] = self.storage_resources[res_names[i]]
+            amount = cr // self.shares[3]
+            stamped_output('Buy {0} shares of #{1} for {2}'.format(amount, syn, amount))
+            self.api.buy_shares(syn, amount)
 
-        print(self.storage_resources)
-        print(self.gm_resources)
-        print(resource_source)
-        print(ex_rates)
-        print(volumes)
-
-        if self.base_stats['capas_spies'] > 0:
-            # format for seller_optimizer (requires credits, too)
-            ex_rates = np.asarray([1] + ex_rates)
-            volumes = np.asarray([0] + volumes)
-            owner_resources = np.asarray([
-                self.base_stats['credits'],
-                self.base_stats['energy'],
-                self.base_stats['erz'],
-                self.base_stats['fp']
-            ])
-
-            x = new_optimizer(
-                owner_resources,
-                self.spy_price,
-                ex_rates,
-                self.base_stats['capas_spies'],
-                volumes
-            )
-
-        print(x)
+    def handle_ressis(self):
+        """
+        sells ressis on gm
+        """
+        raise NotImplementedError
 
     def run(self):
         """
-        starts the bot and contains the basic intel algorithm
+        starts the bot and contains the basic triggers
         """
         while True:
-            self.base_stats = self.api.get_owner_stats()
-            print(self.base_stats)
+            if self.last_log != datetime.now().hour:
+                stamped_output('start log')
+                rankings = self.api.generate_rankings()
+                self.db.save_rankings(rankings)
+                store = self.api.get_store_resources()
+                self.db.save_storage(store)
+                self.api.logout()
+                stamped_output('end log')
+                self.last_log = datetime.now().hour
 
-            if self.base_stats['credits'] > self.max_cash:
+            if self.refresh+self.refresh_timedelta < datetime.now():
+                self.base_stats = self.api.get_owner_stats()
+                stamped_output(self.base_stats)
                 self.handle_cash()
+                # TODO: get tenders
+                # TODO: place new tenders
 
-            sleep(3)
+                self.refresh = datetime.now()
+                self.api.logout()
+            sleep(60)

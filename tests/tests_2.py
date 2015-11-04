@@ -20,8 +20,9 @@ class TestOptimizer(unittest.TestCase):
         ex_rate = np.asarray([1, 2, 5, 10])
         market_cap = np.asarray([0, 10000, 10000, 10000])
         capacity_cap = 20
+        source = ['gm', 'gm', 'gm']
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 10)
         self.assertEqual(list(result[1]), [0, 5000, 2000, 1000])
@@ -31,7 +32,7 @@ class TestOptimizer(unittest.TestCase):
         # result should be: (6, [0, 3000, 1200, 600])
         capacity_cap = 6
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 6)
         self.assertEqual(list(result[1]), [0, 3000, 1200, 600])
@@ -40,8 +41,10 @@ class TestOptimizer(unittest.TestCase):
         # changed the market_cap to limited energy [0, 2000, 10000, 10000]
         # result should be: (4, [0, 2000, 800, 400])
         market_cap = np.asarray([0, 2000, 10000, 10000])
+        capacity_cap = 100
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        print result
 
         self.assertEqual(result[0], 4)
         self.assertEqual(list(result[1]), [0, 2000, 800, 400])
@@ -52,7 +55,7 @@ class TestOptimizer(unittest.TestCase):
         # result should be: (4, [0, 2123, 800, 400])
         market_cap = np.asarray([0, 2123, 10000, 10000])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 4)
         self.assertEqual(list(result[1]), [0, 2123, 800, 400])
@@ -63,7 +66,7 @@ class TestOptimizer(unittest.TestCase):
         # result should be: (0, [0, 450, 800, 400])
         market_cap = np.asarray([0, 450, 10000, 10000])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 0)
         self.assertEqual(list(result[1]), [0, 450, 0, 0])
@@ -77,7 +80,7 @@ class TestOptimizer(unittest.TestCase):
         market_cap = np.asarray([0, 10000, 10000, 10000])
         capacity_cap = 100
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 13)
         self.assertEqual(list(result[1]), [0, 6500, 0, 1300])
@@ -86,7 +89,7 @@ class TestOptimizer(unittest.TestCase):
         # owner has some left over resources not required by the unit
         owner = np.asarray([40000, 0, 1337, 0])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 13)
         self.assertEqual(list(result[1]), [0, 6500, 0, 1300])
@@ -96,7 +99,7 @@ class TestOptimizer(unittest.TestCase):
         # thus only one resource needs to be bought [0, 0, 0, 3000]
         owner = np.asarray([60000, 20000, 0, 0])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 30)
         self.assertEqual(list(result[1]), [0, 0, 0, 3000])
@@ -106,14 +109,14 @@ class TestOptimizer(unittest.TestCase):
         # thus only one resource needs to be bought [0, 0, 0, 3000]
         owner = np.asarray([60000, 2314, 0, 6543])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 24)
         self.assertEqual(list(result[1]), [0, 10000, 0, 0])
 
         # Example9:
         # trivial example
-        result = seller_optimizer(owner, unit_price, ex_rate, 0, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, 0, market_cap, source)
         self.assertEqual(result[0], 0)
         self.assertEqual(list(result[1]), [0, 0, 0, 0])
 
@@ -122,21 +125,23 @@ class TestOptimizer(unittest.TestCase):
         owner = np.asarray([60000, 0, 0, 6543])
         market_cap = np.asarray([0, 450, 10000, 10000])
 
-        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap)
+        result = seller_optimizer(owner, unit_price, ex_rate, capacity_cap, market_cap, source)
 
         self.assertEqual(result[0], 0)
         self.assertEqual(list(result[1]), [0, 450, 0, 0])
 
         # Example11:
-        # real prices / exchange rates
-        ex_rate = np.asarray([1, 1.1, 6.8, 16.0])
+        # real prices / exchange rates / huc
+        # reproduced some bug that occurred in production...
+        ex_rate = np.asarray([1, 1.2, 6.8, 16.0])
         unit_price = np.asarray([0, 700, 240, 96])
-        market_cap = np.asarray([0, ])
+        market_cap = np.asarray([0, 100000000, 10000000, 100000000])
 
-        owner = np.asarray([0, 1874, 74, 48133])
+        owner = np.asarray([0, 0, 0, 0])
 
-        result = seller_optimizer()
-
+        result = seller_optimizer(owner, unit_price, ex_rate, 1000, market_cap, source)
+        # self.assertEqual(result[0], 0)
+        self.assertEqual(list(result[1]), [0, 0, 0, 0])
 
 if __name__ == '__main__':
     unittest.main()
