@@ -31,7 +31,9 @@ def seller_optimizer(owner, unit, ex, capacity_cap, market_cap, source):
             if temp_market[i] >= unit[i]:
                 if temp_owner[i] < amount * unit[i]:
                     if temp_owner[0] >= ex[i] * unit[i]:
-                        if source[i-1] == 'gm':
+                        # Use this, if always enough lgh
+                        # if source[i-1] == 'gm':
+                        if True:
                             temp_owner[0] -= ex[i] * unit[i]
                         temp_market[i] -= unit[i]
                         temp_owner[i] += unit[i]

@@ -1,5 +1,6 @@
 __all__ = ['index_link', 'main_link', 'syndicate_link', 'links', 'request_names',
-           'buildings', 'bonus_types', 'military', 'resources']
+           'buildings', 'bonus_types', 'military', 'res_names', 'resources',
+           'select_capas']
 
 
 def main_link(page):
@@ -8,6 +9,16 @@ def main_link(page):
 
 def syndicate_link(syn_number):
     return main_link('syndicate.php?rid={0}'.format(syn_number))
+
+
+def select_capas(unit):
+    if unit in ['marine', 'ranger', 'auc', 'huc']:
+        return 'capas_military'
+    if unit in ['buc']:
+        return 'capas_carrier'
+    if unit in ['thief', 'guardian', 'agent']:
+        return 'capas_spies'
+
 
 index_link = 'http://www.syndicates-online.de/index.php'
 links = {
@@ -40,6 +51,8 @@ request_names = {
     'fp': 'sciencepoints',
     'credits': 'money',
 }
+
+res_names = ['energy', 'erz', 'fp']
 
 buildings = {
     'lh': 'depots'
