@@ -15,29 +15,31 @@ from intelligence import (
     prepare_resources
 )
 
-
-selling = False
-cr_limit = 500000
+# variables to set
+selling = True
+sleep_time = 5
+cr_limit = 2000
 spend_on = 'ha'
 tax = 0.15
 thief_ranger_ratio = 4/5.
-build_order = ['ranger', 'buc', 'spies']
-price = {
+build_order = ['ranger', 'spies', 'buc']
+unit_prices = {
     'ranger': np.asarray([235, 75, 62, 0]),
     'buc': np.asarray([1100, 250, 150, 0]),
-    'spy': np.asarray([220, 165, 0, 11])
+    'spies': np.asarray([220, 165, 0, 11])
 }
+
 
 if __name__ == '__main__':
     api = SynAPI()
     db = Database()
 
     last_log = -1
-    sleep_time = 60
     log_minute = 2
     last_stats = None
-    active_building = None
+    active_building = False
 
+    # rebuild units after selling, put left over credits in 'store' or 'ha'
     # update database rankings, storage prices and shares
     while True:
         # # # SELLING
@@ -47,7 +49,7 @@ if __name__ == '__main__':
         if selling:
             stats = api.get_owner_stats()
             if stats != last_stats:
-                db.action_output(stats, dt.now())
+                db.action_output(str(stats), dt.now())
                 last_stats = stats
 
             # TODO: how to handle "no resources left"?!
@@ -55,8 +57,8 @@ if __name__ == '__main__':
                 active_building = True
 
                 owner_resources, volumes, ex_rates, resource_source = prepare_resources(
-                    api.get_store_resources(),
                     api.get_gm_resources(),
+                    api.get_store_resources(),
                     stats,
                     tax
                 )
@@ -69,7 +71,7 @@ if __name__ == '__main__':
                     if stats[tmp] > 0:
                         capas = tmp
                         unit = x
-                        unit_price = price[unit]
+                        unit_price = unit_prices[unit]
                         break
 
                 if unit is not None:
@@ -82,25 +84,29 @@ if __name__ == '__main__':
                         resource_source
                     )
 
+                    # get resources to rebuild units
                     for i in range(1, 4):
                         res = res_names[i-1]
                         source = resource_source[i-1]
-                        price = ex_rates[i]
+                        price = round(ex_rates[i], 2)
 
                         quantity = ressis[i]
                         if quantity > 0:
                             db.action_output(
-                                'Buy {0}{1} for {2} from {3}'.format(quantity, res, price*10, source),
+                                'Buy {0}{1} for {2} from {3}'.format(quantity, res, int(price*10), source),
                                 dt.now()
                             )
-                            if source == 'gm:':
-                                api.buy(res, quantity, price)
+                            if source == 'gm':
+                                api.buy(res, quantity, int(price*10))
                             elif source == 'store':
+                                # TO BE TESTED
                                 api.store_resources('credits', calculate_taxed_cr(tax, quantity, price))
                                 api.pull_store_resources(res, quantity)
+
+                    # rebuild units
                     db.action_output('Build {0} {1}s'.format(amount, unit), dt.now())
-                    if unit == 'spy':
-                        a1 = int(amount*thief_ranger_ratio)
+                    if unit == 'spies':
+                        a1 = int(thief_ranger_ratio*amount)
                         a2 = amount - a1
                         api.build_military('thief', a1)
                         api.build_military('guardian', a2)
@@ -144,8 +150,10 @@ if __name__ == '__main__':
             shares = api.get_shares()
             db.save_shares(shares, date)
 
-            api.logout()
+            if not selling:
+                api.logout()
 
             db.action_output('end stats recording and logout', dt.now())
 
-        sleep(sleep_time)
+        if not active_building:
+            sleep(sleep_time)

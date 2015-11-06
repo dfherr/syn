@@ -16,7 +16,7 @@ def select_capas(unit):
         return 'capas_military'
     if unit in ['buc']:
         return 'capas_carrier'
-    if unit in ['thief', 'guardian', 'agent']:
+    if unit in ['thief', 'guardian', 'agent', 'spies']:
         return 'capas_spies'
 
 
