@@ -5,6 +5,13 @@ from api.utils import res_names
 import numpy as np
 
 
+def split_units_per_ratio(amount, ratio):
+    tmp = (amount*ratio).astype(int)
+    if tmp.sum() < amount:
+        tmp[0] += (amount - tmp.sum())
+    return tmp
+
+
 def calculate_taxed_cr(tax, quantity, ex_rate):
     return int((quantity*ex_rate) / (1 - tax)) + 1
 

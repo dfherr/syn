@@ -35,6 +35,7 @@ links = {
     'shares': main_link('anleihenmarkt.php'),
     'store': main_link('pod.php'),
     'research': main_link('forschung.php'),
+    'stats': main_link('stats.php')
 }
 
 request_names = {

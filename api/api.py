@@ -165,6 +165,20 @@ class SynAPI(object):
         }
         return self.session.post(links['military'], data=payload)
 
+    def bulk_build_military(self, amounts, units):
+        """
+        e.g.:
+        amounts = [10, 5], units = ['ranger', 'marine']
+        builds 10 rangers and 5 marines
+        returns an action output
+        """
+        for amount, unit in zip(amounts, units):
+            self.build_military(unit, amount)
+        return ' / '.join([
+            'Build {0} {1}s'.format(x, y)
+            for x, y in zip(amounts, units)
+        ])
+
     def _interact_with_market(self, unit, amount, price, action):
         """
         sends a post request to sell/order the 'unit' for 'price'
