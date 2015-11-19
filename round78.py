@@ -18,8 +18,6 @@ from intelligence import (
     prepare_resources
 )
 
-# SPYLOGS -> times scanned..
-# FIND LAST LOG....
 # NO RESOURCE TENDERS!
 # PULL RESOURCES FIRST!
 # pay right amount of taxes...
@@ -31,15 +29,15 @@ from intelligence import (
 
 class SellerStatsBot(object):
     def __init__(self):
-        self.selling = False
-        self.sleep_time = 5
+        self.selling = True
+        self.sleep_time = 25
         self.cr_limit = 2500000
         self.ene_limit = 5000000
         self.spend_on = 'store'
         self.tax = 0.05
         self.ranger_rines_ratio = [0, 1]
         self.spy_ratio = [1, 1, 2]
-        self.build_order = ['ranger', 'spies', 'buc']
+        self.build_order = ['spies', 'buc']
         self.unit_prices = {
             'ranger': np.asarray([188, 60, 50, 0]),
             'buc': np.asarray([880, 200, 120, 0]),
@@ -50,7 +48,7 @@ class SellerStatsBot(object):
         self.db = Database()
 
     def run(self):
-        last_log = self.db.get_last_log()
+        last_log = self.parse_last_log()
         log_minute = 2
         last_stats = None
         active_building = False
@@ -76,7 +74,7 @@ class SellerStatsBot(object):
                     last_stats = stats
 
                 # TODO: how to handle "no resources left"?!
-                if stats['credits'] > self.cr_limit and free_capas(stats):
+                if stats['credits'] > self.cr_limit and free_capas(stats, self.build_order):
                     active_building = True
                     self.build_units(stats)
                 # if no units to build, use credits for new ha / store them
@@ -108,7 +106,7 @@ class SellerStatsBot(object):
                 stats = self.api.get_owner_stats()
                 if stats['energy'] > self.ene_limit:
                     amount = stats['energy']-self.ene_limit
-                    self.db.action_output('Store {0}energy'.format(amount))
+                    self.db.action_output('Store {0}energy'.format(amount), dt.now())
                     self.api.store_resources('energy', amount)
 
                 if not self.selling:
@@ -204,6 +202,12 @@ class SellerStatsBot(object):
                 action = 'Build {0} {1}s'.format(amount, unit)
                 self.api.build_military(unit, amount)
             self.db.action_output(action, dt.now())
+
+    def parse_last_log(self):
+        last_log = self.db.get_last_log()
+        if (dt.now()-last_log).total_seconds() > 3600:
+            return -1
+        return last_log.hour
 
 if __name__ == '__main__':
     bot = SellerStatsBot()
