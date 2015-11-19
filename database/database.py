@@ -30,6 +30,18 @@ class Database(object):
         self.create_table_rankings()
         self.create_table_shares()
         self.create_table_storage()
+        self.create_table_spies()
+
+    def create_table_spies(self):
+        """
+        Table to save suffered spies
+        """
+        create_string = """
+            CREATE TABLE {0} (
+            id INTEGER PRIMARY KEY NOT NULL,
+            spy_date TIMESTAMP NOT NULL,
+            amount INTEGER NOT NULL)"""
+        self._create_table('suffered_spies', create_string)
 
     def create_table_storage(self):
         """
@@ -142,6 +154,24 @@ class Database(object):
         )
         self.con.commit()
 
+    def save_spies(self, spies, date):
+        """
+        saves the scraped suffered
+        from scraper.stats in form of
+
+        [(datetime.now(), 'spies'), ...]
+
+        to the database table 'storage':
+        | ID | DATE | amount |
+        """
+        self.cur.execute(
+            'INSERT INTO suffered_spies '
+            '(spy_date, amount) '
+            'VALUES (?, ?)',
+            [date, spies]
+        )
+        self.con.commit()
+
     def save_rankings(self, rankings, date):
         """
         saves the scraped and ordered rankings
@@ -174,3 +204,9 @@ class Database(object):
         for i in r:
             i[3] = eval(i[3])
         return r
+
+    def get_last_log(self):
+        # should be sql solution. This is dirty... but quick!
+        self.cur.execute('SELECT * FROM actions WHERE action=?', ['end stats recording'])
+        last_record = self.cur.fetchall()[-1]
+        return last_record[1]
