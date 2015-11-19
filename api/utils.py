@@ -1,6 +1,6 @@
 __all__ = ['index_link', 'main_link', 'syndicate_link', 'links', 'request_names',
            'buildings', 'bonus_types', 'military', 'res_names', 'resources',
-           'select_capas']
+           'select_capas', 'unit_capas']
 
 
 def main_link(page):
@@ -61,4 +61,15 @@ buildings = {
 bonus_types = [1, 2]
 military = ['marine', 'ranger', 'buc', 'auc', 'huc',
             'thief', 'guardian', 'agent']
+unit_capas = {
+    'marine': 'capas_military',
+    'ranger': 'capas_military',
+    'buc': 'capas_carrier',
+    'auc': 'capas_military',
+    '': 'capas_military',
+    'thief': 'capas_spies',
+    'agent': 'capas_spies',
+    'guardian': 'capas_spies',
+    'spies': 'capas_spies'
+}
 resources = ['credits', 'energy', 'erz', 'fp']
