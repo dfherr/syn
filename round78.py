@@ -31,25 +31,26 @@ from intelligence import (
 
 class SellerStatsBot(object):
     def __init__(self):
-        self.selling = True
+        self.selling = False
         self.sleep_time = 5
-        self.cr_limit = 100000
-        self.spend_on = 'ha'
-        self.tax = 0.15
-        self.ranger_rines_ratio = [1, 1]
+        self.cr_limit = 2500000
+        self.ene_limit = 5000000
+        self.spend_on = 'store'
+        self.tax = 0.05
+        self.ranger_rines_ratio = [0, 1]
         self.spy_ratio = [1, 1, 2]
         self.build_order = ['ranger', 'spies', 'buc']
         self.unit_prices = {
-            'ranger': np.asarray([235, 75, 62, 0]),
-            'buc': np.asarray([1100, 250, 150, 0]),
-            'spies': np.asarray([220, 165, 0, 11])
+            'ranger': np.asarray([188, 60, 50, 0]),
+            'buc': np.asarray([880, 200, 120, 0]),
+            'spies': np.asarray([160, 120, 0, 8])
         }
 
         self.api = SynAPI()
         self.db = Database()
 
     def run(self):
-        last_log = 9
+        last_log = self.db.get_last_log()
         log_minute = 2
         last_stats = None
         active_building = False
@@ -81,9 +82,9 @@ class SellerStatsBot(object):
                 # if no units to build, use credits for new ha / store them
                 elif stats['credits'] > self.cr_limit:
                     if self.spend_on == 'store':
-                        store_cr = stats['credits']-self.cr_limit
-                        action = 'Store {0}cr'.format(store_cr)
-                        self.api.store_resources('credits', store_cr)
+                        amount = stats['credits']-self.cr_limit
+                        action = 'Store {0}cr'.format(amount)
+                        self.api.store_resources('credits', amount)
                     elif self.spend_on == 'ha':
                         ha = area_optimizer(stats['credits'], self.api.get_area_cost())
                         action = 'Build {0}ha'.format(ha)
@@ -93,12 +94,26 @@ class SellerStatsBot(object):
                 else:
                     active_building = False
 
-            # # # LOGGING
-            # If new tick since last log
-            # give the server time for the next tick... then start logging
+            # # # hourly jobs
+            # if new tick since last log
+            # give the server time for the next tick... then start logging etc
             if last_log != dt.now().hour and dt.now().minute > log_minute and not active_building:
                 last_log = dt.now().hour
+
+                if not self.selling:
+                    self.db.action_output('login', dt.now())
+
                 self.take_log()
+
+                stats = self.api.get_owner_stats()
+                if stats['energy'] > self.ene_limit:
+                    amount = stats['energy']-self.ene_limit
+                    self.db.action_output('Store {0}energy'.format(amount))
+                    self.api.store_resources('energy', amount)
+
+                if not self.selling:
+                    self.db.action_output('logout', dt.now())
+                    self.api.logout()
 
             if not active_building:
                 sleep(self.sleep_time)
@@ -106,8 +121,6 @@ class SellerStatsBot(object):
     def take_log(self):
         date = dt.now()
 
-        if not self.selling:
-            self.db.action_output('login', date)
         self.db.action_output('start stats recording', date)
 
         self.db.action_output('rankings...', date)
@@ -124,9 +137,10 @@ class SellerStatsBot(object):
         shares = self.api.get_shares()
         self.db.save_shares(shares, date)
 
-        if not self.selling:
-            self.db.action_output('logout', dt.now())
-            self.api.logout()
+        date = dt.now()
+        self.db.action_output('spies...', date)
+        spies = self.api.get_suffered_spies()
+        self.db.save_spies(spies, date)
 
         self.db.action_output('end stats recording', dt.now())
 

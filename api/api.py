@@ -8,6 +8,7 @@ from scraper import (
     scrape_owner_stats,
     scrape_store,
     scrape_shares,
+    scrape_spies,
     scrape_syndicate,
     generate_user_rankings
 )
@@ -60,6 +61,13 @@ class SynAPI(object):
         """
         r = self.session.get(links['store'])
         return scrape_store(r.content)
+
+    def get_suffered_spies(self):
+        """
+        Loads and scrapes the amount of suffered spys from links['stats']
+        """
+        r = self.session.get(links['stats'])
+        return scrape_spies(r.content)
 
     def get_military_stats(self):
         raise NotImplementedError
