@@ -1,6 +1,6 @@
 from __future__ import division
 
-from api.utils import res_names
+from api.utils import res_names, unit_capas
 
 import numpy as np
 
@@ -50,5 +50,9 @@ def prepare_resources(gm_resources, storage_resources, stats, tax):
     return owner_resources, volumes, ex_rates, resource_source
 
 
-def free_capas(stats):
-    return stats['capas_military'] > 0 or stats['capas_carrier'] > 0 or stats['capas_spies'] > 0
+def free_capas(stats, build_order):
+    free = False
+    for unit in build_order:
+        if stats[unit_capas[unit]] > 0:
+            free = True
+    return free
