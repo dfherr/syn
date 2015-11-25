@@ -36,7 +36,5 @@ if __name__ == '__main__':
     print(pivot)
 
     xls = pd.ExcelWriter('docs/lagerlog.xlsx')
-    # for manager in pivot.index.get_level_values(0).unique():
-    #    temp_df = pivot.xs(manager, level=0)
     pivot.to_excel(xls)
     xls.save()

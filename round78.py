@@ -29,14 +29,14 @@ from intelligence import (
 
 class SellerStatsBot(object):
     def __init__(self):
-        self.selling = True
-        self.sleep_time = 25
-        self.cr_limit = 2500000
+        self.selling = False
+        self.sleep_time = 60
+        self.cr_limit = 5000000
         self.ene_limit = 5000000
         self.spend_on = 'store'
         self.tax = 0.05
         self.ranger_rines_ratio = [0, 1]
-        self.spy_ratio = [1, 1, 2]
+        self.spy_ratio = [0, 0, 1]
         self.build_order = ['spies', 'buc']
         self.unit_prices = {
             'ranger': np.asarray([188, 60, 50, 0]),
@@ -105,7 +105,7 @@ class SellerStatsBot(object):
 
                 stats = self.api.get_owner_stats()
                 if stats['energy'] > self.ene_limit:
-                    amount = stats['energy']-self.ene_limit
+                    amount = stats['energy']
                     self.db.action_output('Store {0}energy'.format(amount), dt.now())
                     self.api.store_resources('energy', amount)
 

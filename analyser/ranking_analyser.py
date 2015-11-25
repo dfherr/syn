@@ -37,7 +37,7 @@ def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=Fa
     if not player_rankings.loc[id_current][4] == 'neb':
         meets_criteria = False
 
-    if current_ha > 5500:
+    if current_ha > 5000:
         syn = player_rankings.irow(0)[7]
         dates = player_rankings.loc[:, 1]
         ha = player_rankings.loc[:, 5]
@@ -57,8 +57,8 @@ def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=Fa
 
         ax1.plot(dates, nw)
         ax2.plot(dates, ha)
-        plt.savefig('docs/round7/{0:02d}_{1}.png'.format(syn, name.encode('utf-8')))
-        # plt.show()
+        plt.savefig('docs/def/{0:02d}_{1}.png'.format(syn, name.encode('utf-8')))
+        plt.show()
         plt.close(fig)
 
 
@@ -93,6 +93,9 @@ if __name__ == '__main__':
         rankings = pd.DataFrame(rankings)
         pd.set_option('display.width', 200)
         pd.set_option('display.max_rows', 1000)
-        s = 'Nase Bohrer'
-        # analyse_player(rankings, s, [0, 10000])
-        generate_all_rankings(rankings)
+
+        names = ['Bosch GSR 18 V-EC', 'Wunderhaus']
+
+        for name in names:
+            analyse_player(rankings, name, [0, 10000])
+        # generate_all_rankings(rankings)

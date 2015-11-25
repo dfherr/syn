@@ -20,7 +20,12 @@ def scrape_market_resources(html):
     erz = erz_regex.search(html)
     fp = fp_regex.search(html)
 
-    market_stats['energy'] = energy.group(1)
+    # TODO
+    if energy is not None:
+        market_stats['energy'] = energy.group(1)
+    else:
+        market_stats['energy'] = 0
+
     market_stats['erz'] = erz.group(1)
     market_stats['fp'] = fp.group(1)
 
