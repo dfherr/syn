@@ -66,7 +66,7 @@ unit_capas = {
     'ranger': 'capas_military',
     'buc': 'capas_carrier',
     'auc': 'capas_military',
-    '': 'capas_military',
+    'huc': 'capas_military',
     'thief': 'capas_spies',
     'agent': 'capas_spies',
     'guardian': 'capas_spies',

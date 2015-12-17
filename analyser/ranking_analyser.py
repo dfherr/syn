@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -37,8 +37,8 @@ def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=Fa
     if not player_rankings.loc[id_current][4] == 'neb':
         meets_criteria = False
 
-    if current_ha > 5000:
-        syn = player_rankings.irow(0)[7]
+    syn = player_rankings.irow(0)[7]
+    if True:
         dates = player_rankings.loc[:, 1]
         ha = player_rankings.loc[:, 5]
         nw = player_rankings.loc[:, 6]
@@ -57,9 +57,10 @@ def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=Fa
 
         ax1.plot(dates, nw)
         ax2.plot(dates, ha)
-        plt.savefig('docs/def/{0:02d}_{1}.png'.format(syn, name.encode('utf-8')))
+        plt.savefig('docs/round10/{0:02d}_{1}.png'.format(syn, name.encode('utf-8')))
         plt.show()
         plt.close(fig)
+        print(name.encode('utf-8'))
 
 
 def _find_logs(date1, date2):
@@ -87,15 +88,50 @@ def generate_all_rankings(rankings, target_ha=[0000, 10000], expands_last_tick=F
             names.append(name)
             analyse_player(rankings, name, target_ha, expands_last_tick)
 
+
+def find_highest_ha():
+    pd.set_option('display.width', 200)
+    pd.set_option('display.max_rows', 1000)
+
+    db = Database()
+    rankings = pd.DataFrame(db.read_rankings())
+    rankings.columns = ['id', 'date', 'rank', 'name', 'class', 'ha', 'nw', 'syn']
+
+    rankings = rankings[rankings.date > datetime.now()-timedelta(seconds=3600)]
+    rankings = rankings.drop_duplicates(take_last=True, subset=['name'])
+    rankings = rankings.sort(columns=['ha'], ascending=False)
+
+    rankings = rankings[rankings.ha > 12500]
+
+    print(rankings)
+
+
+def find_highest_nw():
+    pd.set_option('display.width', 200)
+    pd.set_option('display.max_rows', 1000)
+
+    db = Database()
+    rankings = pd.DataFrame(db.read_rankings())
+    rankings.columns = ['id', 'date', 'rank', 'name', 'class', 'ha', 'nw', 'syn']
+
+    rankings = rankings[rankings.date > datetime.now()-timedelta(seconds=3600)]
+    rankings = rankings.drop_duplicates(take_last=True, subset=['name'])
+    rankings = rankings.sort(columns=['nw'], ascending=False)
+
+    print(rankings[:25])
+
 if __name__ == '__main__':
+    find_highest_nw()
+    find_highest_ha()
+
     with Database() as db:
         rankings = db.read_rankings()
         rankings = pd.DataFrame(rankings)
         pd.set_option('display.width', 200)
         pd.set_option('display.max_rows', 1000)
 
-        names = ['Bosch GSR 18 V-EC', 'Wunderhaus']
+        names = ['DragonDisgrace', 'Major Hochstetter','Geldspeicher', 'Bob the Builder']
 
         for name in names:
             analyse_player(rankings, name, [0, 10000])
-        # generate_all_rankings(rankings)
+        generate_all_rankings(rankings)

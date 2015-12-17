@@ -18,26 +18,21 @@ from intelligence import (
     prepare_resources
 )
 
-# NO RESOURCE TENDERS!
-# PULL RESOURCES FIRST!
-# pay right amount of taxes...
-# TENDERS ONLINE?
-
-# add __alls__ everywhere?
-# TESTs!
-
 
 class SellerStatsBot(object):
     def __init__(self):
         self.selling = False
+        self.buying = False
+        self.pull_cap = 5000000
         self.sleep_time = 60
         self.cr_limit = 5000000
         self.ene_limit = 5000000
         self.spend_on = 'store'
         self.tax = 0.05
         self.ranger_rines_ratio = [0, 1]
-        self.spy_ratio = [0, 0, 1]
-        self.build_order = ['spies', 'buc']
+        self.spy_ratio = [0, 1, 0]
+        self.build_order = ['spies']
+        self.buy_order = ['huc', 'auc']
         self.unit_prices = {
             'ranger': np.asarray([188, 60, 50, 0]),
             'buc': np.asarray([880, 200, 120, 0]),
@@ -48,7 +43,16 @@ class SellerStatsBot(object):
         self.db = Database()
 
     def run(self):
+        # selling and buying should exclude each other here
+        # in future this shouldn't be the case -> spyseller & prodder e.g.
+        # then pull_cap == cr_limit?!
+
+        # add hourly tasks -> click boni + building gebs
+        if self.selling and self.buying:
+            raise Exception('Improperly configured')
+
         last_log = self.parse_last_log()
+        last_full_capas_hour = -1
         log_minute = 2
         last_stats = None
         active_building = False
@@ -66,6 +70,26 @@ class SellerStatsBot(object):
         # rebuild units after selling, put left over credits in 'store' or 'ha'
         # update database rankings, storage prices and shares
         while True:
+            # # # Buying
+            if self.buying and dt.now().hour != last_full_capas_hour:
+                stats = self.api.get_owner_stats()
+                if stats != last_stats:
+                    self.db.action_output(str(stats), dt.now())
+                    last_stats = stats
+                if free_capas(stats, self.buy_order):
+                    to_pull = self.pull_cap - stats['credits']
+                    if to_pull > 0:
+                        self.db.action_output('Pull {0}cr from syn'.format(to_pull), dt.now())
+                        self.api.pull_syn_resources('credits', to_pull)
+                    # if not enough credits withdrawn, take cr from store
+                    stats = self.api.get_owner_stats()
+                    to_pull = self.pull_cap - stats['credits']
+                    if to_pull > 0:
+                        self.db.action_output('Pull {0}cr from store'.format(to_pull), dt.now())
+                        self.api.pull_store_resources('credits', to_pull)
+                else:
+                    last_full_capas_hour = dt.now().hour
+
             # # # SELLING
             if self.selling:
                 stats = self.api.get_owner_stats()
@@ -98,18 +122,18 @@ class SellerStatsBot(object):
             if last_log != dt.now().hour and dt.now().minute > log_minute and not active_building:
                 last_log = dt.now().hour
 
-                if not self.selling:
+                if not self.selling and not self.buying:
                     self.db.action_output('login', dt.now())
 
                 self.take_log()
 
                 stats = self.api.get_owner_stats()
                 if stats['energy'] > self.ene_limit:
-                    amount = stats['energy']
+                    amount = stats['energy'] - self.ene_limit
                     self.db.action_output('Store {0}energy'.format(amount), dt.now())
                     self.api.store_resources('energy', amount)
 
-                if not self.selling:
+                if not self.selling and not self.buying:
                     self.db.action_output('logout', dt.now())
                     self.api.logout()
 

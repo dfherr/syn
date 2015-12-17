@@ -1,0 +1,36 @@
+Datum 	Ziel 	Angriffsart 	Erfolgreich 	Land erobert 	Aktion
+10.12.15 - 22:57 	bye_bye_Rog (#22) 	Standard 	Ja 	436 	Details
+10.12.15 - 19:38 	DragonMind (#22) 	Belagerung 	Ja 	1306 	Details
+10.12.15 - 12:04 	Hippie Supernova (#12) 	Standard 	Ja 	805 	Details
+10.12.15 - 02:02 	R.I.P. Syndicates (#3) 	Standard 	Ja 	1158 	Details
+09.12.15 - 16:40 	Hippie Supernova (#12) 	Standard 	Ja 	503 	Details
+09.12.15 - 06:50 	Hippie Lotus (#12) 	Standard 	Ja 	459 	Details
+08.12.15 - 22:50 	KYN - VeeseL (#15) 	Belagerung 	Ja 	1415 	Details
+08.12.15 - 20:47 	Yoda (#3) 	Standard 	Ja 	343 	Details
+08.12.15 - 10:56 	Hippie Supernova (#12) 	Standard 	Ja 	1010 	Details
+08.12.15 - 00:54 	R.I.P. Syndicates (#3) 	Standard 	Ja 	2222 	Details
+07.12.15 - 14:45 	Qui-Gon Jinn (#3) 	Standard 	Ja 	521 	Details
+07.12.15 - 04:21 	VYBrainbug (#12) 	Standard 	Ja 	726 	Details
+06.12.15 - 18:12 	Luke Skywalker (#3) 	Standard 	Ja 	513 	Details
+05.12.15 - 18:58 	VYBrainbug (#12) 	Standard 	Ja 	1275 	Details
+05.12.15 - 02:23 	Hippie Supernova (#12) 	Standard 	Ja 	2188 	Details
+04.12.15 - 16:14 	VYBrainbug (#12) 	Standard 	Ja 	2143 	Details
+04.12.15 - 03:50 	DragonEye (#22) 	Standard 	Ja 	669 	Details
+03.12.15 - 17:25 	Hippie Lotus (#12) 	Standard 	Ja 	755 	Details
+03.12.15 - 07:23 	Gertrude Linkmeyer (#26) 	Standard 	Ja 	631 	Details
+02.12.15 - 21:53 	DragonEye (#22) 	Standard 	Ja 	1555 	Details
+02.12.15 - 11:25 	Hippie Lotus (#12) 	Standard 	Ja 	1697 	Details
+02.12.15 - 01:16 	Quark (#11) 	Standard 	Ja 	770 	Details
+30.11.15 - 11:49 	Hippie Venus (#12) 	Standard 	Ja 	628 	Details
+30.11.15 - 01:01 	DuG - Chiller (#23) 	Belagerung 	Ja 	2816 	Details
+29.11.15 - 12:47 	BlasRohr (#21) 	Standard 	Ja 	1553 	Details
+29.11.15 - 01:13 	DragonEye (#22) 	Standard 	Ja 	1339 	Details
+28.11.15 - 15:51 	Hippie Lotus (#12) 	Standard 	Ja 	1015 	Details
+28.11.15 - 05:24 	BlasRohr (#21) 	Standard 	Ja 	2102 	Details
+27.11.15 - 19:53 	Pizza Regina (#14) 	Standard 	Ja 	719 	Details
+27.11.15 - 06:39 	Hippie Kuipergürtel (#12) 	Standard 	Ja 	1075 	Details
+26.11.15 - 10:01 	Hippie Venus (#12) 	Standard 	Ja 	855 	Details
+26.11.15 - 00:29 	Hippie Venus (#12) 	Standard 	Ja 	583 	Details
+25.11.15 - 14:01 	Rohrstock (#21) 	Standard 	Ja 	1793 	Details
+25.11.15 - 04:09 	bye_bye_Rog (#22) 	Standard 	Ja 	1209 	Details
+24.11.15 - 18:27 	Hippie Zangenbowle (#7) 	Standard 	Ja 	639 	Details
