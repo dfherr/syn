@@ -28,12 +28,13 @@ def dp(ha, spys=None, ctp=False, hn=3, issdn=3, syn_issdn=0.52, sabbs=0):
 
 
 def mili_sabbs(off_ha, off_spys, def_ha, def_spys, n):
+    # n => number of fullys
     grab = off_spys[0] * 0.015 +  (off_spys[1]+off_spys[2]) * 0.0075
     print('Maxgrab: {0}'.format(grab))
 
     s = 0
     sabbs = 0
-    for i in range(n):
+    for i in range(n * 65//3):
         prob = 1-(1.5*dp(def_ha, def_spys, sabbs=int(sabbs)))/(2*op(off_ha, off_spys))
         sabbs += prob
         if prob < 0.01:
@@ -50,4 +51,4 @@ if __name__ == '__main__':
     def_ha = 21600
     def_spys = [26000, 570000, 5000]
 
-    mili_sabbs(off_ha, off_spys, def_ha, def_spys, 3 * 65//3)
+    mili_sabbs(off_ha, off_spys, def_ha, def_spys, 3)
