@@ -7,6 +7,58 @@ def area_optimizer(cr, cost):
     return cr // cost
 
 
+def optimize_neb_wz(ha, prodha, prodbonus, trade, syn_trade, output=False):
+    # immer: better ore mining 30%
+    # Wahl SZ(21.3%), IPM(15%), partnerbonus (20%), EcoDom(100%)
+
+
+    # TODO: analytic solution!
+    wz = np.linspace(0, prodha, prodha+1)
+    prod = np.zeros(wz.shape[0])
+    for x in wz:
+        prod[x] = neb_prod(ha, prodha, x, prodbonus, trade, syn_trade, output=False)
+
+    if output:
+        import matplotlib.pyplot as plt
+        plt.plot(wz, prod)
+        plt.show()
+
+    m = prod.argmax()
+    return m, prod[m]
+
+
+def neb_prod(ha, prodha, wz, prodbonus, trade, syn_trade, output=False):
+    """
+    prodbonus _without_ synergy bonus!
+    trade in cr
+    syntrade in cr
+    """
+    base_prod = 250
+    prod_gebs = prodha-wz
+
+    synergy_bonus = prod_gebs*0.02
+    if synergy_bonus > 0.5:
+        synergy_bonus = 0.5
+
+    wz_bonus = (wz/ha) * 8
+    bonus = prodbonus + synergy_bonus + wz_bonus
+
+    geb_prod = prod_gebs*base_prod*(1 + bonus)
+    trade_prod = prod_gebs*(trade + syn_trade)
+
+    prod = geb_prod + trade_prod
+
+    if output:
+        print ('synergy bonus', synergy_bonus)
+        print ('wz_bonus', wz_bonus)
+        print ('bonus', bonus)
+        print ('geb_prod', geb_prod)
+        print ('trade_prod', trade_prod)
+        print ('prod', prod)
+
+    return prod
+
+
 def seller_optimizer(owner, unit, ex, capacity_cap, market_cap, source):
     """
     Takes the scraped data and computes the optimal amount of

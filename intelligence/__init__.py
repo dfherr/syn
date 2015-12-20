@@ -1,5 +1,4 @@
-from hucbot import HUCBot
-from investbot import INVESTBot
+from statsbot import StatsBot
 from .optimize import area_optimizer, seller_optimizer
 from .utils import (
     calculate_taxed_cr,

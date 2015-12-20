@@ -13,6 +13,7 @@ def split_units_per_ratio(amount, ratio):
 
 
 def calculate_taxed_cr(tax, quantity, ex_rate):
+    # TODO: is that correct?!
     return int((quantity*ex_rate) / (1 - tax)) + 1
 
 

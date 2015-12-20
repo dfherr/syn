@@ -23,7 +23,8 @@ def dp(ha, spys=None, ctp=False, hn=3, issdn=3, syn_issdn=0.52, sabbs=0):
     bonus_dp = 0
     if ctp:
         bonus_dp = 18
-
+    # TODO: sabbs should be replaced by ops -> 1op = 3%
+    # TODO: add difficulty multiplicator
     return (base_dp/ha+bonus_dp)*(1 + hn*0.1 + issdn*0.1 + syn_issdn + sabbs*0.09)
 
 

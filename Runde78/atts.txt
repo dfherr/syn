@@ -34,3 +34,9 @@ Datum 	Ziel 	Angriffsart 	Erfolgreich 	Land erobert 	Aktion
 25.11.15 - 14:01 	Rohrstock (#21) 	Standard 	Ja 	1793 	Details
 25.11.15 - 04:09 	bye_bye_Rog (#22) 	Standard 	Ja 	1209 	Details
 24.11.15 - 18:27 	Hippie Zangenbowle (#7) 	Standard 	Ja 	639 	Details
+
+
+
+2 rines
+1 carrier
+rines * (3/16) huc
