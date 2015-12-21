@@ -1,10 +1,10 @@
 import re
 
-from .utils import machine_readable_stats
+from .utils import machine_readable_stats, string_to_int
 
-__all__ = ['scrape_owner_stats']
+__all__ = ['scrape_owner_stats', 'scrape_spies', 'scrape_military_stats']
 
-# Every value
+# resources / rankings
 base_regex = r'[&nbsp; ]([0-9\.]+) {0}'
 networth_regex = re.compile(base_regex.format('NW'))
 land_regex = re.compile(base_regex.format('ha'))
@@ -18,6 +18,29 @@ military_regex = re.compile(capacity_base_regex.format('Milit'))
 spies_regex = re.compile(capacity_base_regex.format('Spionage'))
 carrier_regex = re.compile(capacity_base_regex.format('Carrier'))
 
+military_base_regex = (r'<tr class="tableInner1">\s+<td>\s+{0}&nbsp;'
+                       '\s+.+\s+.+\s+.+\s+</td>\s+<td align="center">'
+                       '\s+([0-9\.]+)')
+marine_regex = re.compile(military_base_regex.format('Marine'))
+ranger_regex = re.compile(military_base_regex.format('Ranger'))
+buc_regex = re.compile(military_base_regex.format(
+    'Carrier|Patriot')
+)
+auc_regex = re.compile(military_base_regex.format(
+    'Halo|Phoenix')
+)
+huc_regex = re.compile(military_base_regex.format(
+    'Behemoth|EMP Cannon')
+)
+thief_regex = re.compile(military_base_regex.format('Thief'))
+guardian_regex = re.compile(military_base_regex.format('Guardian'))
+agent_regex = re.compile(military_base_regex.format('Agent'))
+
+
+spy_regex = re.compile(
+    r'erlittene Spionageaktionen</b></td>\s+<td>([0-9]+)</font>'
+)
+
 
 def scrape_owner_stats(html):
     """
@@ -26,6 +49,7 @@ def scrape_owner_stats(html):
 
     uses the military page
     """
+
     owner_stats = {}
 
     # find relevant sections of the html
@@ -51,6 +75,30 @@ def scrape_owner_stats(html):
     # find the matches for capacities
     owner_stats['capas_military'] = military_regex.search(tmp).group(1)
     owner_stats['capas_spies'] = spies_regex.search(tmp).group(1)
-    owner_stats['capas_carrier'] = carrier_regex.search(tmp).group(1)
+
+    # only nof has carrier capas
+    try:
+        owner_stats['capas_carrier'] = carrier_regex.search(tmp).group(1)
+    except AttributeError as e:
+        owner_stats['capas_carrier'] = '0'
+
+    # find matches for military / spy units
+    # neglect homecoming units and units in construction
+    owner_stats['marines'] = marine_regex.search(html).group(1)
+    owner_stats['ranger'] = ranger_regex.search(html).group(1)
+    owner_stats['buc'] = buc_regex.search(html).group(1)
+    owner_stats['auc'] = auc_regex.search(html).group(1)
+    owner_stats['huc'] = huc_regex.search(html).group(1)
+
+    owner_stats['thiefs'] = buc_regex.search(html).group(1)
+    owner_stats['guardians'] = auc_regex.search(html).group(1)
+    owner_stats['agents'] = huc_regex.search(html).group(1)
 
     return machine_readable_stats(owner_stats)
+
+
+def scrape_spies(html):
+    """
+    scrapes the amount of spys against the owner
+    """
+    return string_to_int(spy_regex.search(html).group(1))
