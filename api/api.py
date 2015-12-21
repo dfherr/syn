@@ -1,5 +1,3 @@
-from datetime import datetime as dt
-
 from .login import LoggedInSession
 from .utils import *
 from scraper import (
@@ -21,14 +19,6 @@ class SynAPI(object):
     def __init__(self):
         self.session = LoggedInSession.get_session()
 
-    # TODO: ASAP
-    # Goal: update owner resources all the time
-    # build military units (build prices updates once an hour...)
-    # if cr too high,
-    # capacity update...
-    # buy from market / store(if 5% cheaper)
-    # build military (-> HUC, Spies, Carrier...)
-    # when selling, permanently tenders... to reasonable price
     def logout(self):
         """
         logout of session -> get to captcha page
@@ -68,9 +58,6 @@ class SynAPI(object):
         """
         r = self.session.get(links['stats'])
         return scrape_spies(r.content)
-
-    def get_military_stats(self):
-        raise NotImplementedError
 
     def get_tenders(self):
         raise NotImplementedError
@@ -323,7 +310,6 @@ class SynAPI(object):
         pd.set_option('display.width', 200)
         pd.set_option('display.max_rows', 1000)
         """
-        # TODO: find a way to automatically determine
         # amount of syndicates
         rankings = []
         for i in range(1, syns_amount+1):
