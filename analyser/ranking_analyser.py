@@ -6,48 +6,51 @@ import pandas as pd
 from database import Database
 
 
-def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=False):
+def analyse_player(
+    rankings, syn_id,
+    target_ha=None, syn=None, frak=None, expands_last_tick=False,
+    save=True, plot=False
+):
     """
-    shows the development of player 'name'
+    shows the development of player 'name' (which is the syndicates id)
     plots ha and nw on a timeline
     """
-    player_rankings = rankings[rankings[3] == name]
+    player_rankings = rankings[rankings['name'] == syn_id]
+
     id_current = max(player_rankings.index)
-    current_ha = player_rankings.loc[id_current][5]
+    current_ha = player_rankings['ha'][id_current]
+    current_syn = player_rankings['syn'][id_current]
+    current_frak = player_rankings['frak'][id_current]
+    current_name = player_rankings['current_name'][id_current]
+
+    # some criteria for advanced searches
     meets_criteria = True
 
-    if not (target_ha[0] < current_ha < target_ha[1]):
-        meets_criteria = False
-
-    if expands_last_tick:
-        try:
-            last_id = list(player_rankings.index)[-2]
-            last_tick_ha = player_rankings.loc[last_id][5]
-            if last_tick_ha >= current_ha:
-                meets_criteria = False
-        except IndexError:
+    if target_ha is not None:
+        if not (target_ha[0] < current_ha < target_ha[1]):
             meets_criteria = False
 
-    if recent:
-        time_stamp = player_rankings.loc[id_current][1]
-        # d1 = datetime.strptime("%Y-%M-%D %H:%m:%s", str(time_stamp).split('.')[0])
-        d2 = datetime.now()
+    if syn is not None:
+        if current_syn != syn:
+            meets_criteria = False
 
-    meets_criteria = True
-    if not player_rankings.loc[id_current][4] == 'neb':
-        meets_criteria = False
+    if frak is not None:
+        if current_frak != frak:
+            meets_criteria = False
 
-    syn = player_rankings.irow(0)[7]
-    if True:
-        dates = player_rankings.loc[:, 1]
-        ha = player_rankings.loc[:, 5]
-        nw = player_rankings.loc[:, 6]
+    if expands_last_tick:
+        if len(player_rankings.index) > 1:
+            last_id = list(player_rankings.index)[-2]
+            last_tick_ha = player_rankings['ha'][last_id]
+            if last_tick_ha >= current_ha:
+                meets_criteria = False
 
+    if meets_criteria:
         fig = plt.figure(figsize=[10, 6])
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212, sharex=ax1)
 
-        ax1.set_title(name)
+        ax1.set_title(current_name)
         ax1.set_ylabel('NW')
         ax1.grid()
         plt.setp(ax1.get_xticklabels(), visible=False)
@@ -55,12 +58,13 @@ def analyse_player(rankings, name, target_ha, expands_last_tick=False, recent=Fa
         ax2.set_ylabel('ha')
         ax2.grid()
 
-        ax1.plot(dates, nw)
-        ax2.plot(dates, ha)
-        plt.savefig('docs/round10/{0:02d}_{1}.png'.format(syn, name.encode('utf-8')))
-        plt.show()
+        ax1.plot(player_rankings['date'], player_rankings['nw'])
+        ax2.plot(player_rankings['date'], player_rankings['ha'])
+        if save:
+            plt.savefig('docs/round79/{0:02d}_{1}.png'.format(current_syn, current_name))
+        if plot:
+            plt.show()
         plt.close(fig)
-        print(name.encode('utf-8'))
 
 
 def _find_logs(date1, date2):
@@ -89,49 +93,32 @@ def generate_all_rankings(rankings, target_ha=[0000, 10000], expands_last_tick=F
             analyse_player(rankings, name, target_ha, expands_last_tick)
 
 
-def find_highest_ha():
-    pd.set_option('display.width', 200)
-    pd.set_option('display.max_rows', 1000)
+def filter_duplicates(rankings):
+    filtered_rankings = rankings[rankings.date > datetime.now()-timedelta(seconds=3600)]
+    filtered_rankings = filtered_rankings.drop_duplicates(take_last=True, subset=['name'])
 
-    db = Database()
-    rankings = pd.DataFrame(db.read_rankings())
-    rankings.columns = ['id', 'date', 'rank', 'name', 'class', 'ha', 'nw', 'syn']
-
-    rankings = rankings[rankings.date > datetime.now()-timedelta(seconds=3600)]
-    rankings = rankings.drop_duplicates(take_last=True, subset=['name'])
-    rankings = rankings.sort(columns=['ha'], ascending=False)
-
-    rankings = rankings[rankings.ha > 12500]
-
-    print(rankings)
+    return filtered_rankings
 
 
-def find_highest_nw():
-    pd.set_option('display.width', 200)
-    pd.set_option('display.max_rows', 1000)
+def find_highest_ha(rankings, n=25):
+    rankings = rankings.sort(columns=['ha', 'nw'], ascending=False)
+    print(rankings[:n])
 
-    db = Database()
-    rankings = pd.DataFrame(db.read_rankings())
-    rankings.columns = ['id', 'date', 'rank', 'name', 'class', 'ha', 'nw', 'syn']
 
-    rankings = rankings[rankings.date > datetime.now()-timedelta(seconds=3600)]
-    rankings = rankings.drop_duplicates(take_last=True, subset=['name'])
+def find_highest_nw(rankings, n=25):
     rankings = rankings.sort(columns=['nw'], ascending=False)
-
-    print(rankings[:25])
+    print(rankings[:n])
 
 if __name__ == '__main__':
-    find_highest_nw()
-    find_highest_ha()
+    pd.set_option('display.width', 200)
+    pd.set_option('display.max_rows', 1000)
 
     with Database() as db:
-        rankings = db.read_rankings()
-        rankings = pd.DataFrame(rankings)
-        pd.set_option('display.width', 200)
-        pd.set_option('display.max_rows', 1000)
+        rankings = pd.DataFrame(db.read_rankings())
+        rankings.columns = ['id', 'date', 'rank', 'name', 'current_name', 'frak', 'ha', 'nw', 'syn']
 
-        names = ['DragonDisgrace', 'Major Hochstetter','Geldspeicher', 'Bob the Builder']
+        filtered_rankings = filter_duplicates(rankings)
+        find_highest_nw(filtered_rankings)
+        find_highest_ha(filtered_rankings, n=100)
 
-        for name in names:
-            analyse_player(rankings, name, [0, 10000])
-        generate_all_rankings(rankings)
+        analyse_player(rankings, 24, plot=True)
