@@ -4,6 +4,11 @@ from api.utils import res_names, unit_capas
 
 import numpy as np
 
+__all__ = [
+    'split_units_per_ratio', 'calculate_taxed_cr',
+    'free_capas', 'prepare_resources'
+]
+
 
 def split_units_per_ratio(amount, ratio):
     tmp = (amount*ratio).astype(int)
