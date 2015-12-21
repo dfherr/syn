@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from __future__ import division
 
 from datetime import datetime as dt
@@ -7,16 +6,7 @@ from time import sleep
 import numpy as np
 
 from api import SynAPI
-from api.utils import select_capas, res_names
 from database import Database
-from intelligence import (
-    area_optimizer,
-    calculate_taxed_cr,
-    free_capas,
-    seller_optimizer,
-    split_units_per_ratio,
-    prepare_resources
-)
 
 
 class BaseBot(object):
@@ -27,15 +17,21 @@ class BaseBot(object):
         self.active = True
         self.sleep_time = 30
 
+        self.jobs = []
+
         self.last_hour = -1
         self.hourly_job_minute = 2
         self.hourly_jobs = []
 
     def human_sleep_time(self):
-        raise NotImplementedError
+        return np.random.poisson(self.sleep_time)
 
     def run(self):
         while True:
+            if self.active:
+                for job in self.jobs:
+                    job()
+
             # # # hourly jobs
             if self.last_hour != dt.now().hour and dt.now().minute > self.hourly_job_minute:
                 self.last_hour = dt.now().hour
@@ -43,9 +39,10 @@ class BaseBot(object):
                 if not self.active:
                     self.db.action_output('login', dt.now())
 
-                self.take_log()
+                for job in self.hourly_jobs:
+                    job()
 
-                if self.active:
+                if not self.active:
                     self.db.action_output('logout', dt.now())
                     self.api.logout()
 
@@ -58,7 +55,9 @@ class StatsBot(object):
 
         self.db.action_output('start stats recording', date)
 
-        # TODO: own stats -> NW, HA, Military, Spies
+        self.db.action_output('military stats...', date)
+        mili_stats = self.api.get_owner_stats()
+        self.db.save_military_stats(mili_stats, date)
 
         self.db.action_output('rankings...', date)
         rankings = self.api.generate_rankings()
@@ -80,3 +79,9 @@ class StatsBot(object):
         self.db.save_spies(spies, date)
 
         self.db.action_output('end stats recording', dt.now())
+
+    def last_stats(self):
+        last_log = self.db.get_last_log()
+        if (dt.now()-last_log).total_seconds() > 3600:
+            return -1
+        return last_log.hour

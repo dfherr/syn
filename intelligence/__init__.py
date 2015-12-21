@@ -1,4 +1,4 @@
-from statsbot import StatsBot
+from bot import BaseBot, StatsBot
 from .optimize import area_optimizer, seller_optimizer
 from .utils import (
     calculate_taxed_cr,
@@ -7,5 +7,7 @@ from .utils import (
     split_units_per_ratio
 )
 
-__all__ = ['area_optimizer', 'calculate_taxed_cr', 'free_capas',
-           'seller_optimizer', 'split_units_per_ratio', 'prepare_resources']
+__all__ = [
+    'area_optimizer', 'calculate_taxed_cr', 'free_capas',
+    'seller_optimizer', 'split_units_per_ratio', 'prepare_resources'
+]
