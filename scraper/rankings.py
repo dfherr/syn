@@ -2,14 +2,14 @@ import re
 
 from utils import string_to_int
 
-# TODO: find and return user id
+# TODO: find and return user id instead of username
 personal_stats_regex = re.compile(
     (r'tableInner[12]">\s+<td [\w="]+> <a [a-z:=(\',]+'
      '(sl|nof|uic|neb|bf)[\') \w="]+>'  # class
      '<[=:"\w\'/\.\- ]+></a></td>\s+'
      '<[=:"\w ]+>[&nbsp;]+'
-     '<[=:"\w&\. \-\?;]+>'
-     '([\w&\.\-_ ]+)</a>[&nbsp;]+</td>\s+<td[ a-z="]+>\s+'  # name
+     '<[=:"\w&\. \-\?;]+detailsid=([0-9]{1,3})[=:"\w&\. \-\?;]+>'  # id
+     '([\w&,\.\-_ ]+)</a>[&nbsp;]+</td>\s+<td[ a-z="]+>\s+'  # name
      '[ \w\.\-/":=><\s_%,]+</td>\s+'
      '<td[ a-z="]+>([0-9\.]+)[&nbsp;]+</td>\s+'  # land
      '<td[ a-z="]+>([0-9\.]+)[&nbsp;]+</td>'),  # networth
@@ -22,17 +22,18 @@ syn_stats_regex = re.compile(
 
 
 def generate_user_rankings(rankings):
-    return sorted(rankings, key=lambda x: x[3], reverse=True)
+    return sorted(rankings, key=lambda x: x[4], reverse=True)
 
 
 def reformat_personal_stats(stats, syn_number):
     reformat = []
     for person in stats:
         reformat.append([
-            repr(person[1].decode('unicode-escape')),
+            person[1],
+            repr(person[2].decode('unicode-escape')),
             person[0],
-            string_to_int(person[2]),
             string_to_int(person[3]),
+            string_to_int(person[4]),
             syn_number
         ])
     return reformat
@@ -66,10 +67,11 @@ def scrape_syndicate(syn_number, html):
     )
 
     # self consistency check
-    check_land = sum(map(lambda x: x[2], personal_stats))
-    check_net = sum(map(lambda x: x[3], personal_stats))
+    check_land = sum(map(lambda x: x[3], personal_stats))
+    check_net = sum(map(lambda x: x[4], personal_stats))
     if check_land != syn_land or check_net != syn_net:
-        # TODO: handle incorrect rankings
+        print(syn_number)
+        print(personal_stats)
         print('FAIL')
         return []
     return personal_stats
