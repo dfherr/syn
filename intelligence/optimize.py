@@ -2,17 +2,14 @@ from __future__ import division
 
 import numpy as np
 
+__all__ = ['area_optimizer', 'optimize_neb_wz', 'neb_prod', 'seller_optimizer']
+
 
 def area_optimizer(cr, cost):
     return cr // cost
 
 
 def optimize_neb_wz(ha, prodha, prodbonus, trade, syn_trade, output=False):
-    # immer: better ore mining 30%
-    # Wahl SZ(21.3%), IPM(15%), partnerbonus (20%), EcoDom(100%)
-
-
-    # TODO: analytic solution!
     wz = np.linspace(0, prodha, prodha+1)
     prod = np.zeros(wz.shape[0])
     for x in wz:
