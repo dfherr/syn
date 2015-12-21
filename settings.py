@@ -12,7 +12,7 @@ RES_DIR = Path(TEST_DIR, 'resources')
 sql_file = Path(BASE_DIR, 'Database.sql')
 session_file = Path(BASE_DIR, 'last_session.pkl')
 
-syns_amount = 26
+syns_amount = 27
 
 with open(Path(BASE_DIR, 'secrets.json'), 'r') as f:
     secrets = json.loads(f.read())
