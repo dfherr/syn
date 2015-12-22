@@ -67,6 +67,32 @@ def analyse_player(
         plt.close(fig)
 
 
+def plot_multiple_players(rankings, syn_ids):
+    fig = plt.figure(figsize=[10, 6])
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212, sharex=ax1)
+
+    ax1.set_ylabel('NW')
+    ax1.grid()
+    plt.setp(ax1.get_xticklabels(), visible=False)
+
+    ax2.set_ylabel('ha')
+    ax2.grid()
+
+    for syn_id in syn_ids:
+        player_rankings = rankings[rankings['name'] == syn_id]
+
+        id_current = max(player_rankings.index)
+        current_name = player_rankings['current_name'][id_current]
+
+        ax1.plot(player_rankings['date'], player_rankings['nw'], label=current_name)
+        ax2.plot(player_rankings['date'], player_rankings['ha'])
+    leg = ax1.legend(loc=2)
+    for legobj in leg.legendHandles:
+        legobj.set_linewidth(2.0)
+    plt.show()
+
+
 def _find_logs(date1, date2):
     raise NotImplementedError
 
@@ -121,4 +147,5 @@ if __name__ == '__main__':
         find_highest_nw(filtered_rankings)
         find_highest_ha(filtered_rankings, n=100)
 
-        analyse_player(rankings, 24, plot=True)
+        # analyse_player(rankings, 24, plot=True)
+        plot_multiple_players(rankings, [87, 32])
