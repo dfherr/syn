@@ -3,6 +3,8 @@ import sqlite3 as sql
 
 from settings import sql_file
 
+__all__ = ['Database']
+
 
 class Database(object):
     def __init__(self):
@@ -31,6 +33,25 @@ class Database(object):
         self.create_table_shares()
         self.create_table_storage()
         self.create_table_spies()
+        self.create_table_milistats()
+
+    def create_table_milistats(self):
+        """
+        Table to save military / spy stats to
+        """
+        create_string = """
+            CREATE TABLE {0} (
+            id INTEGER PRIMARY KEY NOT NULL,
+            stats_date TIMESTAMP NOT NULL,
+            marines INTEGER NOT NULL,
+            ranger INTEGER NOT NULL,
+            buc INTEGER NOT NULL,
+            auc INTEGER NOT NULL,
+            huc INTEGER NOT NULL,
+            thiefs INTEGER NOT NULL,
+            guardians INTEGER NOT NULL,
+            agents INTEGER NOT NULL)"""
+        self._create_table('military_stats', create_string)
 
     def create_table_spies(self):
         """
@@ -66,6 +87,7 @@ class Database(object):
             rank_date TIMESTAMP NOT NULL,
             current_rank INTEGER NOT NULL,
             name TEXT NOT NULL,
+            current_name TEXT NOT NULL,
             class TEXT NOT NULL,
             ha INTEGER NOT NULL,
             nw INTEGER NOT NULL,
@@ -156,10 +178,10 @@ class Database(object):
 
     def save_spies(self, spies, date):
         """
-        saves the scraped suffered
-        from scraper.stats in form of
+        saves the scraped suffered spies
+        from scraper.owner_stats in form of
 
-        [(datetime.now(), 'spies'), ...]
+        spies
 
         to the database table 'storage':
         | ID | DATE | amount |
@@ -169,6 +191,34 @@ class Database(object):
             '(spy_date, amount) '
             'VALUES (?, ?)',
             [date, spies]
+        )
+        self.con.commit()
+
+    def save_military_stats(self, owner_stats, date):
+        """
+        saves the scraped milistats
+        from scraper.owner_stats in form of
+
+        [rines, ranger, buc, auc, huc, thiefs, guardians, agents]
+
+        to the database table 'military_stats':
+        | ID | DATE | [...] |
+        """
+        stats = [
+            owner_stats['marines'],
+            owner_stats['ranger'],
+            owner_stats['buc'],
+            owner_stats['auc'],
+            owner_stats['huc'],
+            owner_stats['thiefs'],
+            owner_stats['guardians'],
+            owner_stats['agents']
+        ]
+        self.cur.execute(
+            'INSERT INTO military_stats '
+            '(stats_date, marines, ranger, buc, auc, huc, thiefs, guardians, agents) '
+            'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [date] + stats
         )
         self.con.commit()
 
@@ -186,13 +236,13 @@ class Database(object):
         for i in range(len(rankings)):
             rankings[i] = [date, i+1] + rankings[i]
 
-        # TODO: bulk upload...
+        # TODO: Bulk upload...
         for rank in rankings:
             self.cur.execute(
                 'INSERT INTO rankings '
-                '(rank_date, current_rank, name, class, '
+                '(rank_date, current_rank, name, current_name, class, '
                 'ha, nw, syn) '
-                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 rank
             )
             self.con.commit()
