@@ -1,8 +1,10 @@
 import cPickle as pickle
+from datetime import datetime as dt
 from StringIO import StringIO
 import time
 from PIL import Image
 
+import numpy as np
 import requests
 from requests.exceptions import ConnectionError, ConnectTimeout
 
@@ -28,12 +30,16 @@ class LoggedInSession(object):
     doesn't make requests too fast
     at least 'delay' + 'delay_dev' seconds
     """
-    def __init__(self, user, password, delay=0, delay_dev=0):
+    def __init__(self, user, password):
         self.user = user
         self.password = password
 
         self.session = None
         self.retries = -1
+
+        # prevent inhumanly fast refresh times
+        self.refresh_mean = 3
+        self.last_refresh = dt.now()
 
         # log in and solve captcha
         self.build_session()
@@ -43,6 +49,19 @@ class LoggedInSession(object):
         r = self.session.get(links['home'])
         if not self.check_login(r.content):
             raise Exception('Login Error')
+
+    def _human_refresh_time(self):
+        """
+        timer for request methods
+        prevents too fast refreshes
+        -> can be disabled for sabotages / sells with
+        api.session.refresh_mean = 0
+        """
+        refresh_time = np.random.poisson(self.refresh_mean)
+        elapsed_time = (dt.now() - self.last_refresh).total_seconds()
+        if elapsed_time < refresh_time:
+            time.sleep(refresh_time-elapsed_time)
+        self.last_refresh = dt.now()
 
     def _retry_timer(self):
         """
@@ -66,6 +85,7 @@ class LoggedInSession(object):
         catch Connection Errors
         """
         self._retry_timer()
+        self._human_refresh_time()
         try:
             if method == 'GET':
                 params = kwargs.get('params', {})
