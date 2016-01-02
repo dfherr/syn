@@ -1,15 +1,41 @@
 from __future__ import division
 
 import numpy as np
+import scipy.optimize as opt
 
-__all__ = ['area_optimizer', 'optimize_neb_wz', 'neb_prod', 'seller_optimizer']
+__all__ = [
+    'area_optimizer', 'neb_buc_rate', 'neb_prod',
+    'optimize_neb_wz', 'optimize_neb_buc', 'seller_optimizer'
+]
 
 
 def area_optimizer(cr, cost):
     return cr // cost
 
 
+def optimize_neb_buc(capas, other_units, pats_construct):
+    """ optimizes the amount of pats for given capas and other units """
+    def f(x):
+        """
+        x = pats
+        *(-1) cause scipy.optimize usually minimizes
+        """
+        return (-1)*neb_buc_rate(capas, x, other_units, pats_construct)
+
+    result = opt.minimize_scalar(f)
+    return result.x, -result.fun
+
+
+def neb_buc_rate(capas, pats, others_units, pats_construct):
+    """ interest on neb buc"""
+    units = pats + others_units + pats_construct
+    return pats * (0.018 - (units/capas)**1.5 / 80) * (1 + (others_units/units)**1.5)
+
+
 def optimize_neb_wz(ha, prodha, prodbonus, trade, syn_trade, output=False):
+    """ returns the optimal amounts of wz for given prod ha and trade lvl """
+    # since small and discrete parameter space
+    # just brute force the solution
     wz = np.linspace(0, prodha, prodha+1)
     prod = np.zeros(wz.shape[0])
     for x in wz:
@@ -33,7 +59,7 @@ def neb_prod(ha, prodha, wz, prodbonus, trade, syn_trade, output=False):
     base_prod = 250
     prod_gebs = prodha-wz
 
-    synergy_bonus = prod_gebs*0.02
+    synergy_bonus = (prod_gebs / ha) * 0.02
     if synergy_bonus > 0.5:
         synergy_bonus = 0.5
 
