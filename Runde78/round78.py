@@ -97,7 +97,6 @@ class SellerStatsBot(object):
                     self.db.action_output(str(stats), dt.now())
                     last_stats = stats
 
-                # TODO: how to handle "no resources left"?!
                 if stats['credits'] > self.cr_limit and free_capas(stats, self.build_order):
                     active_building = True
                     self.build_units(stats)
