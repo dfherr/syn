@@ -30,7 +30,6 @@ if __name__ == '__main__':
 
             # where to pick which resource -> [energy, erz, fp]
             # from gm or from store?
-            # TODO -> optimize
             res_names = ['energy', 'erz', 'fp']
             ex_rate_names = ['ex_energy', 'ex_erz', 'ex_fp']
             resource_source = [
@@ -92,7 +91,6 @@ if __name__ == '__main__':
                     if source == 'gm':
                         api.buy(res, quantity, price)
                     elif source == 'store':
-                        # TODO: pull from syn first, calculate new quantities
                         api.pull_store_resources(res, quantity)
             print('Build {0} {1}s'.format(amount, unit))
             if unit == 'spy':
