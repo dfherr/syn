@@ -8,4 +8,5 @@ area_cost_regex = re.compile(r'Kosten pro Hektar:\s+</td>\s+.+\s+.+\s+([0-9\.]+)
 
 
 def scrape_area_cost(html):
+    # TODO: add ha in construction!
     return string_to_int(area_cost_regex.search(html).group(1))

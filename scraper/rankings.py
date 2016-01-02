@@ -1,6 +1,6 @@
 import re
 
-from utils import string_to_int
+from .utils import string_to_int
 
 # TODO: find and return user id instead of username
 personal_stats_regex = re.compile(

@@ -6,7 +6,8 @@ from scraper import (
     scrape_owner_stats,
     scrape_store,
     scrape_shares,
-    scrape_spies,
+    scrape_round_statistics,
+    scrape_status_stats,
     scrape_syndicate,
     generate_user_rankings
 )
@@ -57,19 +58,76 @@ class SynAPI(object):
         Loads and scrapes the amount of suffered spys from links['stats']
         """
         r = self.session.get(links['stats'])
-        return scrape_spies(r.content)
+        return scrape_round_statistics(r.content)
+
+    def get_next_fos(self):
+        """
+        Loads and scrapes the cost and start time of the
+        next research from links['research']
+        """
+        # TODO: asap
+        raise NotImplementedError
+
+    def place_tender(self, unit, price, amount):
+        """
+        sends a post request to sell the 'unit'
+        'amount' times for price 'price' at the market
+
+        request example:
+        input=bringin&product=energy&price=9&number=1
+        """
+        payload = {
+            'input': 'bringin',
+            'product': request_names[unit],
+            'price': price,
+            'number': amount
+        }
+        return self.session.post(links['market'], data=payload)
+
+    def place_offer(self):
+        raise NotImplementedError
 
     def get_tenders(self):
+        """
+        <tr>
+        <form action="market.php" method="post">
+        <input type="hidden" value="delete" name="input">
+        <input type="hidden" value="42796" name="offer_id">
+        <td width="110" align="center" class="tableInner1">
+        &nbsp;Phoenix
+        </td>
+        <td width="110" align="center" class="tableInner1">
+        89
+        </td>
+        <td width="110" align="center" class="tableInner1">
+        2.960
+        </td>
+        <td width="50"  align="center" class="tableInner1">
+        """
         raise NotImplementedError
 
     def get_offers(self):
         raise NotImplementedError
 
     def discard_tender(self):
+        """
+        http://www.syndicates-online.de/php/market.php
+        POST /php/market.php HTTP/1.1
+        Referer: http://www.syndicates-online.de/php/market.php
+        input=delete&offer_id=41882
+        """
         raise NotImplementedError
 
     def discard_offer(self):
         raise NotImplementedError
+
+    def get_status_stats(self):
+        """
+        Loads and scrapes from links['home'] to get
+        the
+        """
+        r = self.session.get(links['home'])
+        return scrape_status_stats(r.content)
 
     def take_bonus(self, bonus_id):
         """
@@ -219,12 +277,6 @@ class SynAPI(object):
         }
         return self.session.post(links['market'], data=payload)
 
-    def cancel_selling(self, i):
-        raise NotImplementedError
-
-    def cancel_order(self, i):
-        raise NotImplementedError
-
     def _interact_with_store(self, unit, amount, action):
         """
         sends a post request to the store to pull or store
@@ -251,9 +303,6 @@ class SynAPI(object):
 
     def pull_store_resources(self, unit, amount):
         return self._interact_with_store(unit, amount, 'get')
-
-    def pull_syn_resources(self, unit, amount):
-        raise NotImplementedError
 
     def pull_syn_resources(self, unit, amount):
         """
