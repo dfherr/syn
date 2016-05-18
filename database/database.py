@@ -1,15 +1,19 @@
 from datetime import datetime as dt
 import sqlite3 as sql
 
-from settings import sql_file
+from settings import current_db_file
 
 __all__ = ['Database']
 
 
 class Database(object):
-    def __init__(self):
-        self.con = sql.connect(sql_file,
-                               detect_types=sql.PARSE_DECLTYPES)
+    def __init__(self, db_file=None):
+        if db_file is None:
+            db_file = current_db_file
+        self.con = sql.connect(
+            db_file,
+            detect_types=sql.PARSE_DECLTYPES
+        )
         self.cur = self.con.cursor()
 
     def __enter__(self):
@@ -254,6 +258,10 @@ class Database(object):
         for i in r:
             i[3] = eval(i[3])
         return r
+
+    def read_storage(self):
+        self.cur.execute('SELECT * FROM storage')
+        return map(list, self.cur.fetchall())
 
     def get_last_log(self):
         # should be sql solution. This is dirty... but quick!

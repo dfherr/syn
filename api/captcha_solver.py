@@ -18,7 +18,7 @@ def solve_captcha(img, output=False):
     img.setflags(write=True)
 
     # make picture bigger and center size:
-    # the digit recognition and the masks do not
+    # the digit recognition and the masks must not
     # go out of the image
     height, width = img.shape
     center_img = np.zeros(

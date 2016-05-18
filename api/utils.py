@@ -56,11 +56,26 @@ request_names = {
 res_names = ['energy', 'erz', 'fp']
 
 buildings = {
-    'lh': 'depots'
+    'lh': 'depots',
+    'hz': 'tradecenters',
+    'kw': 'powerplants',
+    'efas': 'ressourcefacilities',
+    'flabs': 'sciencelabs',
+    'bh': 'buildinggrounds',
+    'fabs': 'factories',
+    'apos': 'offtowers',
+    'forts': 'deftowers',
+    'syn_hz': 's_tradecenters',
+    'syn_efas': 's_ressourcefacilities',
+    'akas': 'schools',
+    'wz': 'ecocenters'
 }
+
 bonus_types = [1, 2]
+
 military = ['marine', 'ranger', 'buc', 'auc', 'huc',
             'thief', 'guardian', 'agent']
+
 unit_capas = {
     'marine': 'capas_military',
     'ranger': 'capas_military',
@@ -72,4 +87,5 @@ unit_capas = {
     'guardian': 'capas_spies',
     'spies': 'capas_spies'
 }
+
 resources = ['credits', 'energy', 'erz', 'fp']

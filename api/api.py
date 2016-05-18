@@ -2,6 +2,7 @@ from .login import LoggedInSession
 from .utils import *
 from scraper import (
     scrape_area_cost,
+    scrape_buildings,
     scrape_market_resources,
     scrape_owner_stats,
     scrape_store,
@@ -171,6 +172,14 @@ class SynAPI(object):
             'submit2': 'kaufen'
         }
         return self.session.post(links['area'], data=payload)
+
+    def get_buildings(self):
+        """
+        Loads and scrapes from links['area'] to get
+        the cost of new building and unbuild buildings
+        """
+        r = self.session.get(links['area'])
+        return scrape_buildings(r.content)
 
     def build_buildings(self, building, amount):
         """

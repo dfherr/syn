@@ -30,13 +30,13 @@ military_base_regex = (
 marine_regex = re.compile(military_base_regex.format('Marine'))
 ranger_regex = re.compile(military_base_regex.format('Ranger'))
 buc_regex = re.compile(military_base_regex.format(
-    'Carrier|Patriot')
+    'Carrier|Strike Fighter')
 )
 auc_regex = re.compile(military_base_regex.format(
-    'Halo|Phoenix')
+    'Halo|Wartank')
 )
 huc_regex = re.compile(military_base_regex.format(
-    'Behemoth|EMP Cannon')
+    'Behemoth|Titan')
 )
 thief_regex = re.compile(military_base_regex.format('Thief'))
 guardian_regex = re.compile(military_base_regex.format('Guardian'))
@@ -49,7 +49,7 @@ spy_regex = re.compile(
 
 # energy usage
 energy_usage_regex = re.compile(
-    r'<td>Bilanz<br>&nbsp;</td>\s+<td align=right>\s+<b class="achtungAuftableInner">\s+'
+    r'<td>Bilanz<br>&nbsp;</td>\s+<td align=right>\s+<b class="[a-zA-Z]+">\s+'
     '([\-0-9.]+)\s+</b>\s+<br>&nbsp;\s+</td>\s+<td>&nbsp;MWh'
 )
 
