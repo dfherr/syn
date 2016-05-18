@@ -7,13 +7,6 @@ import numpy as np
 
 from intelligence import BaseBot, BonusBotMixin, EnergyFPBotMixin, StatsBotMixin, StockBot
 
-# TODO: overall_limit with tenders! -> adjust cr_limit dynamically
-# TODO: adjust tenders if too much erz...
-# TODO next: buy fp
-# TODO: if prodder & stored ... make sleep time higher? -> end of tick or smth?
-# ! TODO: rebuy protection after 20hours or smth -> new db table, "reached 10%"?
-
-
 class NEBBot(BaseBot, BonusBotMixin, EnergyFPBotMixin, StatsBotMixin, StockBot):
     def __init__(self):
         super(NEBBot, self).__init__()
